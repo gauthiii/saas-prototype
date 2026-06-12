@@ -18,6 +18,7 @@ export type DomainDef = {
   icon: string;
   file: string;       // module under src/domains (without extension)
   productName: string;
+  parent?: string;    // id of the parent domain — renders indented in the picker
   views: ViewDef[];
 };
 
@@ -60,6 +61,24 @@ export const DOMAIN_DEFS: DomainDef[] = [
       { id: "analytics", label: "Analytics", icon: "BarChart3", comp: "FintechAnalytics", group: "App" },
       ...SHARED_ACCOUNT("Fintech"),
       ...SHARED_RESOURCES("Fintech"),
+    ],
+  },
+  {
+    id: "banking", label: "Banking", sub: "Accounts · Transfers · Cards · Loans", icon: "Banknote", file: "banking", productName: "VaultBank", parent: "fintech",
+    views: [
+      ...SHARED_PUBLIC("Banking"),
+      { id: "dash", label: "Accounts overview", icon: "LayoutDashboard", comp: "BankingDashboard", group: "App" },
+      { id: "transfers", label: "Transfers", icon: "ArrowLeftRight", comp: "TransferScreen", group: "App" },
+      { id: "billpay", label: "Bill pay", icon: "Receipt", comp: "BillPayScreen", group: "App" },
+      { id: "cards", label: "Cards", icon: "CreditCard", comp: "BankCardsScreen", group: "App" },
+      { id: "deposits", label: "Savings & deposits", icon: "PiggyBank", comp: "DepositsScreen", group: "App" },
+      { id: "loans", label: "Loans & mortgage", icon: "Banknote", comp: "LoansScreen", group: "App" },
+      { id: "payees", label: "Payees", icon: "Users", comp: "BeneficiariesScreen", group: "App" },
+      { id: "statements", label: "Statements", icon: "FileText", comp: "StatementsScreen", group: "App" },
+      { id: "fx", label: "Currency exchange", icon: "Globe", comp: "CurrencyExchangeScreen", group: "App" },
+      { id: "insights", label: "Spending insights", icon: "BarChart3", comp: "SpendingInsightsScreen", group: "App" },
+      ...SHARED_ACCOUNT("Banking"),
+      ...SHARED_RESOURCES("Banking"),
     ],
   },
   {

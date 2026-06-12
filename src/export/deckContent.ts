@@ -35,6 +35,25 @@ export const DECK_CONTENT: Record<string, DomainStory> = {
       analytics: { blurb: "Aggregate financial analytics across the whole product.", bullets: ["Multi-metric chart grid", "Period comparisons", "Exportable summary widgets"] },
     },
   },
+  banking: {
+    tagline: "A retail digital bank in your pocket — accounts, money movement, and savings",
+    audience: "Retail banking customers and digital-bank product teams",
+    narrative:
+      "VaultBank follows a customer's everyday money loop: the accounts overview shows balances and activity at a glance, transfers and bill pay move money out, cards control day-to-day spending, savings goals, CDs, and loans grow and finance bigger plans, while statements, FX, and spending insights keep everything documented and understood.",
+    stats: [["10", "core app screens"], ["4", "money-movement flows"], ["3", "save, borrow & insight views"]],
+    screens: {
+      dash: { blurb: "The customer's home screen — every account and recent transaction in one view.", bullets: ["Account list with live balances", "Recent activity feed with status", "Net-worth trend chart"] },
+      transfers: { blurb: "Move money between own accounts or to external banks.", bullets: ["From/to account picker with instant internal transfers", "Recurring transfer schedule", "Daily limit usage meters"] },
+      billpay: { blurb: "Pay and schedule household bills from one queue.", bullets: ["Upcoming bills with due dates", "Per-payee autopay toggles", "Payment history chart"] },
+      cards: { blurb: "Manage debit and credit cards with instant controls.", bullets: ["Card list with spend vs. limit", "Tap-to-freeze interactions", "Security controls and fraud monitoring cues"] },
+      deposits: { blurb: "Grow savings with goals, round-ups, and CDs.", bullets: ["Savings goal progress bars", "CD ladder with maturities", "Open-a-CD flow with rates"] },
+      loans: { blurb: "Track loans and explore new borrowing.", bullets: ["Loan repayment progress", "Payoff projection chart", "Interactive payment calculator"] },
+      payees: { blurb: "Manage saved payees and beneficiaries safely.", bullets: ["Payee list with verification badges", "Add-payee flow with method selection", "New-payee fraud holds"] },
+      statements: { blurb: "Access statements, tax forms, and notices.", bullets: ["Filterable document list", "PDF download actions", "Delivery preference cards"] },
+      fx: { blurb: "Convert currency and fund a multi-currency wallet.", bullets: ["Live converter with locked rates", "30-day rate trend chart", "Recent exchange history"] },
+      insights: { blurb: "Understand spending with categories and AI nudges.", bullets: ["Category donut breakdown", "Monthly spend trend", "Top-merchant list with insights"] },
+    },
+  },
   health: {
     tagline: "An end-to-end clinical operations suite — from intake to billing",
     audience: "Clinics, hospital ops, and care teams",
@@ -95,6 +114,24 @@ export const DECK_CONTENT: Record<string, DomainStory> = {
       quiz: { blurb: "Take a checkpoint quiz with instant feedback.", bullets: ["Question-by-question flow", "Answer selection states", "Score summary on completion"] },
       grading: { blurb: "Grade student work across assignments in a matrix view.", bullets: ["Students × assignments grid", "Inline grade entry", "Class average highlights"] },
       parent: { blurb: "Keep parents informed of progress and school updates.", bullets: ["Child progress summaries", "Teacher message threads", "Announcements feed"] },
+    },
+  },
+  retail: {
+    tagline: "Run the whole store — POS, inventory, orders, and loyalty in one platform",
+    audience: "Retail operators, store managers, and e-commerce teams",
+    narrative:
+      "RetailIQ follows goods from supplier to customer: the catalog and suppliers keep products stocked, inventory tracks every unit, the POS terminal and order center sell across counter and online channels, promotions and loyalty bring shoppers back, and the dashboard with store analytics keeps the operation honest.",
+    stats: [["9", "core app screens"], ["2", "sales channels (POS + orders)"], ["3", "growth & insight views"]],
+    screens: {
+      dash: { blurb: "The operator's daily view — sales, stock, and store health at a glance.", bullets: ["Revenue and order summary tiles", "Sales trend charts", "Low-stock and activity highlights"] },
+      pos: { blurb: "Ring up in-store sales on a touch-friendly terminal.", bullets: ["Product grid with cart building", "Totals with tax computation", "Checkout and payment flow"] },
+      inventory: { blurb: "Track stock levels across products and locations.", bullets: ["Stock list with reorder flags", "Quantity and SKU detail", "Low-stock warnings"] },
+      orders: { blurb: "Manage online and in-store orders through fulfillment.", bullets: ["Order queue with statuses", "Fulfillment stage tracking", "Per-order drill-down"] },
+      promotions: { blurb: "Plan and run discounts and campaigns.", bullets: ["Active promotion list", "Discount rule configuration", "Campaign performance cues"] },
+      loyalty: { blurb: "Reward repeat customers with points and tiers.", bullets: ["Member list with tiers", "Points balance tracking", "Reward redemption views"] },
+      suppliers: { blurb: "Coordinate purchase orders with suppliers.", bullets: ["Supplier directory", "Purchase order statuses", "Lead-time and reliability cues"] },
+      analytics: { blurb: "Understand store performance across metrics.", bullets: ["Sales by category charts", "Period comparisons", "Top-product breakdowns"] },
+      catalog: { blurb: "Maintain the product catalog and pricing.", bullets: ["Product cards with imagery slots", "Price and variant fields", "Category organization"] },
     },
   },
 };

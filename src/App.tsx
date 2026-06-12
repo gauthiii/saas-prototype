@@ -12,8 +12,10 @@ import {
   Info, Tag, ShieldCheck, Sparkles, AlertTriangle,
   Paintbrush, Download, Loader2, Eye,
   ShoppingCart, Package, Truck, Percent, Star,
+  Banknote, ArrowLeftRight, Globe, CornerDownRight,
 } from "lucide-react";
 import * as fintech from "./domains/fintech";
+import * as banking from "./domains/banking";
 import * as healthtech from "./domains/healthtech";
 import * as devops from "./domains/devops";
 import * as hrtech from "./domains/hrtech";
@@ -38,9 +40,10 @@ const ICONS: Record<string, IconType> = {
   Home, LogIn, UserPlus, User, Settings, HelpCircle, Headphones,
   Info, Tag, ShieldCheck, Sparkles, AlertTriangle,
   ShoppingCart, Package, Truck, Percent, Star,
+  Banknote, ArrowLeftRight, Globe,
 };
 
-const MODULES: Record<string, Record<string, unknown>> = { fintech, healthtech, devops, hrtech, edtech, retailtech };
+const MODULES: Record<string, Record<string, unknown>> = { fintech, banking, healthtech, devops, hrtech, edtech, retailtech };
 
 type View = { id: string; label: string; icon: IconType; el: JSX.Element; group?: string };
 type Domain = { id: string; label: string; sub: string; icon: IconType; def: DomainDef; views: View[] };
@@ -92,7 +95,8 @@ function DomainPicker({ domain, onPick }: { domain: Domain; onPick: (d: Domain) 
               {filtered.map(d => (
                 <li key={d.id}>
                   <button onClick={() => { onPick(d); setOpen(false); setQ(""); }}
-                    className={`w-full flex items-center gap-3 rounded-lg px-2.5 py-2 text-left transition-colors hover:bg-accent/8 ${d.id === domain.id ? "bg-accent/8" : ""}`}>
+                    className={`w-full flex items-center gap-3 rounded-lg py-2 pr-2.5 text-left transition-colors hover:bg-accent/8 ${d.def.parent ? "pl-5" : "pl-2.5"} ${d.id === domain.id ? "bg-accent/8" : ""}`}>
+                    {d.def.parent && <CornerDownRight size={13} className="ink-2 shrink-0 -mr-1" />}
                     <span className="grid place-items-center h-8 w-8 rounded-lg bg-accent/12 text-accent"><d.icon size={16} /></span>
                     <span className="flex-1 leading-tight">
                       <span className="block text-sm font-medium">{d.label}</span>
