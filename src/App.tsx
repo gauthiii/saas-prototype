@@ -13,6 +13,8 @@ import {
   Paintbrush, Download, Loader2, Eye,
   ShoppingCart, Package, Truck, Percent, Star,
   Banknote, ArrowLeftRight, Globe, CornerDownRight,
+  Zap, Factory, BatteryCharging, Leaf, Gauge, Wrench,
+  Flame, Droplet, CloudOff, HardHat, Atom, Container, Radiation,
 } from "lucide-react";
 import * as fintech from "./domains/fintech";
 import * as banking from "./domains/banking";
@@ -21,6 +23,10 @@ import * as devops from "./domains/devops";
 import * as hrtech from "./domains/hrtech";
 import * as edtech from "./domains/edtech";
 import * as retailtech from "./domains/retailtech";
+import * as energytech from "./domains/energytech";
+import * as energyFossil from "./domains/energy-fossil";
+import * as energyRenewable from "./domains/energy-renewable";
+import * as energyNuclear from "./domains/energy-nuclear";
 import { DOMAIN_DEFS, DomainDef } from "./export/registry";
 import { exportProject } from "./export/exportProject";
 import { ThemeStudio } from "./components/ThemeStudio";
@@ -41,9 +47,14 @@ const ICONS: Record<string, IconType> = {
   Info, Tag, ShieldCheck, Sparkles, AlertTriangle,
   ShoppingCart, Package, Truck, Percent, Star,
   Banknote, ArrowLeftRight, Globe,
+  Zap, Factory, BatteryCharging, Leaf, Gauge, Wrench,
+  Sun, Flame, Droplet, CloudOff, HardHat, Atom, Container, Radiation,
 };
 
-const MODULES: Record<string, Record<string, unknown>> = { fintech, banking, healthtech, devops, hrtech, edtech, retailtech };
+const MODULES: Record<string, Record<string, unknown>> = {
+  fintech, banking, healthtech, devops, hrtech, edtech, retailtech, energytech,
+  "energy-fossil": energyFossil, "energy-renewable": energyRenewable, "energy-nuclear": energyNuclear,
+};
 
 type View = { id: string; label: string; icon: IconType; el: JSX.Element; group?: string };
 type Domain = { id: string; label: string; sub: string; icon: IconType; def: DomainDef; views: View[] };

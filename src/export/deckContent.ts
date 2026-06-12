@@ -134,4 +134,73 @@ export const DECK_CONTENT: Record<string, DomainStory> = {
       catalog: { blurb: "Maintain the product catalog and pricing.", bullets: ["Product cards with imagery slots", "Price and variant fields", "Category organization"] },
     },
   },
+  energy: {
+    tagline: "An operating system for renewable energy producers — generation, trading, ESG, and investor reporting in one place",
+    audience: "Renewable IPPs, asset managers, and energy funds",
+    narrative:
+      "Helios follows clean electrons from turbine to balance sheet: the generation dashboard and asset fleet show live output across solar, wind, and storage, energy trading and grid/storage turn megawatts into revenue, sustainability and carbon accounting prove the climate impact, and investor relations with portfolio analytics closes the loop back to the capital that financed it — while maintenance keeps the fleet producing.",
+    stats: [["9", "core app screens"], ["2", "money-making flows (trading + storage)"], ["3", "ESG, carbon & investor views"]],
+    screens: {
+      dash: { blurb: "The control-room home — live generation across the whole portfolio.", bullets: ["Live output, generation, and availability tiles", "24h generation curve and source mix donut", "AI dispatch and O&M insights"] },
+      assets: { blurb: "Browse and filter every solar, wind, and storage asset.", bullets: ["Searchable asset register with type filters", "Per-asset output vs. capacity and availability", "Online / degraded / fault / offline status"] },
+      trading: { blurb: "Sell energy into day-ahead and spot markets and track PPAs.", bullets: ["Live price curve with peak callouts", "Interactive day-ahead bid builder", "PPA contracts with delivery and shortfall risk"] },
+      storage: { blurb: "Dispatch grid-scale batteries against price and grid services.", bullets: ["State-of-charge trend and grid frequency", "Auto / charge / discharge / hold dispatch modes", "Ancillary-service market participation"] },
+      sustainability: { blurb: "Prove the climate story with ESG scores and SDG alignment.", bullets: ["ESG scorecard by E/S/G pillar", "UN SDG alignment cards", "TCFD / GRI / CDP disclosure status"] },
+      carbon: { blurb: "Account for carbon avoided and operational emissions.", bullets: ["CO₂-avoided trend and grid emission factor", "GHG Protocol Scope 1/2/3 breakdown", "REC and offset registry with audit trail"] },
+      investors: { blurb: "Give LPs fund performance without operational controls.", bullets: ["NAV trend, IRR, and capital-deployed metrics", "Generation vs. budget yield", "Downloadable quarterly and ESG reports"] },
+      maintenance: { blurb: "Turn faults into routed, trackable work orders.", bullets: ["Work-order queue with priority and crew", "Resolve / reopen interactions", "Field-crew status by region"] },
+      analytics: { blurb: "Benchmark the portfolio across markets and technology.", bullets: ["Generation by market and technology mix", "Performance ratio and capacity factor", "Asset performance ranking"] },
+    },
+  },
+  fossil: {
+    tagline: "One control plane for integrated oil & gas — wellhead to refinery to trading floor",
+    audience: "Upstream, midstream, and downstream oil & gas operators",
+    narrative:
+      "Vulcan follows the barrel across the value chain: the production dashboard and wells view show live field output, the refinery turns crude into product, commodity trading hedges the price, pipelines and logistics move it to market, and emissions, HSE, and reserves keep the operation compliant, safe, and economic.",
+    stats: [["8", "core app screens"], ["3", "value-chain stages"], ["3", "safety & compliance views"]],
+    screens: {
+      dash: { blurb: "The operations home — live production across every field and stream.", bullets: ["Oil, gas, and uptime tiles", "24h production curve and stream-mix donut", "AI lift, emissions, and reservoir insights"] },
+      wells: { blurb: "Browse and filter every well and active rig.", bullets: ["Searchable well register with type filters", "Per-well oil/gas rate, lift, and water cut", "Flowing / down / drilling / shut-in status"] },
+      refinery: { blurb: "Run the refining complex and optimize the crude slate.", bullets: ["Crude-run trend and refining margin", "Interactive slate optimizer with yield impact", "Process-unit availability and turnarounds"] },
+      trading: { blurb: "Hedge crude and gas exposure on the trading book.", bullets: ["Live WTI price curve and book mark-to-market", "Interactive forward hedge-ratio builder", "Open positions with VaR and margin"] },
+      pipelines: { blurb: "Move barrels through pipelines, tanks, and tankers.", bullets: ["Throughput trend and line-pressure alarms", "Tank-farm inventory by product", "Cargo and batch movement schedule"] },
+      emissions: { blurb: "Track flaring, methane, and CO₂e against the permits.", bullets: ["Methane intensity and flared-gas trend", "Emissions by source breakdown", "EPA Subpart W / OGMP 2.0 reporting status"] },
+      hse: { blurb: "Manage process-safety events, permits, and incidents.", bullets: ["TRIR and Tier-1 PSE leading indicators", "Events and permit-to-work queue", "Barrier health and safety-culture metrics"] },
+      reserves: { blurb: "See reserves, reserve life, and per-field economics.", bullets: ["1P/2P/3P reserves by basin and category", "Lifting and finding-&-dev cost metrics", "Netback economics and breakeven by field"] },
+    },
+  },
+  renewable: {
+    tagline: "Distributed solar, home batteries, and EVs — orchestrated into one virtual power plant",
+    audience: "Solar installers, VPP aggregators, and community-solar providers",
+    narrative:
+      "Sunhive runs the rooftop revolution end to end: the fleet dashboard shows production across tens of thousands of homes, the install pipeline brings new sites online, the VPP and home-energy views turn batteries into dispatchable grid power, billing and subscribers keep customers saving, and field service plus carbon impact prove it all works.",
+    stats: [["8", "core app screens"], ["1", "virtual power plant"], ["3", "customer & impact views"]],
+    screens: {
+      dash: { blurb: "The aggregate home — live production across the whole fleet.", bullets: ["Fleet production, battery, and VPP tiles", "Today's solar curve and energy-flow donut", "AI peak-positioning and O&M insights"] },
+      pipeline: { blurb: "Move installs from survey to permission-to-operate.", bullets: ["Pipeline funnel by stage", "Per-project system, value, and cycle time", "Filterable job list"] },
+      vpp: { blurb: "Dispatch thousands of home batteries as one plant.", bullets: ["Aggregate dispatch curve and event status", "Interactive fleet-discharge planner", "Grid-services market participation"] },
+      home: { blurb: "Give each household control of its own energy.", bullets: ["Battery state-of-charge and consumption", "Self / VPP / time-of-use / backup modes", "EV charge scheduling and V2G"] },
+      billing: { blurb: "Show net-metering credits and real bill savings.", bullets: ["Monthly net-bill trend with credits", "Bill breakdown including VPP earnings", "Downloadable energy statements"] },
+      subscribers: { blurb: "Manage community-solar and rooftop subscribers.", bullets: ["Subscriber and garden program metrics", "Per-program subscription fill", "Open / full / pre-launch status"] },
+      service: { blurb: "Route truck rolls and keep sites producing.", bullets: ["Service ticket queue with priority", "Resolve / reopen interactions", "Field-crew status by region"] },
+      impact: { blurb: "Prove the climate and savings story for the fleet.", bullets: ["CO₂-avoided trend and impact sources", "Collective member savings and peak cut", "Real-world equivalents"] },
+    },
+  },
+  nuclear: {
+    tagline: "Operations and safety for nuclear fleets — reactors, fuel, radiation, and outages in one place",
+    audience: "Nuclear fleet operators, utilities, and SMR developers",
+    narrative:
+      "Atria runs the highest-stakes generation on the grid: the control-room dashboard and units view show live reactor state, fuel-cycle and safety-systems track material and barriers, radiation and outage planning manage dose and refueling, and regulatory plus grid views keep the license defensible and the carbon-free baseload flowing.",
+    stats: [["8", "core app screens"], ["18", "units across 9 sites"], ["3", "safety & compliance views"]],
+    screens: {
+      dash: { blurb: "The control-room home — live reactor power across the fleet.", bullets: ["Fleet output, capacity factor, and LCO tiles", "Reactor thermal-power curve and unit-mode donut", "AI reactivity and safety-system insights"] },
+      units: { blurb: "Browse every reactor unit and its live state.", bullets: ["Searchable register with PWR/BWR/SMR filters", "Per-unit power, coolant temp, and capacity", "At-power / tripped / refueling / standby status"] },
+      fuel: { blurb: "Account for every fuel assembly across the cycle.", bullets: ["Assembly burnup by batch", "Fuel inventory by location (core / pool / cask)", "Fuel movements and IAEA safeguards ledger"] },
+      safety: { blurb: "Confirm engineered safety systems and tech-spec limits.", bullets: ["Safety-system operability by train", "Active Limiting Conditions with action timers", "Barrier health and safety availability"] },
+      radiation: { blurb: "Manage dose, area monitors, and effluent releases.", bullets: ["Collective dose vs. ALARA budget", "Area radiation zones and work-permit holds", "Gaseous and liquid effluent vs. limits"] },
+      outage: { blurb: "Plan and execute the refueling outage critical path.", bullets: ["Outage-day and critical-path progress", "Phase checklist from defuel to restart", "Work-order burn-down to restart date"] },
+      regulatory: { blurb: "Keep the license and commitments defensible.", bullets: ["License status and open NRC items", "LERs, amendments, and corrective actions", "Regulatory-program compliance status"] },
+      grid: { blurb: "Show carbon-free baseload delivered to the grid.", bullets: ["Fleet generation trend and capacity factor", "Clean-firm-power impact metrics", "Grid contribution by unit"] },
+    },
+  },
 };
