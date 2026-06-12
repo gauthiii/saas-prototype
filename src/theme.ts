@@ -5,7 +5,7 @@ const INDIGO_THEME: Theme = { accent: "#4f6df5", grad: "#7c3aed" };
 const MIDNIGHT_THEME: Theme = { accent: "#1e3a8a", grad: "#111827" };
 const LEGACY_DEFAULT_THEMES: Theme[] = [INDIGO_THEME, MIDNIGHT_THEME];
 
-export const DEFAULT_THEME: Theme = { accent: "#1d4ed8", grad: "#7e22ce" };
+export const DEFAULT_THEME: Theme = { accent: "#1f80ff", grad: "#1f80ff" };
 
 export const THEME_PRESETS: { name: string; theme: Theme }[] = [
   { name: "Electric", theme: DEFAULT_THEME },
