@@ -1,6 +1,37 @@
 // src/domains/healthtech.tsx
 import { Fragment, useState } from "react";
-import { HeartPulse, Thermometer, Wind, Droplets, CalendarDays, Pill, CheckCircle2, Search, Video, Mic, MicOff, PhoneOff, Send, BedDouble, PackageOpen } from "lucide-react";
+import { HomePage, LoginPage, RegisterPage, ProfilePage, SettingsPage, FAQPage, SupportPage, DomainMeta } from "./pages";
+
+const healthMeta: DomainMeta = {
+  id: "healthtech",
+  name: "MedOS",
+  tagline: "The unified EHR, scheduling, and billing platform designed for modern healthcare providers.",
+  description: "Streamline patient care from intake to billing with MedOS — HIPAA-compliant and purpose-built for clinics.",
+  accentLabel: "HealthTech · EHR · Scheduling",
+  features: [
+    { icon: "🩺", title: "Electronic health records", body: "Complete patient histories, lab results, and clinical notes in one place." },
+    { icon: "📅", title: "Smart scheduling", body: "Automated appointment booking, reminders, and telehealth integration." },
+    { icon: "💊", title: "Pharmacy & billing", body: "Integrated pharmacy management with insurance claim automation." },
+  ],
+  faqs: [
+    { q: "Is MedOS HIPAA compliant?", a: "Yes. MedOS is fully HIPAA compliant with BAA agreements, encrypted storage, and role-based access controls." },
+    { q: "Can patients book appointments online?", a: "Yes. The patient portal lets patients view availability, book slots, and receive automated reminders via SMS and email." },
+    { q: "Does MedOS support telehealth?", a: "Yes, our telehealth suite supports video consultations, secure messaging, and e-prescriptions directly within the platform." },
+    { q: "Which EHR formats are supported?", a: "MedOS supports HL7 FHIR R4, CCD, and can import from Epic, Cerner, and Athenahealth via our migration tool." },
+    { q: "How does medical billing work?", a: "Claims are automatically generated from encounter notes, scrubbed for errors, and submitted to payers via our clearinghouse partners." },
+    { q: "Can multiple providers share the same account?", a: "Yes. Accounts support unlimited providers with per-user role assignments, shared patient pools, and separate billing profiles." },
+  ],
+  supportEmail: "support@medos.io",
+};
+
+export function HealthHome() { return <HomePage meta={healthMeta} />; }
+export function HealthLogin() { return <LoginPage meta={healthMeta} />; }
+export function HealthRegister() { return <RegisterPage meta={healthMeta} />; }
+export function HealthProfile() { return <ProfilePage meta={healthMeta} />; }
+export function HealthSettings() { return <SettingsPage meta={healthMeta} />; }
+export function HealthFAQ() { return <FAQPage meta={healthMeta} />; }
+export function HealthSupport() { return <SupportPage meta={healthMeta} />; }
+import { HeartPulse, Thermometer, Wind, Droplets, CalendarDays, Pill, CheckCircle2, Search, Video, Mic, MicOff, PhoneOff, Send, BedDouble, PackageOpen, FileText } from "lucide-react";
 import { Card, SectionTitle, Badge, Drawer, Stat, useFakeSubmit, Skeleton, Tone } from "../components/ui";
 import { AreaChart } from "../components/charts";
 import { AIPanel, Insight } from "../components/AIPanel";
@@ -363,7 +394,7 @@ export function IntakeForm() {
 }
 
 export function WardOccupancy() {
-  const wards: { name: string; beds: ("free" | "occupied" | "cleaning")[] }[] = [
+  const wards: { name: string; beds: Array<"free" | "occupied" | "cleaning"> }[] = [
     { name: "Ward 2 · Cardiology", beds: ["occupied", "occupied", "free", "occupied", "cleaning", "occupied", "occupied", "free"] },
     { name: "Ward 4 · Surgery", beds: ["occupied", "occupied", "occupied", "occupied", "occupied", "cleaning", "occupied", "occupied"] },
     { name: "Ward 5 · Pediatrics", beds: ["free", "occupied", "free", "free", "occupied", "free", "occupied", "free"] },
@@ -406,6 +437,119 @@ export function WardOccupancy() {
           ))}
         </div>
       </Card>
+    </div>
+  );
+}
+
+// ─── Medical Billing & Insurance Claims ───────────────────────────────────────
+
+type Claim = { id: string; patient: string; provider: string; icd: string; amount: number; status: "Submitted" | "Adjudicated" | "Paid" | "Denied"; date: string; payer: string };
+const claims: Claim[] = [
+  { id: "CLM-9841", patient: "J. Okafor", provider: "Dr. E. Park", icd: "I21.3 – NSTEMI", amount: 4820, status: "Submitted", date: "Jun 11", payer: "BlueCross PPO" },
+  { id: "CLM-9838", patient: "M. Rivera", provider: "Dr. A. Gupta", icd: "T81.4 – Post-op infection", amount: 2160, status: "Adjudicated", date: "Jun 10", payer: "Aetna HMO" },
+  { id: "CLM-9831", patient: "S. Tan", provider: "Dr. F. Collins", icd: "S62.0 – Wrist fracture", amount: 1380, status: "Paid", date: "Jun 9", payer: "UHC Choice" },
+  { id: "CLM-9824", patient: "A. Novak", provider: "Dr. E. Park", icd: "G43.9 – Migraine", amount: 680, status: "Denied", date: "Jun 7", payer: "Cigna PPO" },
+  { id: "CLM-9819", patient: "P. Osei", provider: "Dr. A. Gupta", icd: "K80.2 – Gallstone", amount: 3240, status: "Paid", date: "Jun 5", payer: "Aetna HMO" },
+];
+const claimTone: Record<Claim["status"], Tone> = { Submitted: "blue", Adjudicated: "violet", Paid: "green", Denied: "red" };
+const claimStages: Claim["status"][] = ["Submitted", "Adjudicated", "Paid", "Denied"];
+
+export function MedicalBillingScreen() {
+  const [search, setSearch] = useState("");
+  const [selected, setSelected] = useState<Claim | null>(null);
+  const filtered = claims.filter(c => (c.patient + c.icd + c.payer).toLowerCase().includes(search.toLowerCase()));
+  const byStage = (s: Claim["status"]) => claims.filter(c => c.status === s);
+  const totalPaid = claims.filter(c => c.status === "Paid").reduce((a, c) => a + c.amount, 0);
+
+  return (
+    <div className="grid gap-5 xl:grid-cols-3">
+      <div className="xl:col-span-2 space-y-5">
+        <div className="grid gap-4 sm:grid-cols-3">
+          <Stat label="Claims · 30d" value="142" delta="+8 vs prior month" />
+          <Stat label="Paid · MTD" value={`$${(totalPaid / 1000).toFixed(1)}k`} delta="Collected" deltaTone="green" />
+          <Stat label="Denial rate" value="12.4%" delta="Industry avg 14%" deltaTone="green" />
+        </div>
+        <Card>
+          <SectionTitle eyebrow="Pipeline" title="Claims by stage" />
+          <div className="grid grid-cols-4 gap-3 mt-2">
+            {claimStages.map(s => (
+              <div key={s} className={`rounded-lg border p-3 text-center ${s === "Denied" ? "border-rose-500/30 bg-rose-500/5" : s === "Paid" ? "border-emerald-500/30 bg-emerald-500/5" : "border-[var(--line)]"}`}>
+                <Badge tone={claimTone[s]}>{s}</Badge>
+                <div className="font-display text-2xl font-bold mt-2">{byStage(s).length}</div>
+                <div className="text-xs ink-2">{s === "Paid" ? `$${(byStage(s).reduce((a, c) => a + c.amount, 0) / 1000).toFixed(1)}k` : "claims"}</div>
+              </div>
+            ))}
+          </div>
+        </Card>
+        <Card>
+          <SectionTitle eyebrow="Claims" title="Claim register" right={
+            <div className="relative">
+              <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 ink-2" />
+              <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search ICD, patient…"
+                className="field !pl-8 !py-1.5 text-xs w-48" />
+            </div>
+          } />
+          <div className="divide-y divide-[var(--line)]">
+            {filtered.map(c => (
+              <button key={c.id} onClick={() => setSelected(c)}
+                className="w-full grid grid-cols-[1fr_auto_auto] sm:grid-cols-[1fr_110px_100px_80px] items-center gap-3 py-3 text-left hover:bg-accent/5 rounded-lg px-2 -mx-2 transition-colors">
+                <div>
+                  <div className="text-sm font-medium">{c.patient}</div>
+                  <div className="text-xs ink-2">{c.icd} · {c.payer}</div>
+                </div>
+                <div className="text-xs ink-2 hidden sm:block">{c.date}</div>
+                <div className="text-sm font-mono font-semibold text-right">${c.amount.toLocaleString()}</div>
+                <div className="text-right"><Badge tone={claimTone[c.status]}>{c.status}</Badge></div>
+              </button>
+            ))}
+          </div>
+        </Card>
+      </div>
+      <div className="space-y-5">
+        <Card>
+          <SectionTitle eyebrow="ICD-10" title="Code lookup" />
+          <div className="relative mb-3">
+            <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 ink-2" />
+            <input placeholder="Search diagnosis code…" className="field !pl-8 text-sm" defaultValue="I21" />
+          </div>
+          <div className="space-y-2">
+            {([["I21.3", "NSTEMI"], ["I21.0", "Anterior STEMI"], ["I21.1", "Inferior STEMI"], ["I25.1", "Atherosclerotic CAD"]] as [string, string][]).map(([code, desc]) => (
+              <button key={code} className="w-full flex items-center gap-3 rounded-lg border border-[var(--line)] p-2.5 text-left hover:border-accent/40 transition-colors">
+                <Badge tone="blue">{code}</Badge>
+                <span className="text-xs">{desc}</span>
+              </button>
+            ))}
+          </div>
+        </Card>
+        <AIPanel context="Medical billing & claims, June 2026" insights={[
+          { title: "Denial pattern found", body: "4 of 5 Cigna denials share code CO-4 (non-covered service). Updating prior auth for those CPT codes cuts future denials.", tone: "amber", tag: "Denials", confidence: 86 },
+          { title: "Undercoding detected", body: "3 ER visits coded Level 3 show Level 4 documentation. Recoding adds an estimated $1,840 in recoverable revenue.", tone: "green", tag: "Revenue", confidence: 78 },
+        ]} />
+      </div>
+      <Drawer open={!!selected} onClose={() => setSelected(null)} title="Claim detail">
+        {selected && (
+          <div className="space-y-4">
+            <div className="font-display text-2xl font-bold">${selected.amount.toLocaleString()}</div>
+            <Badge tone={claimTone[selected.status]} pulse={selected.status === "Submitted"}>{selected.status}</Badge>
+            <dl className="space-y-3 text-sm">
+              {[["Claim ID", selected.id], ["Patient", selected.patient], ["Provider", selected.provider], ["Diagnosis", selected.icd], ["Payer", selected.payer], ["Submitted", selected.date]].map(([k, v]) => (
+                <div key={k} className="flex justify-between border-b border-[var(--line)] pb-2">
+                  <dt className="ink-2">{k}</dt><dd className="font-medium">{v}</dd>
+                </div>
+              ))}
+            </dl>
+            {selected.status === "Denied" && (
+              <div className="rounded-lg border border-rose-500/30 bg-rose-500/5 p-3 text-sm">
+                <div className="font-semibold text-rose-600 dark:text-rose-400 mb-1">Denial reason</div>
+                <div className="text-xs ink-2">CO-4: Service not covered under current plan year. File appeal within 90 days.</div>
+              </div>
+            )}
+            <button className="btn-primary w-full justify-center">
+              <FileText size={14} /> {selected.status === "Denied" ? "File appeal" : "Download EOB"}
+            </button>
+          </div>
+        )}
+      </Drawer>
     </div>
   );
 }

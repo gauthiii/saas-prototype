@@ -1,7 +1,38 @@
 // src/domains/devops.tsx
 import { useEffect, useRef, useState } from "react";
-import { Server, Activity, Pause, Play, GitBranch, CheckCircle2, XCircle, CircleDashed, RotateCcw, BellRing, Flag, DollarSign } from "lucide-react";
-import { Card, SectionTitle, Badge, Stat, Toggle, Tone } from "../components/ui";
+import { HomePage, LoginPage, RegisterPage, ProfilePage, SettingsPage, FAQPage, SupportPage, DomainMeta } from "./pages";
+
+const devopsMeta: DomainMeta = {
+  id: "devops",
+  name: "StackOps",
+  tagline: "Unified CI/CD, incident management, and cloud cost visibility for engineering teams.",
+  description: "Ship faster, stay reliable, and keep cloud costs under control with StackOps.",
+  accentLabel: "IT · DevOps · FinOps · Security",
+  features: [
+    { icon: "🚀", title: "CI/CD pipelines", body: "Visual pipeline builder with GitHub, GitLab, and Bitbucket integrations." },
+    { icon: "🔔", title: "Incident management", body: "On-call rotations, alert routing, and automated runbooks for faster MTTR." },
+    { icon: "💰", title: "Cloud FinOps", body: "Real-time spend tracking with anomaly detection and rightsizing recommendations." },
+  ],
+  faqs: [
+    { q: "Which cloud providers are supported?", a: "StackOps integrates with AWS, Google Cloud, and Azure for both deployment pipelines and cost management." },
+    { q: "How does on-call routing work?", a: "You define escalation policies and schedules. Alerts route via PagerDuty, Opsgenie, or our built-in notification engine." },
+    { q: "Can I monitor costs per team or service?", a: "Yes. Tag-based cost allocation lets you attribute spend to teams, services, and environments with configurable budgets and alerts." },
+    { q: "What security certifications does StackOps hold?", a: "SOC 2 Type II, ISO 27001, and CSA STAR. We also offer SAML SSO and SCIM provisioning for enterprise customers." },
+    { q: "How do feature flags work?", a: "Flags are evaluated client-side via our SDKs with server-side overrides. Targeting rules support percentage rollouts and user attributes." },
+    { q: "Is there a self-hosted option?", a: "Yes. StackOps Enterprise can be deployed to your own Kubernetes cluster with our Helm chart and full control over data residency." },
+  ],
+  supportEmail: "support@stackops.io",
+};
+
+export function DevOpsHome() { return <HomePage meta={devopsMeta} />; }
+export function DevOpsLogin() { return <LoginPage meta={devopsMeta} />; }
+export function DevOpsRegister() { return <RegisterPage meta={devopsMeta} />; }
+export function DevOpsProfile() { return <ProfilePage meta={devopsMeta} />; }
+export function DevOpsSettings() { return <SettingsPage meta={devopsMeta} />; }
+export function DevOpsFAQ() { return <FAQPage meta={devopsMeta} />; }
+export function DevOpsSupport() { return <SupportPage meta={devopsMeta} />; }
+import { Server, Activity, Pause, Play, GitBranch, CheckCircle2, XCircle, CircleDashed, RotateCcw, BellRing, Flag, DollarSign, Shield, Key, Users } from "lucide-react";
+import { Card, SectionTitle, Badge, Stat, Toggle, Tone, Drawer, useFakeSubmit } from "../components/ui";
 import { AreaChart, Bars, Donut } from "../components/charts";
 import { AIPanel, Insight } from "../components/AIPanel";
 
@@ -362,6 +393,147 @@ export function CostScreen() {
           ))}
         </div>
       </Card>
+    </div>
+  );
+}
+
+// ─── IAM Security & Governance Access Grid ────────────────────────────────────
+
+type UserSession = { id: string; user: string; role: string; ip: string; started: string; active: boolean };
+const iamSessions: UserSession[] = [
+  { id: "S-7721", user: "k.subramanian@company.io", role: "Admin", ip: "192.168.1.42", started: "Jun 11, 08:14", active: true },
+  { id: "S-7718", user: "t.walsh@company.io", role: "Developer", ip: "10.0.0.88", started: "Jun 11, 07:59", active: true },
+  { id: "S-7714", user: "r.mehta@company.io", role: "Viewer", ip: "203.0.113.5", started: "Jun 10, 16:30", active: false },
+  { id: "S-7710", user: "ops-deploy-bot", role: "Service account", ip: "172.16.0.5", started: "Jun 10, 12:00", active: true },
+];
+const rbacMatrix = [
+  { name: "Read logs", admin: true, dev: true, viewer: true },
+  { name: "Deploy to staging", admin: true, dev: true, viewer: false },
+  { name: "Deploy to production", admin: true, dev: false, viewer: false },
+  { name: "Manage secrets", admin: true, dev: false, viewer: false },
+  { name: "IAM / user management", admin: true, dev: false, viewer: false },
+  { name: "View billing", admin: true, dev: false, viewer: true },
+  { name: "Configure alerts", admin: true, dev: true, viewer: false },
+];
+const apiKeys = [
+  { name: "CI/CD deploy token", scope: "Staging deploys", created: "Feb 12", lastUsed: "Jun 11" },
+  { name: "Monitoring exporter", scope: "Read-only metrics", created: "Jan 5", lastUsed: "Jun 11" },
+  { name: "Analytics webhook", scope: "Event ingest", created: "Apr 20", lastUsed: "Jun 8" },
+];
+
+export function IAMSecurityScreen() {
+  const [revoked, setRevoked] = useState<Record<string, boolean>>({});
+  const [keyDrawer, setKeyDrawer] = useState(false);
+  const { state, submit } = useFakeSubmit(800);
+
+  return (
+    <div className="space-y-5">
+      <div className="grid gap-4 sm:grid-cols-3">
+        <Stat label="Active sessions" value="3" delta="2 humans · 1 bot" icon={<Users size={16} />} />
+        <Stat label="API keys active" value="3" delta="All scoped" deltaTone="green" icon={<Key size={16} />} />
+        <Stat label="Failed logins · 24h" value="7" delta="+3 vs average" deltaTone="amber" icon={<Shield size={16} />} />
+      </div>
+
+      <div className="grid gap-5 lg:grid-cols-2">
+        <Card>
+          <SectionTitle eyebrow="RBAC" title="Permission matrix" right={<Badge tone="gray">3 roles</Badge>} />
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="border-b border-[var(--line)]">
+                  <th className="text-left py-2 pr-4 ink-2 font-medium">Permission</th>
+                  <th className="text-center py-2 px-2 ink-2 font-medium">Admin</th>
+                  <th className="text-center py-2 px-2 ink-2 font-medium">Dev</th>
+                  <th className="text-center py-2 px-2 ink-2 font-medium">Viewer</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rbacMatrix.map(p => (
+                  <tr key={p.name} className="border-b border-[var(--line)]/60">
+                    <td className="py-2.5 pr-4 text-sm">{p.name}</td>
+                    {[p.admin, p.dev, p.viewer].map((v, i) => (
+                      <td key={i} className="text-center py-2.5 px-2">
+                        <span className={`inline-flex h-5 w-5 items-center justify-center rounded ${v ? "bg-emerald-500/12 text-emerald-600 dark:text-emerald-400" : "bg-zinc-500/8 text-zinc-400"}`}>
+                          {v ? <CheckCircle2 size={12} /> : <XCircle size={12} />}
+                        </span>
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+
+        <Card>
+          <SectionTitle eyebrow="Sessions" title="Active user sessions" right={<Badge tone="blue" pulse>Live</Badge>} />
+          <div className="space-y-2">
+            {iamSessions.map(s => (
+              <div key={s.id} className={`rounded-lg border p-3 transition-all ${revoked[s.id] ? "opacity-40 border-[var(--line)]" : "border-[var(--line)]"}`}>
+                <div className="flex items-center justify-between gap-2">
+                  <div className="min-w-0">
+                    <div className="text-sm font-medium truncate">{s.user}</div>
+                    <div className="text-xs ink-2">{s.role} · {s.ip} · since {s.started}</div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    {s.active && !revoked[s.id] && <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulseDot" />}
+                    {!revoked[s.id] ? (
+                      <button className="btn-ghost !py-1 !px-2 text-xs text-rose-600 dark:text-rose-400"
+                        onClick={() => setRevoked(r => ({ ...r, [s.id]: true }))}>Revoke</button>
+                    ) : (
+                      <Badge tone="red">Revoked</Badge>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
+
+      <Card>
+        <SectionTitle eyebrow="Credentials" title="API keys & service tokens" right={
+          <button className="btn-primary !py-1.5 text-xs" onClick={() => setKeyDrawer(true)}><Key size={13} /> New key</button>
+        } />
+        <div className="divide-y divide-[var(--line)]">
+          {apiKeys.map(k => (
+            <div key={k.name} className="grid grid-cols-[1fr_auto_auto_auto] items-center gap-4 py-3">
+              <div>
+                <div className="text-sm font-medium">{k.name}</div>
+                <div className="text-xs ink-2">{k.scope} · created {k.created}</div>
+              </div>
+              <div className="text-xs ink-2 hidden sm:block">Last used {k.lastUsed}</div>
+              <Badge tone="gray">Active</Badge>
+              <button className="btn-ghost !py-1 !px-2 text-xs">Rotate</button>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      <Drawer open={keyDrawer} onClose={() => setKeyDrawer(false)} title="Generate API key">
+        <div className="space-y-4">
+          <div><label className="label">Key name</label><input className="field" placeholder="e.g. staging-deploy-bot" /></div>
+          <div><label className="label">Role / scope</label>
+            <select className="field"><option>Developer (staging only)</option><option>Read-only</option><option>Event ingest</option></select>
+          </div>
+          <div><label className="label">Expiry</label>
+            <select className="field"><option>90 days</option><option>180 days</option><option>No expiry (service accounts only)</option></select>
+          </div>
+          <div className="rounded-lg border border-amber-500/30 bg-amber-500/8 p-3 text-xs leading-relaxed">
+            The key will be shown once after generation. Store it in your secrets manager immediately.
+          </div>
+          {state === "done" ? (
+            <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-3 text-sm font-mono animate-fadeUp">
+              <div className="text-xs ink-2 mb-1">Your new API key (copy now):</div>
+              forge_sk_live_aX9mK2pQrT7wNjLv3bYcUhEd
+            </div>
+          ) : (
+            <button className="btn-primary w-full justify-center" onClick={submit} disabled={state === "loading"}>
+              <Key size={14} /> {state === "loading" ? "Generating…" : "Generate key"}
+            </button>
+          )}
+        </div>
+      </Drawer>
     </div>
   );
 }

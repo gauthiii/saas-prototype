@@ -1,6 +1,37 @@
 // src/domains/fintech.tsx
 import { useState } from "react";
-import { Wallet, ArrowDownLeft, ArrowUpRight, FileText, CheckCircle2, CreditCard, Send, Snowflake, ThumbsUp, ThumbsDown, PiggyBank } from "lucide-react";
+import { HomePage, LoginPage, RegisterPage, ProfilePage, SettingsPage, FAQPage, SupportPage, DomainMeta } from "./pages";
+
+const fintechMeta: DomainMeta = {
+  id: "fintech",
+  name: "FinFlow",
+  tagline: "Modern treasury, payments, and compliance — all in one platform built for finance teams.",
+  description: "Manage cash flow, automate payroll, and stay compliant with FinFlow's intelligent finance suite.",
+  accentLabel: "FinTech · Banking · Compliance",
+  features: [
+    { icon: "🏦", title: "Multi-bank treasury", body: "Unified view of every account, real-time balances, and automated sweeps." },
+    { icon: "⚡", title: "Instant payments", body: "Send ACH, wire, and real-time payments in seconds with full audit trails." },
+    { icon: "🛡️", title: "Compliance automation", body: "Built-in AML, KYC, and SOX controls — audit-ready at all times." },
+  ],
+  faqs: [
+    { q: "What payment rails do you support?", a: "We support ACH, same-day ACH, domestic wire, international SWIFT, and real-time payments via RTP and FedNow." },
+    { q: "Is FinFlow PCI DSS compliant?", a: "Yes. FinFlow is PCI DSS Level 1 certified. All card data is tokenized and never stored on our servers." },
+    { q: "Can I connect multiple bank accounts?", a: "Absolutely. You can connect unlimited bank accounts across multiple institutions via our Plaid and direct API integrations." },
+    { q: "How does payroll disbursement work?", a: "Upload your payroll file or sync with your HRIS. We batch and process ACH credits on your scheduled date with same-day confirmation." },
+    { q: "What does the compliance module cover?", a: "AML transaction monitoring, KYC/KYB identity verification, sanctions screening, and automated SAR filing assistance." },
+    { q: "Is there an API?", a: "Yes, our REST API supports all product features. SDKs available for Node.js, Python, Java, and Go." },
+  ],
+  supportEmail: "support@finflow.io",
+};
+
+export function FintechHome() { return <HomePage meta={fintechMeta} />; }
+export function FintechLogin() { return <LoginPage meta={fintechMeta} />; }
+export function FintechRegister() { return <RegisterPage meta={fintechMeta} />; }
+export function FintechProfile() { return <ProfilePage meta={fintechMeta} />; }
+export function FintechSettings() { return <SettingsPage meta={fintechMeta} />; }
+export function FintechFAQ() { return <FAQPage meta={fintechMeta} />; }
+export function FintechSupport() { return <SupportPage meta={fintechMeta} />; }
+import { Wallet, ArrowDownLeft, ArrowUpRight, FileText, CheckCircle2, CreditCard, Send, Snowflake, ThumbsUp, ThumbsDown, PiggyBank, Shield, AlertTriangle, Building2, TrendingUp } from "lucide-react";
 import { Card, SectionTitle, Badge, Stat, Drawer, Skeleton, useFakeSubmit, Toggle, Tone } from "../components/ui";
 import { AreaChart, Bars, Donut, Sparkline } from "../components/charts";
 import { AIPanel, Insight } from "../components/AIPanel";
@@ -394,6 +425,340 @@ export function BudgetsScreen() {
           <AreaChart data={[160, 152, 147, 139, 128, 121, 112, 101, 94, 88]} stroke="#8b5cf6" height={120} />
           <p className="text-sm ink-2 mt-3">At the current run rate the company ends Q2 with <span className="font-semibold text-[var(--ink)]">$35.8k unspent</span> — Marketing is pacing 8% hot and will need a transfer or a cap raise by July.</p>
         </Card>
+      </div>
+    </div>
+  );
+}
+
+// ─── Risk, KYC & Compliance ───────────────────────────────────────────────────
+
+type KycEntity = { id: string; name: string; type: string; risk: "High" | "Medium" | "Low"; status: "Verified" | "Pending" | "Flagged"; lastChecked: string };
+const kycEntities: KycEntity[] = [
+  { id: "ENT-0041", name: "Northwind Traders", type: "Corporate", risk: "Low", status: "Verified", lastChecked: "Jun 10, 2026" },
+  { id: "ENT-0038", name: "Oasis Capital LLC", type: "Investment", risk: "High", status: "Flagged", lastChecked: "Jun 9, 2026" },
+  { id: "ENT-0035", name: "Lumen Logistics", type: "Corporate", risk: "Medium", status: "Pending", lastChecked: "Jun 8, 2026" },
+  { id: "ENT-0031", name: "Atlas Freight Corp", type: "Corporate", risk: "Low", status: "Verified", lastChecked: "Jun 7, 2026" },
+  { id: "ENT-0029", name: "Meridian FX Ltd", type: "Financial", risk: "High", status: "Pending", lastChecked: "Jun 6, 2026" },
+];
+const amlFlags = [
+  { id: "AML-1204", entity: "Oasis Capital LLC", reason: "Structuring pattern detected — 9 transfers under $10k in 48h", severity: "red" as Tone, ts: "Jun 11, 07:42" },
+  { id: "AML-1198", entity: "Meridian FX Ltd", reason: "Counterparty on OFAC watch list — awaiting manual review", severity: "red" as Tone, ts: "Jun 9, 14:11" },
+  { id: "AML-1191", entity: "Lumen Logistics", reason: "Unusual geographic routing via 3 intermediary banks", severity: "amber" as Tone, ts: "Jun 8, 09:30" },
+];
+const riskTone: Record<KycEntity["risk"], Tone> = { High: "red", Medium: "amber", Low: "green" };
+const kycTone: Record<KycEntity["status"], Tone> = { Verified: "green", Pending: "amber", Flagged: "red" };
+
+export function RiskComplianceScreen() {
+  const [selected, setSelected] = useState<KycEntity | null>(null);
+  const score = 76;
+  return (
+    <div className="grid gap-5 xl:grid-cols-3">
+      <div className="xl:col-span-2 space-y-5">
+        <div className="grid gap-4 sm:grid-cols-3">
+          <Stat label="Compliance score" value={`${score}/100`} delta="Satisfactory" deltaTone="green" icon={<Shield size={16} />} />
+          <Stat label="Pending KYC" value="2" delta="Action needed" deltaTone="amber" icon={<AlertTriangle size={16} />} />
+          <Stat label="AML alerts · 30d" value="3" delta="+1 vs prior month" deltaTone="red" icon={<AlertTriangle size={16} />} />
+        </div>
+        <Card>
+          <SectionTitle eyebrow="KYC" title="Counterparty registry" right={<Badge tone="blue">{kycEntities.length} entities</Badge>} />
+          <div className="divide-y divide-[var(--line)]">
+            {kycEntities.map(e => (
+              <button key={e.id} onClick={() => setSelected(e)}
+                className="w-full grid grid-cols-[1fr_auto_auto] sm:grid-cols-[1fr_130px_90px_90px] items-center gap-3 py-3 text-left hover:bg-accent/5 rounded-lg px-2 -mx-2 transition-colors">
+                <div>
+                  <div className="text-sm font-medium">{e.name}</div>
+                  <div className="text-xs ink-2 font-mono">{e.id} · {e.type}</div>
+                </div>
+                <div className="text-xs ink-2 hidden sm:block">{e.lastChecked}</div>
+                <Badge tone={riskTone[e.risk]}>{e.risk} risk</Badge>
+                <Badge tone={kycTone[e.status]}>{e.status}</Badge>
+              </button>
+            ))}
+          </div>
+        </Card>
+        <Card>
+          <SectionTitle eyebrow="AML" title="Automated flag log" right={<Badge tone="red" pulse>Live</Badge>} />
+          <div className="space-y-3">
+            {amlFlags.map(f => (
+              <div key={f.id} className={`rounded-lg border p-3.5 ${f.severity === "red" ? "border-rose-500/30 bg-rose-500/5" : "border-amber-500/30 bg-amber-500/5"}`}>
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <Badge tone={f.severity}>{f.id}</Badge>
+                      <span className="text-xs ink-2">{f.ts}</span>
+                    </div>
+                    <div className="text-sm font-medium">{f.entity}</div>
+                    <div className="text-xs ink-2 mt-0.5">{f.reason}</div>
+                  </div>
+                  <button className="btn-ghost !py-1 !px-2 text-xs shrink-0">Review</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
+      <div className="space-y-5">
+        <Card>
+          <SectionTitle eyebrow="Score" title="Compliance gauge" />
+          <div className="flex flex-col items-center py-4">
+            <div className="relative h-32 w-32">
+              <svg viewBox="0 0 42 42" className="w-full h-full -rotate-90">
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="var(--line)" strokeWidth="4" />
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke={score >= 80 ? "#10b981" : score >= 60 ? "#f59e0b" : "#f43f5e"} strokeWidth="4"
+                  strokeDasharray={`${(score / 100) * 100} 100`} strokeLinecap="round" />
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className="font-display text-2xl font-bold">{score}</span>
+                <span className="text-[10px] ink-2">/ 100</span>
+              </div>
+            </div>
+            <div className="mt-3"><Badge tone="amber">Satisfactory</Badge></div>
+          </div>
+          <div className="space-y-2 mt-2">
+            {([["KYC completeness", 88], ["AML monitoring", 74], ["Sanctions screening", 92], ["Policy adherence", 70]] as [string, number][]).map(([k, v]) => (
+              <div key={k}>
+                <div className="flex justify-between text-xs mb-1"><span className="ink-2">{k}</span><span className="font-mono">{v}%</span></div>
+                <div className="h-1.5 rounded-full bg-[var(--line)] overflow-hidden">
+                  <div className="h-full rounded-full transition-all duration-700" style={{ width: `${v}%`, background: v >= 80 ? "#10b981" : v >= 60 ? "#f59e0b" : "#f43f5e" }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+        <AIPanel context="KYC & AML compliance, last 30 days" insights={[
+          { title: "Structuring risk elevated", body: "Oasis Capital shows 9 sub-threshold transfers in 48 hours — classic structuring. File SAR within 30 days if confirmed.", tone: "red", tag: "AML", confidence: 88 },
+          { title: "KYC refresh overdue", body: "4 entities have reviews overdue by 90+ days. Renewal letters can be auto-generated from the compliance portal.", tone: "amber", tag: "KYC", confidence: 79 },
+        ]} />
+      </div>
+      <Drawer open={!!selected} onClose={() => setSelected(null)} title="Entity detail">
+        {selected && (
+          <div className="space-y-4">
+            <div className="font-display text-xl font-bold">{selected.name}</div>
+            <div className="flex gap-2">
+              <Badge tone={riskTone[selected.risk]}>{selected.risk} risk</Badge>
+              <Badge tone={kycTone[selected.status]} pulse={selected.status === "Pending"}>{selected.status}</Badge>
+            </div>
+            <dl className="space-y-3 text-sm">
+              {[["Entity ID", selected.id], ["Type", selected.type], ["Last KYC check", selected.lastChecked], ["Jurisdiction", "United States"], ["Beneficial owner", "Filed — 2 principals"]].map(([k, v]) => (
+                <div key={k} className="flex justify-between border-b border-[var(--line)] pb-2">
+                  <dt className="ink-2">{k}</dt><dd className="font-medium">{v}</dd>
+                </div>
+              ))}
+            </dl>
+            <button className="btn-primary w-full justify-center">Schedule KYC review</button>
+            <button className="btn-ghost w-full justify-center">Download report</button>
+          </div>
+        )}
+      </Drawer>
+    </div>
+  );
+}
+
+// ─── B2B Payroll & Vendor Disbursement ────────────────────────────────────────
+
+type PayrollRun = { id: string; group: string; headcount: number; amount: number; status: "Approved" | "Pending" | "Processing" | "Paid"; date: string };
+const payrollRuns: PayrollRun[] = [
+  { id: "PR-441", group: "Engineering", headcount: 24, amount: 182400, status: "Approved", date: "Jun 25, 2026" },
+  { id: "PR-440", group: "Marketing & Design", headcount: 12, amount: 91200, status: "Pending", date: "Jun 25, 2026" },
+  { id: "PR-439", group: "Operations", headcount: 18, amount: 108000, status: "Processing", date: "Jun 10, 2026" },
+  { id: "PR-438", group: "All staff · June 1", headcount: 68, amount: 516000, status: "Paid", date: "Jun 10, 2026" },
+];
+const prTone: Record<PayrollRun["status"], Tone> = { Approved: "blue", Pending: "amber", Processing: "violet", Paid: "green" };
+const salaryTiers = [
+  { tier: "L1 – Associate", count: 18, avg: "$72k", color: "#10b981" },
+  { tier: "L2 – Mid-level", count: 26, avg: "$105k", color: "#4f6df5" },
+  { tier: "L3 – Senior", count: 16, avg: "$148k", color: "#8b5cf6" },
+  { tier: "L4 – Staff / Lead", count: 8, avg: "$195k", color: "#f59e0b" },
+];
+const approvalSteps = [
+  { label: "HR review", done: true },
+  { label: "Finance sign-off", done: true },
+  { label: "CFO approval", done: false },
+  { label: "Bank submission", done: false },
+];
+
+export function PayrollDisbursementScreen() {
+  const [activeRun, setActiveRun] = useState<PayrollRun | null>(null);
+  const { state, submit, reset } = useFakeSubmit();
+  return (
+    <div className="grid gap-5 xl:grid-cols-3">
+      <div className="xl:col-span-2 space-y-5">
+        <div className="grid gap-4 sm:grid-cols-3">
+          <Stat label="Next disbursement" value="$381,600" delta="Jun 25 · 2 groups" deltaTone="blue" icon={<Building2 size={16} />} />
+          <Stat label="Total payroll · MTD" value="$516k" delta="68 employees" deltaTone="green" />
+          <Stat label="Pending approvals" value="1" delta="CFO sign-off" deltaTone="amber" />
+        </div>
+        <Card>
+          <SectionTitle eyebrow="Payroll runs" title="Disbursement schedule" right={<Badge tone="amber">1 pending</Badge>} />
+          <div className="divide-y divide-[var(--line)]">
+            {payrollRuns.map(r => (
+              <button key={r.id} onClick={() => setActiveRun(r)}
+                className="w-full grid grid-cols-[1fr_auto_auto] sm:grid-cols-[1fr_80px_110px_90px] items-center gap-3 py-3 text-left hover:bg-accent/5 rounded-lg px-2 -mx-2 transition-colors">
+                <div>
+                  <div className="text-sm font-medium">{r.group}</div>
+                  <div className="text-xs ink-2 font-mono">{r.id} · {r.headcount} employees</div>
+                </div>
+                <div className="text-xs ink-2 hidden sm:block">{r.date}</div>
+                <div className="text-sm font-semibold font-mono text-right">{money(r.amount)}</div>
+                <div className="text-right"><Badge tone={prTone[r.status]}>{r.status}</Badge></div>
+              </button>
+            ))}
+          </div>
+        </Card>
+        <Card>
+          <SectionTitle eyebrow="Approval workflow" title="Jun 25 disbursement · sign-off chain" />
+          <div className="flex items-start gap-0 mt-4">
+            {approvalSteps.map((s, i) => (
+              <div key={s.label} className="flex items-center flex-1">
+                <div className="flex flex-col items-center gap-1.5">
+                  <div className={`h-8 w-8 rounded-full grid place-items-center border-2 transition-colors ${s.done ? "border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "border-[var(--line)] ink-2"}`}>
+                    {s.done ? <CheckCircle2 size={16} /> : <span className="text-xs font-bold">{i + 1}</span>}
+                  </div>
+                  <span className="text-[10px] ink-2 text-center leading-tight w-16">{s.label}</span>
+                </div>
+                {i < approvalSteps.length - 1 && <div className={`flex-1 h-0.5 mb-5 mx-1 transition-colors ${s.done ? "bg-emerald-500/40" : "bg-[var(--line)]"}`} />}
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 flex justify-end">
+            {state === "done" ? (
+              <div className="flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400 animate-fadeUp"><CheckCircle2 size={16} /> Approved & queued for bank submission</div>
+            ) : (
+              <button className="btn-primary" onClick={submit} disabled={state === "loading"}>
+                {state === "loading" ? "Processing…" : "Approve & advance"}
+              </button>
+            )}
+          </div>
+        </Card>
+      </div>
+      <div className="space-y-5">
+        <Card>
+          <SectionTitle eyebrow="Salary bands" title="Headcount by tier" />
+          <div className="space-y-3 mt-2">
+            {salaryTiers.map(t => (
+              <div key={t.tier}>
+                <div className="flex items-center justify-between text-xs mb-1">
+                  <span className="font-medium flex items-center gap-1.5">
+                    <span className="h-2 w-2 rounded-full shrink-0" style={{ background: t.color }} />
+                    {t.tier}
+                  </span>
+                  <span className="ink-2">{t.count} · avg {t.avg}</span>
+                </div>
+                <div className="h-2 rounded-full bg-[var(--line)] overflow-hidden">
+                  <div className="h-full rounded-full transition-all" style={{ width: `${(t.count / 26) * 100}%`, background: t.color }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+        <AIPanel context="Payroll & disbursements, June 2026" insights={[
+          { title: "Equity gap detected", body: "L2 compensation in Engineering is 7% below market median. Two engineers are retention risks at their renewal dates.", tone: "amber", tag: "Comp", confidence: 82 },
+          { title: "Batch co-processing", body: "3 vendor invoices totalling $28,400 are ready to co-batch with the Jun 25 run at no additional wire fee.", tone: "green", tag: "Efficiency", confidence: 91 },
+        ]} />
+      </div>
+      <Drawer open={!!activeRun} onClose={() => setActiveRun(null)} title="Payroll run detail">
+        {activeRun && (
+          <div className="space-y-4">
+            <div className="font-display text-2xl font-bold">{money(activeRun.amount)}</div>
+            <Badge tone={prTone[activeRun.status]} pulse={activeRun.status === "Processing"}>{activeRun.status}</Badge>
+            <dl className="space-y-3 text-sm">
+              {[["Run ID", activeRun.id], ["Group", activeRun.group], ["Employees", String(activeRun.headcount)], ["Payment date", activeRun.date], ["Rail", "Bulk ACH"], ["Account", "Payroll · ••9920"]].map(([k, v]) => (
+                <div key={k} className="flex justify-between border-b border-[var(--line)] pb-2">
+                  <dt className="ink-2">{k}</dt><dd className="font-medium">{v}</dd>
+                </div>
+              ))}
+            </dl>
+            <button className="btn-primary w-full justify-center">Download payslips</button>
+          </div>
+        )}
+      </Drawer>
+    </div>
+  );
+}
+
+// ─── Corporate Wealth & Liquidity Optimizer ───────────────────────────────────
+
+const wealthAllocation = [
+  { name: "Operating Cash", value: 45, color: "#4f6df5" },
+  { name: "T-Bills (3-mo)", value: 30, color: "#10b981" },
+  { name: "Yield Accounts", value: 15, color: "#8b5cf6" },
+  { name: "MMF Reserves", value: 10, color: "#f59e0b" },
+];
+const recommendations = [
+  { action: "Move $150k from operating cash to 3-mo T-Bills", yield: "+4.8% APY", effort: "Low", tone: "green" as Tone },
+  { action: "Set automated sweep: excess cash above $200k daily threshold", yield: "+5.2% APY", effort: "Low", tone: "green" as Tone },
+  { action: "Ladder T-Bill maturities (30/60/90-day) for liquidity buffer", yield: "+4.1% APY", effort: "Medium", tone: "blue" as Tone },
+];
+
+export function WealthOptimizerScreen() {
+  const [sweep, setSweep] = useState(false);
+  const [horizon, setHorizon] = useState(12);
+  const projData = sweep
+    ? [100, 102, 105, 108, 112, 117, 122, 128, 135, 142, 150, 158]
+    : [100, 100.8, 101.6, 102, 102.4, 103, 103.6, 104, 104.5, 105, 105.6, 106];
+  return (
+    <div className="grid gap-5 xl:grid-cols-3">
+      <div className="xl:col-span-2 space-y-5">
+        <div className="grid gap-4 sm:grid-cols-3">
+          <Stat label="Total AUM" value="$2.14M" delta="+3.2% this quarter" deltaTone="green" icon={<TrendingUp size={16} />} />
+          <Stat label="Blended yield" value={sweep ? "5.8%" : "2.4%"} delta={sweep ? "Optimized" : "Base rate"} deltaTone={sweep ? "green" : "gray"} />
+          <Stat label="Idle cash" value="$384k" delta="18% of total · deploy it" deltaTone="amber" />
+        </div>
+        <Card>
+          <SectionTitle eyebrow="Yield projection" title={`${horizon}-month return simulation`} right={
+            <div className="flex items-center gap-2 text-xs ink-2">
+              Sweep funds
+              <Toggle on={sweep} onChange={setSweep} label="Toggle sweep funds" />
+            </div>
+          } />
+          <AreaChart data={projData.slice(0, horizon)} stroke={sweep ? "#10b981" : "#4f6df5"} height={160} />
+          <div className="mt-3 flex items-center justify-between text-sm">
+            <span className="ink-2">Projected gain over {horizon} months</span>
+            <span className={`font-display font-bold text-base ${sweep ? "text-emerald-600 dark:text-emerald-400" : ""}`}>
+              {sweep ? "+$124,000" : "+$12,840"}
+            </span>
+          </div>
+          <div className="mt-3 flex gap-3 items-center">
+            <label className="label !mb-0 shrink-0">Horizon</label>
+            <input type="range" min={3} max={12} value={horizon} onChange={e => setHorizon(Number(e.target.value))}
+              className="flex-1 accent-accent cursor-pointer" />
+            <span className="text-xs font-mono ink-2 w-10 text-right">{horizon} mo</span>
+          </div>
+        </Card>
+        <Card>
+          <SectionTitle eyebrow="AI recommendations" title="Rightsizing opportunities" />
+          <div className="space-y-3">
+            {recommendations.map(r => (
+              <div key={r.action} className="flex items-center gap-3 rounded-lg border border-[var(--line)] p-3.5">
+                <div className="flex-1">
+                  <div className="text-sm font-medium">{r.action}</div>
+                  <div className="text-xs ink-2 mt-0.5">Estimated yield: <span className="text-emerald-600 dark:text-emerald-400 font-medium">{r.yield}</span> · Effort: {r.effort}</div>
+                </div>
+                <button className="btn-primary !py-1 !px-2 text-xs shrink-0">Apply</button>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
+      <div className="space-y-5">
+        <Card>
+          <SectionTitle eyebrow="Allocation" title="Asset distribution" />
+          <div className="flex justify-center py-3">
+            <Donut segments={wealthAllocation} label="$2.14M" sublabel="total" size={160} />
+          </div>
+          <div className="mt-2 space-y-2">
+            {wealthAllocation.map(a => (
+              <div key={a.name} className="flex items-center justify-between text-xs">
+                <div className="flex items-center gap-2"><span className="h-2 w-2 rounded-full shrink-0" style={{ background: a.color }} />{a.name}</div>
+                <span className="font-mono ink-2">{a.value}%</span>
+              </div>
+            ))}
+          </div>
+        </Card>
+        <AIPanel context="Corporate treasury optimization" insights={[
+          { title: "Sweep opportunity", body: "Daily idle cash averages $384k. Automated sweeps into a 5.2% yield account generate ~$19,900 in additional annual interest.", tone: "green", tag: "Yield", confidence: 94 },
+          { title: "T-Bill ladder optimal", body: "Your quarterly payroll cycle aligns naturally with 90-day T-Bill maturities — zero reinvestment gaps, full liquidity.", tone: "blue", tag: "Strategy", confidence: 81 },
+        ]} />
       </div>
     </div>
   );

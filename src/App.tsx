@@ -4,52 +4,142 @@ import {
   Landmark, HeartPulse, TerminalSquare, Users, GraduationCap,
   LayoutDashboard, FileText, CalendarDays, ListChecks, BarChart3,
   Sun, Moon, ChevronsUpDown, Check, Boxes, Search,
+  CreditCard, Send, PiggyBank, Shield, TrendingUp, Building2,
+  Video, Pill, BedDouble, ClipboardList, Receipt,
+  GitBranch, BellRing, Flag, DollarSign, Lock,
+  UserCheck, Briefcase, MessageCircle,
+  Home, LogIn, UserPlus, User, Settings, HelpCircle, Headphones,
 } from "lucide-react";
-import { FintechDashboard, InvoiceForm, FintechAnalytics } from "./domains/fintech";
-import { HealthDashboard, SchedulerScreen } from "./domains/healthtech";
-import { DevOpsDashboard, KanbanMini, LiveLogs } from "./domains/devops";
-import { ATSPipeline, JobPostForm } from "./domains/hrtech";
-import { LMSDashboard, QuizScreen } from "./domains/edtech";
+import {
+  FintechDashboard, InvoiceForm, FintechAnalytics,
+  PaymentsScreen, CardsScreen, ExpenseApprovals, BudgetsScreen,
+  RiskComplianceScreen, PayrollDisbursementScreen, WealthOptimizerScreen,
+  FintechHome, FintechLogin, FintechRegister, FintechProfile, FintechSettings, FintechFAQ, FintechSupport,
+} from "./domains/fintech";
+import {
+  HealthDashboard, SchedulerScreen, PatientDirectory,
+  TelehealthScreen, PharmacyInventory, IntakeForm, WardOccupancy,
+  MedicalBillingScreen,
+  HealthHome, HealthLogin, HealthRegister, HealthProfile, HealthSettings, HealthFAQ, HealthSupport,
+} from "./domains/healthtech";
+import {
+  DevOpsDashboard, KanbanMini, LiveLogs,
+  DeploymentsScreen, AlertsScreen, FeatureFlags, CostScreen,
+  IAMSecurityScreen,
+  DevOpsHome, DevOpsLogin, DevOpsRegister, DevOpsProfile, DevOpsSettings, DevOpsFAQ, DevOpsSupport,
+} from "./domains/devops";
+import {
+  ATSPipeline, JobPostForm,
+  OnboardingScreen, DEIAnalyticsScreen, TalentMarketplaceScreen,
+  HRHome, HRLogin, HRRegister, HRProfile, HRSettings, HRFAQ, HRSupport,
+} from "./domains/hrtech";
+import {
+  LMSDashboard, QuizScreen,
+  VirtualClassroomScreen, GradingMatrixScreen, ParentPortalScreen,
+  EdTechHome, EdTechLogin, EdTechRegister, EdTechProfile, EdTechSettings, EdTechFAQ, EdTechSupport,
+} from "./domains/edtech";
 
-type View = { id: string; label: string; icon: typeof LayoutDashboard; el: JSX.Element };
+type View = { id: string; label: string; icon: typeof LayoutDashboard; el: JSX.Element; group?: string };
 type Domain = { id: string; label: string; sub: string; icon: typeof Landmark; views: View[] };
 
 const DOMAINS: Domain[] = [
   {
-    id: "fintech", label: "FinTech", sub: "Banking · Invoicing", icon: Landmark,
+    id: "fintech", label: "FinTech", sub: "Banking · Treasury · Compliance", icon: Landmark,
     views: [
-      { id: "dash", label: "Treasury dashboard", icon: LayoutDashboard, el: <FintechDashboard /> },
-      { id: "invoice", label: "New invoice", icon: FileText, el: <InvoiceForm /> },
-      { id: "analytics", label: "Analytics", icon: BarChart3, el: <FintechAnalytics /> },
+      // ── Public / onboarding ──
+      { id: "home", label: "Home", icon: Home, el: <FintechHome />, group: "Public" },
+      { id: "login", label: "Sign in", icon: LogIn, el: <FintechLogin />, group: "Public" },
+      { id: "register", label: "Create account", icon: UserPlus, el: <FintechRegister />, group: "Public" },
+      // ── Core app ──
+      { id: "dash", label: "Treasury dashboard", icon: LayoutDashboard, el: <FintechDashboard />, group: "App" },
+      { id: "payments", label: "Send a payment", icon: Send, el: <PaymentsScreen />, group: "App" },
+      { id: "cards", label: "Corporate cards", icon: CreditCard, el: <CardsScreen />, group: "App" },
+      { id: "invoice", label: "New invoice", icon: FileText, el: <InvoiceForm />, group: "App" },
+      { id: "expenses", label: "Expense approvals", icon: Receipt, el: <ExpenseApprovals />, group: "App" },
+      { id: "budgets", label: "Budgets", icon: PiggyBank, el: <BudgetsScreen />, group: "App" },
+      { id: "payroll", label: "Payroll disbursement", icon: Building2, el: <PayrollDisbursementScreen />, group: "App" },
+      { id: "compliance", label: "Risk & compliance", icon: Shield, el: <RiskComplianceScreen />, group: "App" },
+      { id: "wealth", label: "Liquidity optimizer", icon: TrendingUp, el: <WealthOptimizerScreen />, group: "App" },
+      { id: "analytics", label: "Analytics", icon: BarChart3, el: <FintechAnalytics />, group: "App" },
+      // ── Account ──
+      { id: "profile", label: "Profile", icon: User, el: <FintechProfile />, group: "Account" },
+      { id: "settings", label: "Settings", icon: Settings, el: <FintechSettings />, group: "Account" },
+      { id: "faq", label: "FAQ", icon: HelpCircle, el: <FintechFAQ />, group: "Account" },
+      { id: "support", label: "Support", icon: Headphones, el: <FintechSupport />, group: "Account" },
     ],
   },
   {
-    id: "health", label: "HealthTech", sub: "EHR · ER · Scheduling", icon: HeartPulse,
+    id: "health", label: "HealthTech", sub: "EHR · ER · Scheduling · Billing", icon: HeartPulse,
     views: [
-      { id: "dash", label: "Clinical dashboard", icon: LayoutDashboard, el: <HealthDashboard /> },
-      { id: "scheduler", label: "Appointment grid", icon: CalendarDays, el: <SchedulerScreen /> },
+      { id: "home", label: "Home", icon: Home, el: <HealthHome />, group: "Public" },
+      { id: "login", label: "Sign in", icon: LogIn, el: <HealthLogin />, group: "Public" },
+      { id: "register", label: "Create account", icon: UserPlus, el: <HealthRegister />, group: "Public" },
+      { id: "dash", label: "Clinical dashboard", icon: LayoutDashboard, el: <HealthDashboard />, group: "App" },
+      { id: "intake", label: "Patient intake form", icon: ClipboardList, el: <IntakeForm />, group: "App" },
+      { id: "scheduler", label: "Appointment grid", icon: CalendarDays, el: <SchedulerScreen />, group: "App" },
+      { id: "patients", label: "Patient directory", icon: Users, el: <PatientDirectory />, group: "App" },
+      { id: "telehealth", label: "Telehealth suite", icon: Video, el: <TelehealthScreen />, group: "App" },
+      { id: "pharmacy", label: "Pharmacy inventory", icon: Pill, el: <PharmacyInventory />, group: "App" },
+      { id: "wards", label: "Ward occupancy", icon: BedDouble, el: <WardOccupancy />, group: "App" },
+      { id: "billing", label: "Medical billing", icon: Receipt, el: <MedicalBillingScreen />, group: "App" },
+      { id: "profile", label: "Profile", icon: User, el: <HealthProfile />, group: "Account" },
+      { id: "settings", label: "Settings", icon: Settings, el: <HealthSettings />, group: "Account" },
+      { id: "faq", label: "FAQ", icon: HelpCircle, el: <HealthFAQ />, group: "Account" },
+      { id: "support", label: "Support", icon: Headphones, el: <HealthSupport />, group: "Account" },
     ],
   },
   {
-    id: "devops", label: "IT / DevOps", sub: "Logs · Tickets · Metrics", icon: TerminalSquare,
+    id: "devops", label: "IT / DevOps", sub: "Logs · Incidents · Security · FinOps", icon: TerminalSquare,
     views: [
-      { id: "dash", label: "Ops dashboard", icon: LayoutDashboard, el: <DevOpsDashboard /> },
-      { id: "logs", label: "Log viewer", icon: ListChecks, el: <div className="max-w-3xl mx-auto"><LiveLogs /></div> },
-      { id: "board", label: "Incident board", icon: Boxes, el: <div className="max-w-md mx-auto"><KanbanMini /></div> },
+      { id: "home", label: "Home", icon: Home, el: <DevOpsHome />, group: "Public" },
+      { id: "login", label: "Sign in", icon: LogIn, el: <DevOpsLogin />, group: "Public" },
+      { id: "register", label: "Create account", icon: UserPlus, el: <DevOpsRegister />, group: "Public" },
+      { id: "dash", label: "Ops dashboard", icon: LayoutDashboard, el: <DevOpsDashboard />, group: "App" },
+      { id: "deploys", label: "CI/CD pipelines", icon: GitBranch, el: <DeploymentsScreen />, group: "App" },
+      { id: "alerts", label: "Alerts & on-call", icon: BellRing, el: <AlertsScreen />, group: "App" },
+      { id: "board", label: "Incident board", icon: Boxes, el: <div className="max-w-md mx-auto"><KanbanMini /></div>, group: "App" },
+      { id: "logs", label: "Log viewer", icon: ListChecks, el: <div className="max-w-3xl mx-auto"><LiveLogs /></div>, group: "App" },
+      { id: "flags", label: "Feature flags", icon: Flag, el: <FeatureFlags />, group: "App" },
+      { id: "costs", label: "Cloud costs", icon: DollarSign, el: <CostScreen />, group: "App" },
+      { id: "iam", label: "IAM & security", icon: Lock, el: <IAMSecurityScreen />, group: "App" },
+      { id: "profile", label: "Profile", icon: User, el: <DevOpsProfile />, group: "Account" },
+      { id: "settings", label: "Settings", icon: Settings, el: <DevOpsSettings />, group: "Account" },
+      { id: "faq", label: "FAQ", icon: HelpCircle, el: <DevOpsFAQ />, group: "Account" },
+      { id: "support", label: "Support", icon: Headphones, el: <DevOpsSupport />, group: "Account" },
     ],
   },
   {
-    id: "hrtech", label: "HRTech", sub: "Applicant tracking", icon: Users,
+    id: "hrtech", label: "HRTech", sub: "ATS · Onboarding · Talent · DEI", icon: Users,
     views: [
-      { id: "pipeline", label: "Candidate pipeline", icon: LayoutDashboard, el: <ATSPipeline /> },
-      { id: "jobpost", label: "Create job posting", icon: FileText, el: <JobPostForm /> },
+      { id: "home", label: "Home", icon: Home, el: <HRHome />, group: "Public" },
+      { id: "login", label: "Sign in", icon: LogIn, el: <HRLogin />, group: "Public" },
+      { id: "register", label: "Create account", icon: UserPlus, el: <HRRegister />, group: "Public" },
+      { id: "pipeline", label: "Candidate pipeline", icon: LayoutDashboard, el: <ATSPipeline />, group: "App" },
+      { id: "jobpost", label: "Create job posting", icon: FileText, el: <JobPostForm />, group: "App" },
+      { id: "onboarding", label: "Onboarding center", icon: UserCheck, el: <OnboardingScreen />, group: "App" },
+      { id: "talent", label: "Talent marketplace", icon: Briefcase, el: <TalentMarketplaceScreen />, group: "App" },
+      { id: "dei", label: "DEI analytics", icon: BarChart3, el: <DEIAnalyticsScreen />, group: "App" },
+      { id: "profile", label: "Profile", icon: User, el: <HRProfile />, group: "Account" },
+      { id: "settings", label: "Settings", icon: Settings, el: <HRSettings />, group: "Account" },
+      { id: "faq", label: "FAQ", icon: HelpCircle, el: <HRFAQ />, group: "Account" },
+      { id: "support", label: "Support", icon: Headphones, el: <HRSupport />, group: "Account" },
     ],
   },
   {
-    id: "edtech", label: "EdTech", sub: "LMS · Assessments", icon: GraduationCap,
+    id: "edtech", label: "EdTech", sub: "LMS · Assessments · Classroom", icon: GraduationCap,
     views: [
-      { id: "dash", label: "Learning dashboard", icon: LayoutDashboard, el: <LMSDashboard /> },
-      { id: "quiz", label: "Checkpoint quiz", icon: ListChecks, el: <QuizScreen /> },
+      { id: "home", label: "Home", icon: Home, el: <EdTechHome />, group: "Public" },
+      { id: "login", label: "Sign in", icon: LogIn, el: <EdTechLogin />, group: "Public" },
+      { id: "register", label: "Create account", icon: UserPlus, el: <EdTechRegister />, group: "Public" },
+      { id: "dash", label: "Learning dashboard", icon: LayoutDashboard, el: <LMSDashboard />, group: "App" },
+      { id: "classroom", label: "Virtual classroom", icon: Video, el: <VirtualClassroomScreen />, group: "App" },
+      { id: "quiz", label: "Checkpoint quiz", icon: ListChecks, el: <QuizScreen />, group: "App" },
+      { id: "grading", label: "Grading matrix", icon: ClipboardList, el: <GradingMatrixScreen />, group: "App" },
+      { id: "parent", label: "Parent portal", icon: MessageCircle, el: <ParentPortalScreen />, group: "App" },
+      { id: "profile", label: "Profile", icon: User, el: <EdTechProfile />, group: "Account" },
+      { id: "settings", label: "Settings", icon: Settings, el: <EdTechSettings />, group: "Account" },
+      { id: "faq", label: "FAQ", icon: HelpCircle, el: <EdTechFAQ />, group: "Account" },
+      { id: "support", label: "Support", icon: Headphones, el: <EdTechSupport />, group: "Account" },
     ],
   },
 ];
@@ -118,6 +208,16 @@ export default function App() {
 
   const pick = (d: Domain) => { setDomain(d); setViewId(d.views[0].id); };
 
+  // Group views by their group label for the sidebar
+  const groups = useMemo(() => {
+    const map: Record<string, View[]> = {};
+    for (const v of domain.views) {
+      const g = v.group ?? "App";
+      (map[g] ??= []).push(v);
+    }
+    return map;
+  }, [domain]);
+
   return (
     <div className="min-h-full flex">
       {/* Sidebar */}
@@ -129,14 +229,20 @@ export default function App() {
             <div className="text-[10px] ink-2 font-mono">template builder</div>
           </div>
         </div>
-        <nav className="p-3 space-y-1 flex-1" aria-label="Screens">
-          <div className="eyebrow px-2.5 pt-2 pb-1.5">{domain.label} screens</div>
-          {domain.views.map(v => (
-            <button key={v.id} onClick={() => setViewId(v.id)}
-              className={`w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-medium transition-all duration-150
-                ${v.id === view.id ? "bg-accent text-white shadow-card" : "ink-2 hover:bg-accent/8 hover:text-[var(--ink)]"}`}>
-              <v.icon size={15} /> {v.label}
-            </button>
+        <nav className="p-3 space-y-3 flex-1 overflow-y-auto" aria-label="Screens">
+          {Object.entries(groups).map(([group, views]) => (
+            <div key={group}>
+              <div className="eyebrow px-2.5 pt-1 pb-1.5">{group}</div>
+              <div className="space-y-0.5">
+                {views.map(v => (
+                  <button key={v.id} onClick={() => setViewId(v.id)}
+                    className={`w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-medium transition-all duration-150
+                      ${v.id === view.id ? "bg-accent text-white shadow-card" : "ink-2 hover:bg-accent/8 hover:text-[var(--ink)]"}`}>
+                    <v.icon size={15} /> {v.label}
+                  </button>
+                ))}
+              </div>
+            </div>
           ))}
         </nav>
         <div className="p-4 border-t border-[var(--line)] text-[11px] ink-2 leading-relaxed">
@@ -157,7 +263,7 @@ export default function App() {
         </header>
 
         {/* Mobile screen tabs */}
-        <div className="md:hidden flex gap-2 overflow-x-auto px-4 pt-3">
+        <div className="md:hidden flex gap-2 overflow-x-auto px-4 pt-3 pb-1">
           {domain.views.map(v => (
             <button key={v.id} onClick={() => setViewId(v.id)}
               className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium border transition-colors ${v.id === view.id ? "bg-accent text-white border-accent" : "surface ink-2"}`}>
