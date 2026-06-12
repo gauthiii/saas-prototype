@@ -10,7 +10,7 @@ import {
   UserCheck, Briefcase, MessageCircle,
   Home, LogIn, UserPlus, User, Settings, HelpCircle, Headphones,
   Info, Tag, ShieldCheck, Sparkles, AlertTriangle,
-  Paintbrush, Download, Loader2,
+  Paintbrush, Download, Loader2, Eye,
 } from "lucide-react";
 import * as fintech from "./domains/fintech";
 import * as healthtech from "./domains/healthtech";
@@ -21,6 +21,7 @@ import { DOMAIN_DEFS, DomainDef } from "./export/registry";
 import { exportProject } from "./export/exportProject";
 import { ThemeStudio } from "./components/ThemeStudio";
 import { About } from "./components/About";
+import { AppPreview } from "./components/AppPreview";
 import { Theme, loadTheme, applyTheme, saveTheme } from "./theme";
 
 type IconType = typeof LayoutDashboard;
@@ -115,6 +116,7 @@ export default function App() {
   const [theme, setTheme] = useState<Theme>(loadTheme);
   const [themeOpen, setThemeOpen] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
   const view = domain.views.find(v => v.id === viewId) ?? domain.views[0];
 
   useEffect(() => {
@@ -172,7 +174,16 @@ export default function App() {
           <nav className="p-3 space-y-3 flex-1 overflow-y-auto" aria-label="Screens">
             {Object.entries(groups).map(([group, views]) => (
               <div key={group}>
-                <div className="eyebrow px-2.5 pt-1 pb-1.5">{group}</div>
+                <div className="flex items-center justify-between px-2.5 pt-1 pb-1.5">
+                  <span className="eyebrow">{group}</span>
+                  {group === "Public" && (
+                    <button onClick={() => setPreviewOpen(true)}
+                      className="grid place-items-center h-6 w-6 rounded-md ink-2 hover:bg-accent/8 hover:text-accent transition-colors"
+                      aria-label={`Preview ${domain.label} app flow`} title="Preview how the exported app looks and flows">
+                      <Eye size={14} />
+                    </button>
+                  )}
+                </div>
                 <div className="space-y-0.5">
                   {views.map(v => (
                     <button key={v.id} onClick={() => setViewId(v.id)}
@@ -242,6 +253,18 @@ export default function App() {
 
       {themeOpen && (
         <ThemeStudio open={themeOpen} onClose={() => setThemeOpen(false)} theme={theme} onApply={applySelectedTheme} />
+      )}
+
+      {previewOpen && (
+        <AppPreview
+          productName={domain.def.productName}
+          sub={domain.sub}
+          domainId={domain.id}
+          views={domain.views}
+          dark={dark}
+          setDark={setDark}
+          onClose={() => setPreviewOpen(false)}
+        />
       )}
     </div>
   );
