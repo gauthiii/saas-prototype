@@ -1,4 +1,4 @@
-// src/domains/devops.tsx
+const e=`// src/domains/devops.tsx
 import { useEffect, useRef, useState } from "react";
 import { HomePage, LoginPage, RegisterPage, ProfilePage, SettingsPage, FAQPage, SupportPage, DomainMeta } from "./pages";
 import { AboutPage, PrivacyPage, PricingPage, NotificationsPage, ChangelogPage, NotFoundPage, DomainExtra } from "./pages-extra";
@@ -132,7 +132,7 @@ export function LiveLogs() {
         {logs.map((l, i) => (
           <div key={i} className="whitespace-pre-wrap animate-fadeUp">
             <span className="text-zinc-500">{l.t}</span>{"  "}
-            <span className={`${lvlColor[l.lvl]} font-semibold`}>{l.lvl.padEnd(5)}</span>{" "}
+            <span className={\`\${lvlColor[l.lvl]} font-semibold\`}>{l.lvl.padEnd(5)}</span>{" "}
             <span className="text-violet-400">{l.svc}</span>{"  "}
             <span>{l.msg}</span>
           </div>
@@ -162,7 +162,7 @@ export function DevOpsDashboard() {
                   <Server size={14} className="ink-2" />
                 </div>
                 <div className="mt-3 h-1.5 rounded-full bg-[var(--line)] overflow-hidden">
-                  <div className={`h-full rounded-full transition-all duration-500 ${n.cpu > 85 ? "bg-rose-500" : n.cpu > 70 ? "bg-amber-500" : "bg-emerald-500"}`} style={{ width: `${n.cpu}%` }} />
+                  <div className={\`h-full rounded-full transition-all duration-500 \${n.cpu > 85 ? "bg-rose-500" : n.cpu > 70 ? "bg-amber-500" : "bg-emerald-500"}\`} style={{ width: \`\${n.cpu}%\` }} />
                 </div>
                 <div className="mt-2 flex items-center justify-between text-xs">
                   <span className="ink-2 font-mono">CPU {n.cpu}%</span>
@@ -256,8 +256,8 @@ export function DeploymentsScreen() {
                 {stageIcon[s.state]}
                 {i < stages.length - 1 && <span className="w-px flex-1 bg-[var(--line)] my-1" />}
               </div>
-              <div className={`flex-1 flex items-center justify-between rounded-lg border p-3 mb-2 ${s.state === "running" ? "border-accent/50 bg-accent/5" : "border-[var(--line)]"}`}>
-                <span className={`text-sm font-medium ${s.state === "queued" ? "ink-2" : ""}`}>{s.name}</span>
+              <div className={\`flex-1 flex items-center justify-between rounded-lg border p-3 mb-2 \${s.state === "running" ? "border-accent/50 bg-accent/5" : "border-[var(--line)]"}\`}>
+                <span className={\`text-sm font-medium \${s.state === "queued" ? "ink-2" : ""}\`}>{s.name}</span>
                 <span className="text-xs font-mono ink-2">{s.dur}</span>
               </div>
             </li>
@@ -310,7 +310,7 @@ export function AlertsScreen() {
           {alerts.map(a => {
             const isAcked = !!acked[a.id];
             return (
-              <div key={a.id} className={`rounded-lg border p-4 transition-all ${isAcked ? "border-[var(--line)] opacity-60" : a.sev === "P1" ? "border-rose-500/50 bg-rose-500/5" : "border-[var(--line)]"}`}>
+              <div key={a.id} className={\`rounded-lg border p-4 transition-all \${isAcked ? "border-[var(--line)] opacity-60" : a.sev === "P1" ? "border-rose-500/50 bg-rose-500/5" : "border-[var(--line)]"}\`}>
                 <div className="flex flex-wrap items-center gap-3">
                   <Badge tone={a.sev === "P1" ? "red" : a.sev === "P2" ? "amber" : "gray"} pulse={a.sev === "P1" && !isAcked}>{a.sev}</Badge>
                   <div className="flex-1 min-w-40">
@@ -334,7 +334,7 @@ export function AlertsScreen() {
         <SectionTitle eyebrow="On-call" title="Rotation" />
         <div className="space-y-3">
           {rotation.map(r => (
-            <div key={r.who + r.role} className={`rounded-lg border p-3.5 ${r.active ? "border-accent/40 bg-accent/5" : "border-[var(--line)]"}`}>
+            <div key={r.who + r.role} className={\`rounded-lg border p-3.5 \${r.active ? "border-accent/40 bg-accent/5" : "border-[var(--line)]"}\`}>
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">{r.who}</span>
                 <Badge tone={r.active ? "blue" : "gray"}>{r.role}</Badge>
@@ -363,19 +363,19 @@ export function FeatureFlags() {
       <SectionTitle eyebrow="Release control" title="Feature flags" right={<Flag size={15} className="text-accent" />} />
       <div className="space-y-3">
         {flags.map(f => (
-          <div key={f.key} className={`rounded-lg border border-[var(--line)] p-4 transition-opacity ${f.on ? "" : "opacity-70"}`}>
+          <div key={f.key} className={\`rounded-lg border border-[var(--line)] p-4 transition-opacity \${f.on ? "" : "opacity-70"}\`}>
             <div className="flex flex-wrap items-center gap-3">
               <div className="flex-1 min-w-48">
                 <div className="text-sm font-mono font-medium">{f.key}</div>
                 <div className="text-xs ink-2 mt-0.5">{f.desc}</div>
               </div>
               <Badge tone={f.env === "Production" ? "violet" : "gray"}>{f.env}</Badge>
-              <Toggle on={f.on} onChange={() => flip(f.key)} label={`Toggle ${f.key}`} />
+              <Toggle on={f.on} onChange={() => flip(f.key)} label={\`Toggle \${f.key}\`} />
             </div>
             {f.on && (
               <div className="mt-3 flex items-center gap-3">
                 <div className="h-1.5 flex-1 rounded-full bg-[var(--line)] overflow-hidden">
-                  <div className="h-full rounded-full bg-accent transition-all duration-500" style={{ width: `${f.rollout}%` }} />
+                  <div className="h-full rounded-full bg-accent transition-all duration-500" style={{ width: \`\${f.rollout}%\` }} />
                 </div>
                 <span className="text-xs font-mono ink-2 w-20 text-right">{f.rollout}% rollout</span>
               </div>
@@ -414,7 +414,7 @@ export function CostScreen() {
                 <div key={s.name} className="flex items-center gap-2 text-sm">
                   <span className="h-2.5 w-2.5 rounded-full shrink-0" style={{ background: s.color }} />
                   <span className="flex-1">{s.name}</span>
-                  <span className="font-mono text-xs ink-2">${s.value.toLocaleString()}</span>
+                  <span className="font-mono text-xs ink-2">\${s.value.toLocaleString()}</span>
                 </div>
               ))}
             </div>
@@ -502,7 +502,7 @@ export function IAMSecurityScreen() {
                     <td className="py-2.5 pr-4 text-sm">{p.name}</td>
                     {[p.admin, p.dev, p.viewer].map((v, i) => (
                       <td key={i} className="text-center py-2.5 px-2">
-                        <span className={`inline-flex h-5 w-5 items-center justify-center rounded ${v ? "bg-emerald-500/12 text-emerald-600 dark:text-emerald-400" : "bg-zinc-500/8 text-zinc-400"}`}>
+                        <span className={\`inline-flex h-5 w-5 items-center justify-center rounded \${v ? "bg-emerald-500/12 text-emerald-600 dark:text-emerald-400" : "bg-zinc-500/8 text-zinc-400"}\`}>
                           {v ? <CheckCircle2 size={12} /> : <XCircle size={12} />}
                         </span>
                       </td>
@@ -518,7 +518,7 @@ export function IAMSecurityScreen() {
           <SectionTitle eyebrow="Sessions" title="Active user sessions" right={<Badge tone="blue" pulse>Live</Badge>} />
           <div className="space-y-2">
             {iamSessions.map(s => (
-              <div key={s.id} className={`rounded-lg border p-3 transition-all ${revoked[s.id] ? "opacity-40 border-[var(--line)]" : "border-[var(--line)]"}`}>
+              <div key={s.id} className={\`rounded-lg border p-3 transition-all \${revoked[s.id] ? "opacity-40 border-[var(--line)]" : "border-[var(--line)]"}\`}>
                 <div className="flex items-center justify-between gap-2">
                   <div className="min-w-0">
                     <div className="text-sm font-medium truncate">{s.user}</div>
@@ -586,3 +586,4 @@ export function IAMSecurityScreen() {
     </div>
   );
 }
+`;export{e as default};

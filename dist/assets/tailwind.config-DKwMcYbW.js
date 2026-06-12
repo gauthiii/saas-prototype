@@ -1,4 +1,4 @@
-// tailwind.config.js
+const n=`// tailwind.config.js
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: "class",
@@ -46,3 +46,4 @@ export default {
   },
   plugins: [],
 };
+`;export{n as default};

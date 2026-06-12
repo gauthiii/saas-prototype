@@ -1,4 +1,4 @@
-/* src/index.css */
+const n=`/* src/index.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,9 +6,9 @@
 :root {
   /* Theme accent (RGB triples so Tailwind opacity modifiers keep working).
      Overridden at runtime by the Theme studio; baked in on project export. */
-  --accent-rgb: 29 78 216;
-  --accent-dark-rgb: 24 64 177;
-  --grad-rgb: 126 34 206;
+  --accent-rgb: 79 109 245;
+  --accent-dark-rgb: 59 84 214;
+  --grad-rgb: 124 58 237;
   --accent: rgb(var(--accent-rgb));
   --bg: #f7f8fa;
   --surface: #ffffff;
@@ -60,3 +60,4 @@ body {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+`;export{n as default};

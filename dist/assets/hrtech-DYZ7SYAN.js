@@ -1,4 +1,4 @@
-// src/domains/hrtech.tsx
+const e=`// src/domains/hrtech.tsx
 import { useState } from "react";
 import { HomePage, LoginPage, RegisterPage, ProfilePage, SettingsPage, FAQPage, SupportPage, DomainMeta } from "./pages";
 import { AboutPage, PrivacyPage, PricingPage, NotificationsPage, ChangelogPage, NotFoundPage, DomainExtra } from "./pages-extra";
@@ -114,7 +114,7 @@ export function ATSPipeline() {
               <button key={c.name} onClick={() => setCand(c)} className="card p-4 w-full text-left card-hover">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-semibold">{c.name}</span>
-                  <span className={`text-xs font-mono font-bold ${c.score >= 90 ? "text-emerald-500" : c.score >= 80 ? "text-accent" : "ink-2"}`}>{c.score}</span>
+                  <span className={\`text-xs font-mono font-bold \${c.score >= 90 ? "text-emerald-500" : c.score >= 80 ? "text-accent" : "ink-2"}\`}>{c.score}</span>
                 </div>
                 <div className="text-xs ink-2 mt-0.5">{c.role}</div>
                 <div className="mt-2.5 flex flex-wrap gap-1.5">
@@ -206,8 +206,8 @@ const docTasks: DocTask[] = [
   { id: "d5", title: "Remote work policy acknowledgment", status: "Pending" },
 ];
 const hwTracks: HWTrack[] = [
-  { item: "MacBook Pro 14\" (M3)", status: "Shipped", detail: "FedEx · Est. Jun 16" },
-  { item: "External monitor (LG 27\")", status: "Ordered", detail: "Procurement · 5–7 days" },
+  { item: "MacBook Pro 14\\" (M3)", status: "Shipped", detail: "FedEx · Est. Jun 16" },
+  { item: "External monitor (LG 27\\")", status: "Ordered", detail: "Procurement · 5–7 days" },
   { item: "Ergonomic keyboard + mouse", status: "Delivered", detail: "Delivered Jun 9" },
 ];
 const welcomeSeq = [
@@ -225,15 +225,15 @@ export function OnboardingScreen() {
       <div className="xl:col-span-2 space-y-5">
         <div className="grid gap-4 sm:grid-cols-3">
           <Stat label="Start date" value="Jun 16" delta="5 days out" deltaTone="blue" />
-          <Stat label="Docs signed" value={`${docTasks.filter(d => d.status === "Signed").length}/${docTasks.length}`} delta="2 pending" deltaTone="amber" />
-          <Stat label="Hardware ready" value={`${hwTracks.filter(h => h.status === "Delivered").length}/${hwTracks.length}`} delta="1 shipped" deltaTone="blue" />
+          <Stat label="Docs signed" value={\`\${docTasks.filter(d => d.status === "Signed").length}/\${docTasks.length}\`} delta="2 pending" deltaTone="amber" />
+          <Stat label="Hardware ready" value={\`\${hwTracks.filter(h => h.status === "Delivered").length}/\${hwTracks.length}\`} delta="1 shipped" deltaTone="blue" />
         </div>
         <Card>
           <SectionTitle eyebrow="Documents" title="E-signature checklist" />
           <div className="space-y-2">
             {docTasks.map(d => (
               <div key={d.id} className="flex items-center gap-3 rounded-lg border border-[var(--line)] p-3">
-                <div className={`h-5 w-5 rounded-full border-2 grid place-items-center shrink-0 ${d.status === "Signed" ? "border-emerald-500 bg-emerald-500/10" : "border-[var(--line)]"}`}>
+                <div className={\`h-5 w-5 rounded-full border-2 grid place-items-center shrink-0 \${d.status === "Signed" ? "border-emerald-500 bg-emerald-500/10" : "border-[var(--line)]"}\`}>
                   {d.status === "Signed" && <CheckCircle2 size={12} className="text-emerald-600 dark:text-emerald-400" />}
                 </div>
                 <span className="flex-1 text-sm">{d.title}</span>
@@ -272,15 +272,15 @@ export function OnboardingScreen() {
             {welcomeSeq.map((w, i) => (
               <div key={w.day} className="flex gap-3">
                 <div className="flex flex-col items-center">
-                  <div className={`h-7 w-7 rounded-full grid place-items-center text-xs font-bold shrink-0 ${w.done ? "bg-accent text-white" : "surface border border-[var(--line)] ink-2"}`}>{i + 1}</div>
-                  {i < welcomeSeq.length - 1 && <div className={`w-0.5 flex-1 mt-1 min-h-4 ${w.done ? "bg-accent/40" : "bg-[var(--line)]"}`} />}
+                  <div className={\`h-7 w-7 rounded-full grid place-items-center text-xs font-bold shrink-0 \${w.done ? "bg-accent text-white" : "surface border border-[var(--line)] ink-2"}\`}>{i + 1}</div>
+                  {i < welcomeSeq.length - 1 && <div className={\`w-0.5 flex-1 mt-1 min-h-4 \${w.done ? "bg-accent/40" : "bg-[var(--line)]"}\`} />}
                 </div>
                 <div className="pb-4">
                   <div className="text-sm font-semibold mb-1">{w.day}</div>
                   <ul className="space-y-1">
                     {w.tasks.map(t => (
                       <li key={t} className="flex items-center gap-1.5 text-xs ink-2">
-                        <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${w.done ? "bg-accent" : "bg-zinc-400"}`} />
+                        <span className={\`h-1.5 w-1.5 rounded-full shrink-0 \${w.done ? "bg-accent" : "bg-zinc-400"}\`} />
                         {t}
                       </li>
                     ))}
@@ -343,8 +343,8 @@ export function DEIAnalyticsScreen() {
                   <span className="font-mono"><span className="text-accent">{l.men}%</span> / <span className="text-violet-500">{l.women}%</span></span>
                 </div>
                 <div className="flex h-2.5 rounded-full overflow-hidden">
-                  <div className="h-full transition-all" style={{ width: `${l.men}%`, background: "#4f6df5" }} />
-                  <div className="h-full transition-all" style={{ width: `${l.women}%`, background: "#8b5cf6" }} />
+                  <div className="h-full transition-all" style={{ width: \`\${l.men}%\`, background: "#4f6df5" }} />
+                  <div className="h-full transition-all" style={{ width: \`\${l.women}%\`, background: "#8b5cf6" }} />
                 </div>
                 <div className="flex justify-between text-[10px] ink-2 mt-0.5">
                   <span>Men</span><span>Women</span>
@@ -415,7 +415,7 @@ export function TalentMarketplaceScreen() {
                   <div className="text-xs ink-2">{r.dept} · Requires: {r.skills.join(", ")}</div>
                 </div>
                 <div className="text-right shrink-0">
-                  <div className={`font-display text-lg font-bold ${r.matchScore >= 80 ? "text-emerald-600 dark:text-emerald-400" : r.matchScore >= 60 ? "text-amber-600 dark:text-amber-400" : "ink-2"}`}>{r.matchScore}%</div>
+                  <div className={\`font-display text-lg font-bold \${r.matchScore >= 80 ? "text-emerald-600 dark:text-emerald-400" : r.matchScore >= 60 ? "text-amber-600 dark:text-amber-400" : "ink-2"}\`}>{r.matchScore}%</div>
                   <div className="text-[10px] ink-2">match</div>
                 </div>
               </button>
@@ -434,7 +434,7 @@ export function TalentMarketplaceScreen() {
               <div key={axis} className="flex items-center gap-2 text-xs">
                 <span className="w-16 ink-2 shrink-0">{axis}</span>
                 <div className="flex-1 h-1.5 rounded-full bg-[var(--line)] overflow-hidden">
-                  <div className="h-full rounded-full bg-accent/70 transition-all" style={{ width: `${profileScores[i]}%` }} />
+                  <div className="h-full rounded-full bg-accent/70 transition-all" style={{ width: \`\${profileScores[i]}%\` }} />
                 </div>
                 <span className="font-mono ink-2 w-6 text-right">{profileScores[i]}</span>
               </div>
@@ -451,8 +451,8 @@ export function TalentMarketplaceScreen() {
           <div className="space-y-4">
             <div className="font-display text-xl font-bold">{selected.title}</div>
             <div className="flex gap-2"><Badge tone="gray">{selected.level}</Badge><Badge tone="blue">{selected.dept}</Badge></div>
-            <div className={`text-center py-4 rounded-lg border ${selected.matchScore >= 80 ? "border-emerald-500/30 bg-emerald-500/5" : "border-[var(--line)]"}`}>
-              <div className={`font-display text-4xl font-bold ${selected.matchScore >= 80 ? "text-emerald-600 dark:text-emerald-400" : "ink-2"}`}>{selected.matchScore}%</div>
+            <div className={\`text-center py-4 rounded-lg border \${selected.matchScore >= 80 ? "border-emerald-500/30 bg-emerald-500/5" : "border-[var(--line)]"}\`}>
+              <div className={\`font-display text-4xl font-bold \${selected.matchScore >= 80 ? "text-emerald-600 dark:text-emerald-400" : "ink-2"}\`}>{selected.matchScore}%</div>
               <div className="text-xs ink-2 mt-1">skill match score</div>
             </div>
             <div>
@@ -469,3 +469,4 @@ export function TalentMarketplaceScreen() {
     </div>
   );
 }
+`;export{e as default};

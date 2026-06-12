@@ -1,5 +1,5 @@
 // src/App.tsx
-import { useEffect, useMemo, useState } from "react";
+import { ComponentType, useEffect, useMemo, useState } from "react";
 import {
   Landmark, HeartPulse, TerminalSquare, Users, GraduationCap,
   LayoutDashboard, FileText, CalendarDays, ListChecks, BarChart3,
@@ -9,140 +9,51 @@ import {
   GitBranch, BellRing, Flag, DollarSign, Lock,
   UserCheck, Briefcase, MessageCircle,
   Home, LogIn, UserPlus, User, Settings, HelpCircle, Headphones,
+  Info, Tag, ShieldCheck, Sparkles, AlertTriangle,
+  Paintbrush, Download, Loader2,
 } from "lucide-react";
-import {
-  FintechDashboard, InvoiceForm, FintechAnalytics,
-  PaymentsScreen, CardsScreen, ExpenseApprovals, BudgetsScreen,
-  RiskComplianceScreen, PayrollDisbursementScreen, WealthOptimizerScreen,
-  FintechHome, FintechLogin, FintechRegister, FintechProfile, FintechSettings, FintechFAQ, FintechSupport,
-} from "./domains/fintech";
-import {
-  HealthDashboard, SchedulerScreen, PatientDirectory,
-  TelehealthScreen, PharmacyInventory, IntakeForm, WardOccupancy,
-  MedicalBillingScreen,
-  HealthHome, HealthLogin, HealthRegister, HealthProfile, HealthSettings, HealthFAQ, HealthSupport,
-} from "./domains/healthtech";
-import {
-  DevOpsDashboard, KanbanMini, LiveLogs,
-  DeploymentsScreen, AlertsScreen, FeatureFlags, CostScreen,
-  IAMSecurityScreen,
-  DevOpsHome, DevOpsLogin, DevOpsRegister, DevOpsProfile, DevOpsSettings, DevOpsFAQ, DevOpsSupport,
-} from "./domains/devops";
-import {
-  ATSPipeline, JobPostForm,
-  OnboardingScreen, DEIAnalyticsScreen, TalentMarketplaceScreen,
-  HRHome, HRLogin, HRRegister, HRProfile, HRSettings, HRFAQ, HRSupport,
-} from "./domains/hrtech";
-import {
-  LMSDashboard, QuizScreen,
-  VirtualClassroomScreen, GradingMatrixScreen, ParentPortalScreen,
-  EdTechHome, EdTechLogin, EdTechRegister, EdTechProfile, EdTechSettings, EdTechFAQ, EdTechSupport,
-} from "./domains/edtech";
+import * as fintech from "./domains/fintech";
+import * as healthtech from "./domains/healthtech";
+import * as devops from "./domains/devops";
+import * as hrtech from "./domains/hrtech";
+import * as edtech from "./domains/edtech";
+import { DOMAIN_DEFS, DomainDef } from "./export/registry";
+import { exportProject } from "./export/exportProject";
+import { ThemeStudio } from "./components/ThemeStudio";
+import { Theme, loadTheme, applyTheme, saveTheme } from "./theme";
 
-type View = { id: string; label: string; icon: typeof LayoutDashboard; el: JSX.Element; group?: string };
-type Domain = { id: string; label: string; sub: string; icon: typeof Landmark; views: View[] };
+type IconType = typeof LayoutDashboard;
 
-const DOMAINS: Domain[] = [
-  {
-    id: "fintech", label: "FinTech", sub: "Banking · Treasury · Compliance", icon: Landmark,
-    views: [
-      // ── Public / onboarding ──
-      { id: "home", label: "Home", icon: Home, el: <FintechHome />, group: "Public" },
-      { id: "login", label: "Sign in", icon: LogIn, el: <FintechLogin />, group: "Public" },
-      { id: "register", label: "Create account", icon: UserPlus, el: <FintechRegister />, group: "Public" },
-      // ── Core app ──
-      { id: "dash", label: "Treasury dashboard", icon: LayoutDashboard, el: <FintechDashboard />, group: "App" },
-      { id: "payments", label: "Send a payment", icon: Send, el: <PaymentsScreen />, group: "App" },
-      { id: "cards", label: "Corporate cards", icon: CreditCard, el: <CardsScreen />, group: "App" },
-      { id: "invoice", label: "New invoice", icon: FileText, el: <InvoiceForm />, group: "App" },
-      { id: "expenses", label: "Expense approvals", icon: Receipt, el: <ExpenseApprovals />, group: "App" },
-      { id: "budgets", label: "Budgets", icon: PiggyBank, el: <BudgetsScreen />, group: "App" },
-      { id: "payroll", label: "Payroll disbursement", icon: Building2, el: <PayrollDisbursementScreen />, group: "App" },
-      { id: "compliance", label: "Risk & compliance", icon: Shield, el: <RiskComplianceScreen />, group: "App" },
-      { id: "wealth", label: "Liquidity optimizer", icon: TrendingUp, el: <WealthOptimizerScreen />, group: "App" },
-      { id: "analytics", label: "Analytics", icon: BarChart3, el: <FintechAnalytics />, group: "App" },
-      // ── Account ──
-      { id: "profile", label: "Profile", icon: User, el: <FintechProfile />, group: "Account" },
-      { id: "settings", label: "Settings", icon: Settings, el: <FintechSettings />, group: "Account" },
-      { id: "faq", label: "FAQ", icon: HelpCircle, el: <FintechFAQ />, group: "Account" },
-      { id: "support", label: "Support", icon: Headphones, el: <FintechSupport />, group: "Account" },
-    ],
-  },
-  {
-    id: "health", label: "HealthTech", sub: "EHR · ER · Scheduling · Billing", icon: HeartPulse,
-    views: [
-      { id: "home", label: "Home", icon: Home, el: <HealthHome />, group: "Public" },
-      { id: "login", label: "Sign in", icon: LogIn, el: <HealthLogin />, group: "Public" },
-      { id: "register", label: "Create account", icon: UserPlus, el: <HealthRegister />, group: "Public" },
-      { id: "dash", label: "Clinical dashboard", icon: LayoutDashboard, el: <HealthDashboard />, group: "App" },
-      { id: "intake", label: "Patient intake form", icon: ClipboardList, el: <IntakeForm />, group: "App" },
-      { id: "scheduler", label: "Appointment grid", icon: CalendarDays, el: <SchedulerScreen />, group: "App" },
-      { id: "patients", label: "Patient directory", icon: Users, el: <PatientDirectory />, group: "App" },
-      { id: "telehealth", label: "Telehealth suite", icon: Video, el: <TelehealthScreen />, group: "App" },
-      { id: "pharmacy", label: "Pharmacy inventory", icon: Pill, el: <PharmacyInventory />, group: "App" },
-      { id: "wards", label: "Ward occupancy", icon: BedDouble, el: <WardOccupancy />, group: "App" },
-      { id: "billing", label: "Medical billing", icon: Receipt, el: <MedicalBillingScreen />, group: "App" },
-      { id: "profile", label: "Profile", icon: User, el: <HealthProfile />, group: "Account" },
-      { id: "settings", label: "Settings", icon: Settings, el: <HealthSettings />, group: "Account" },
-      { id: "faq", label: "FAQ", icon: HelpCircle, el: <HealthFAQ />, group: "Account" },
-      { id: "support", label: "Support", icon: Headphones, el: <HealthSupport />, group: "Account" },
-    ],
-  },
-  {
-    id: "devops", label: "IT / DevOps", sub: "Logs · Incidents · Security · FinOps", icon: TerminalSquare,
-    views: [
-      { id: "home", label: "Home", icon: Home, el: <DevOpsHome />, group: "Public" },
-      { id: "login", label: "Sign in", icon: LogIn, el: <DevOpsLogin />, group: "Public" },
-      { id: "register", label: "Create account", icon: UserPlus, el: <DevOpsRegister />, group: "Public" },
-      { id: "dash", label: "Ops dashboard", icon: LayoutDashboard, el: <DevOpsDashboard />, group: "App" },
-      { id: "deploys", label: "CI/CD pipelines", icon: GitBranch, el: <DeploymentsScreen />, group: "App" },
-      { id: "alerts", label: "Alerts & on-call", icon: BellRing, el: <AlertsScreen />, group: "App" },
-      { id: "board", label: "Incident board", icon: Boxes, el: <div className="max-w-md mx-auto"><KanbanMini /></div>, group: "App" },
-      { id: "logs", label: "Log viewer", icon: ListChecks, el: <div className="max-w-3xl mx-auto"><LiveLogs /></div>, group: "App" },
-      { id: "flags", label: "Feature flags", icon: Flag, el: <FeatureFlags />, group: "App" },
-      { id: "costs", label: "Cloud costs", icon: DollarSign, el: <CostScreen />, group: "App" },
-      { id: "iam", label: "IAM & security", icon: Lock, el: <IAMSecurityScreen />, group: "App" },
-      { id: "profile", label: "Profile", icon: User, el: <DevOpsProfile />, group: "Account" },
-      { id: "settings", label: "Settings", icon: Settings, el: <DevOpsSettings />, group: "Account" },
-      { id: "faq", label: "FAQ", icon: HelpCircle, el: <DevOpsFAQ />, group: "Account" },
-      { id: "support", label: "Support", icon: Headphones, el: <DevOpsSupport />, group: "Account" },
-    ],
-  },
-  {
-    id: "hrtech", label: "HRTech", sub: "ATS · Onboarding · Talent · DEI", icon: Users,
-    views: [
-      { id: "home", label: "Home", icon: Home, el: <HRHome />, group: "Public" },
-      { id: "login", label: "Sign in", icon: LogIn, el: <HRLogin />, group: "Public" },
-      { id: "register", label: "Create account", icon: UserPlus, el: <HRRegister />, group: "Public" },
-      { id: "pipeline", label: "Candidate pipeline", icon: LayoutDashboard, el: <ATSPipeline />, group: "App" },
-      { id: "jobpost", label: "Create job posting", icon: FileText, el: <JobPostForm />, group: "App" },
-      { id: "onboarding", label: "Onboarding center", icon: UserCheck, el: <OnboardingScreen />, group: "App" },
-      { id: "talent", label: "Talent marketplace", icon: Briefcase, el: <TalentMarketplaceScreen />, group: "App" },
-      { id: "dei", label: "DEI analytics", icon: BarChart3, el: <DEIAnalyticsScreen />, group: "App" },
-      { id: "profile", label: "Profile", icon: User, el: <HRProfile />, group: "Account" },
-      { id: "settings", label: "Settings", icon: Settings, el: <HRSettings />, group: "Account" },
-      { id: "faq", label: "FAQ", icon: HelpCircle, el: <HRFAQ />, group: "Account" },
-      { id: "support", label: "Support", icon: Headphones, el: <HRSupport />, group: "Account" },
-    ],
-  },
-  {
-    id: "edtech", label: "EdTech", sub: "LMS · Assessments · Classroom", icon: GraduationCap,
-    views: [
-      { id: "home", label: "Home", icon: Home, el: <EdTechHome />, group: "Public" },
-      { id: "login", label: "Sign in", icon: LogIn, el: <EdTechLogin />, group: "Public" },
-      { id: "register", label: "Create account", icon: UserPlus, el: <EdTechRegister />, group: "Public" },
-      { id: "dash", label: "Learning dashboard", icon: LayoutDashboard, el: <LMSDashboard />, group: "App" },
-      { id: "classroom", label: "Virtual classroom", icon: Video, el: <VirtualClassroomScreen />, group: "App" },
-      { id: "quiz", label: "Checkpoint quiz", icon: ListChecks, el: <QuizScreen />, group: "App" },
-      { id: "grading", label: "Grading matrix", icon: ClipboardList, el: <GradingMatrixScreen />, group: "App" },
-      { id: "parent", label: "Parent portal", icon: MessageCircle, el: <ParentPortalScreen />, group: "App" },
-      { id: "profile", label: "Profile", icon: User, el: <EdTechProfile />, group: "Account" },
-      { id: "settings", label: "Settings", icon: Settings, el: <EdTechSettings />, group: "Account" },
-      { id: "faq", label: "FAQ", icon: HelpCircle, el: <EdTechFAQ />, group: "Account" },
-      { id: "support", label: "Support", icon: Headphones, el: <EdTechSupport />, group: "Account" },
-    ],
-  },
-];
+// Icon names referenced by the registry, resolved to the explicit imports above.
+const ICONS: Record<string, IconType> = {
+  Landmark, HeartPulse, TerminalSquare, Users, GraduationCap,
+  LayoutDashboard, FileText, CalendarDays, ListChecks, BarChart3,
+  Boxes, CreditCard, Send, PiggyBank, Shield, TrendingUp, Building2,
+  Video, Pill, BedDouble, ClipboardList, Receipt,
+  GitBranch, BellRing, Flag, DollarSign, Lock,
+  UserCheck, Briefcase, MessageCircle,
+  Home, LogIn, UserPlus, User, Settings, HelpCircle, Headphones,
+  Info, Tag, ShieldCheck, Sparkles, AlertTriangle,
+};
+
+const MODULES: Record<string, Record<string, unknown>> = { fintech, healthtech, devops, hrtech, edtech };
+
+type View = { id: string; label: string; icon: IconType; el: JSX.Element; group?: string };
+type Domain = { id: string; label: string; sub: string; icon: IconType; def: DomainDef; views: View[] };
+
+const DOMAINS: Domain[] = DOMAIN_DEFS.map(def => ({
+  id: def.id,
+  label: def.label,
+  sub: def.sub,
+  icon: ICONS[def.icon],
+  def,
+  views: def.views.map(v => {
+    const C = MODULES[def.file][v.comp] as ComponentType;
+    if (!C) throw new Error(`Registry error: ${v.comp} not exported from domains/${def.file}`);
+    const el = v.wrap ? <div className={v.wrap}><C /></div> : <C />;
+    return { id: v.id, label: v.label, icon: ICONS[v.icon], el, group: v.group };
+  }),
+}));
 
 function DomainPicker({ domain, onPick }: { domain: Domain; onPick: (d: Domain) => void }) {
   const [open, setOpen] = useState(false);
@@ -200,13 +111,36 @@ export default function App() {
   const [dark, setDark] = useState(() => window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false);
   const [domain, setDomain] = useState(DOMAINS[0]);
   const [viewId, setViewId] = useState(DOMAINS[0].views[0].id);
+  const [theme, setTheme] = useState<Theme>(loadTheme);
+  const [themeOpen, setThemeOpen] = useState(false);
+  const [exporting, setExporting] = useState(false);
   const view = domain.views.find(v => v.id === viewId) ?? domain.views[0];
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark);
   }, [dark]);
 
+  useEffect(() => { applyTheme(theme); }, [theme]);
+
   const pick = (d: Domain) => { setDomain(d); setViewId(d.views[0].id); };
+  const applySelectedTheme = (nextTheme: Theme) => {
+    setTheme(nextTheme);
+    saveTheme(nextTheme);
+    applyTheme(nextTheme);
+  };
+
+  const doExport = async () => {
+    if (exporting) return;
+    setExporting(true);
+    try {
+      await exportProject(domain.def, theme);
+    } catch (err) {
+      console.error("Export failed:", err);
+      alert("Export failed — see console for details.");
+    } finally {
+      setExporting(false);
+    }
+  };
 
   // Group views by their group label for the sidebar
   const groups = useMemo(() => {
@@ -223,7 +157,7 @@ export default function App() {
       {/* Sidebar */}
       <aside className="hidden md:flex w-60 shrink-0 flex-col surface border-r min-h-screen sticky top-0">
         <div className="px-5 py-5 flex items-center gap-2.5 border-b border-[var(--line)]">
-          <span className="grid place-items-center h-8 w-8 rounded-xl bg-gradient-to-br from-accent to-violet-600 text-white font-display font-bold text-sm">F</span>
+          <span className="grid place-items-center h-8 w-8 rounded-xl bg-gradient-to-br from-accent to-grad text-white font-display font-bold text-sm">F</span>
           <div className="leading-tight">
             <div className="font-display font-bold tracking-tight">ForgeUI</div>
             <div className="text-[10px] ink-2 font-mono">template builder</div>
@@ -256,6 +190,14 @@ export default function App() {
           <DomainPicker domain={domain} onPick={pick} />
           <div className="flex items-center gap-2">
             <span className="hidden sm:block text-xs ink-2">Generated template · <span className="font-mono">{domain.id}/{view.id}</span></span>
+            <button onClick={() => setThemeOpen(true)} className="btn-ghost !p-2" aria-label="Open theme studio" title="Change theme colours">
+              <Paintbrush size={16} />
+            </button>
+            <button onClick={doExport} disabled={exporting} className="btn-ghost !px-3 !py-2 gap-1.5 disabled:opacity-60"
+              aria-label={`Export ${domain.label} as Vite project`} title="Export this domain as a Vite project zip">
+              {exporting ? <Loader2 size={15} className="animate-spin" /> : <Download size={15} />}
+              <span className="hidden sm:inline text-xs font-semibold">{exporting ? "Exporting…" : "Export project"}</span>
+            </button>
             <button onClick={() => setDark(d => !d)} className="btn-ghost !p-2" aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}>
               {dark ? <Sun size={16} /> : <Moon size={16} />}
             </button>
@@ -276,6 +218,10 @@ export default function App() {
           {view.el}
         </main>
       </div>
+
+      {themeOpen && (
+        <ThemeStudio open={themeOpen} onClose={() => setThemeOpen(false)} theme={theme} onApply={applySelectedTheme} />
+      )}
     </div>
   );
 }

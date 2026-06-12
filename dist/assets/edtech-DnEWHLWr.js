@@ -1,4 +1,4 @@
-// src/domains/edtech.tsx
+const e=`// src/domains/edtech.tsx
 import { useState } from "react";
 import { HomePage, LoginPage, RegisterPage, ProfilePage, SettingsPage, FAQPage, SupportPage, DomainMeta } from "./pages";
 import { AboutPage, PrivacyPage, PricingPage, NotificationsPage, ChangelogPage, NotFoundPage, DomainExtra } from "./pages-extra";
@@ -126,7 +126,7 @@ export function LMSDashboard() {
                     <span className="text-xs ink-2 font-mono">{m.done}/{m.lessons} lessons</span>
                   </div>
                   <div className="mt-2.5 h-2 rounded-full bg-[var(--line)] overflow-hidden">
-                    <div className={`h-full rounded-full transition-all duration-700 ${pct === 100 ? "bg-emerald-500" : "bg-accent"}`} style={{ width: `${pct}%` }} />
+                    <div className={\`h-full rounded-full transition-all duration-700 \${pct === 100 ? "bg-emerald-500" : "bg-accent"}\`} style={{ width: \`\${pct}%\` }} />
                   </div>
                 </div>
               );
@@ -171,8 +171,8 @@ export function QuizScreen() {
           const wrong = revealed && picked === i && i !== quiz.answer;
           return (
             <button key={opt} disabled={revealed} onClick={() => setPicked(i)}
-              className={`w-full flex items-center justify-between gap-3 rounded-lg border p-3.5 text-left text-sm transition-all duration-200
-                ${correct ? "border-emerald-500/60 bg-emerald-500/10" : wrong ? "border-rose-500/60 bg-rose-500/10" : "border-[var(--line)] hover:border-accent/50 hover:bg-accent/5"}`}>
+              className={\`w-full flex items-center justify-between gap-3 rounded-lg border p-3.5 text-left text-sm transition-all duration-200
+                \${correct ? "border-emerald-500/60 bg-emerald-500/10" : wrong ? "border-rose-500/60 bg-rose-500/10" : "border-[var(--line)] hover:border-accent/50 hover:bg-accent/5"}\`}>
               <span>{opt}</span>
               {correct && <CheckCircle2 size={17} className="text-emerald-500 shrink-0" />}
               {wrong && <XCircle size={17} className="text-rose-500 shrink-0" />}
@@ -214,10 +214,10 @@ export function VirtualClassroomScreen() {
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {classParticipants.map(p => (
             <div key={p.name}
-              className={`relative rounded-xl overflow-hidden flex items-center justify-center bg-obsidian-950 border border-[var(--line)] ${p.instructor ? "sm:col-span-2 ring-2 ring-accent" : ""}`}
+              className={\`relative rounded-xl overflow-hidden flex items-center justify-center bg-obsidian-950 border border-[var(--line)] \${p.instructor ? "sm:col-span-2 ring-2 ring-accent" : ""}\`}
               style={{ aspectRatio: "16/9" }}>
               {p.video && <div className="absolute inset-0 bg-gradient-to-br from-accent/20 via-transparent to-grad/20" />}
-              <div className={`rounded-full bg-accent/20 grid place-items-center font-display font-bold text-accent z-10 ${p.instructor ? "h-16 w-16 text-lg" : "h-10 w-10"}`}>{p.initials}</div>
+              <div className={\`rounded-full bg-accent/20 grid place-items-center font-display font-bold text-accent z-10 \${p.instructor ? "h-16 w-16 text-lg" : "h-10 w-10"}\`}>{p.initials}</div>
               <div className="absolute bottom-0 inset-x-0 p-2 flex items-center justify-between">
                 <span className="text-[11px] text-white font-medium truncate">{p.name}{p.instructor ? " (Instructor)" : ""}</span>
                 <div className="flex items-center gap-1">
@@ -234,8 +234,8 @@ export function VirtualClassroomScreen() {
           <div className="space-y-2 mt-1">
             {["Very comfortable — ready for advanced patterns", "Getting there — need a bit more practice", "Somewhat lost — would like a review", "Completely lost — need help"].map((opt, i) => (
               <button key={i} onClick={() => setPoll(i)}
-                className={`w-full flex items-center gap-3 rounded-lg border p-3 text-sm text-left transition-colors ${poll === i ? "border-accent bg-accent/8 font-medium" : "border-[var(--line)] hover:border-accent/40"}`}>
-                <span className={`h-4 w-4 rounded-full border-2 shrink-0 grid place-items-center transition-colors ${poll === i ? "border-accent bg-accent" : "border-[var(--line)]"}`}>
+                className={\`w-full flex items-center gap-3 rounded-lg border p-3 text-sm text-left transition-colors \${poll === i ? "border-accent bg-accent/8 font-medium" : "border-[var(--line)] hover:border-accent/40"}\`}>
+                <span className={\`h-4 w-4 rounded-full border-2 shrink-0 grid place-items-center transition-colors \${poll === i ? "border-accent bg-accent" : "border-[var(--line)]"}\`}>
                   {poll === i && <span className="h-1.5 w-1.5 rounded-full bg-white" />}
                 </span>
                 {opt}
@@ -258,7 +258,7 @@ export function VirtualClassroomScreen() {
             ))}
           </div>
           <button onClick={() => setHandRaised(h => !h)}
-            className={`w-full justify-center text-sm ${handRaised ? "btn-primary" : "btn-ghost"}`}>
+            className={\`w-full justify-center text-sm \${handRaised ? "btn-primary" : "btn-ghost"}\`}>
             ✋ {handRaised ? "Lower hand" : "Raise hand"}
           </button>
         </Card>
@@ -285,7 +285,7 @@ export function VirtualClassroomScreen() {
         </Card>
 
         <div className="flex items-center gap-2">
-          <button onClick={() => setMuted(m => !m)} className={`flex-1 justify-center ${muted ? "btn-ghost" : "btn-primary"}`}>
+          <button onClick={() => setMuted(m => !m)} className={\`flex-1 justify-center \${muted ? "btn-ghost" : "btn-primary"}\`}>
             {muted ? <MicOff size={14} /> : <Mic size={14} />}
             {muted ? "Unmute" : "Mute"}
           </button>
@@ -333,7 +333,7 @@ export function GradingMatrixScreen() {
           <div className="space-y-2">
             {submissions.map(s => (
               <button key={s.id} onClick={() => { setActiveSub(s); reset(); setScores(Object.fromEntries(rubric.map(r => [r.criterion, Math.round(r.max * (0.72 + Math.random() * 0.22))]))); }}
-                className={`w-full flex items-center justify-between rounded-lg border p-3 text-left transition-colors ${activeSub.id === s.id ? "border-accent/60 bg-accent/5" : "border-[var(--line)] hover:border-accent/40"}`}>
+                className={\`w-full flex items-center justify-between rounded-lg border p-3 text-left transition-colors \${activeSub.id === s.id ? "border-accent/60 bg-accent/5" : "border-[var(--line)] hover:border-accent/40"}\`}>
                 <div>
                   <div className="text-sm font-medium">{s.student}</div>
                   <div className="text-xs ink-2">{s.title} · {s.wordCount} words</div>
@@ -359,7 +359,7 @@ export function GradingMatrixScreen() {
         <Card>
           <SectionTitle eyebrow="Rubric" title="Criterion scores" right={
             <div className="flex items-center gap-2">
-              <span className={`font-display text-xl font-bold ${total >= 85 ? "text-emerald-600 dark:text-emerald-400" : total >= 70 ? "text-amber-600 dark:text-amber-400" : "text-rose-500"}`}>{total}/100</span>
+              <span className={\`font-display text-xl font-bold \${total >= 85 ? "text-emerald-600 dark:text-emerald-400" : total >= 70 ? "text-amber-600 dark:text-amber-400" : "text-rose-500"}\`}>{total}/100</span>
               <Badge tone={total >= 85 ? "green" : total >= 70 ? "amber" : "red"}>{total >= 85 ? "A" : total >= 70 ? "B" : "C"}</Badge>
             </div>
           } />
@@ -387,7 +387,7 @@ export function GradingMatrixScreen() {
               </div>
               <div className="mt-5 flex items-center gap-3">
                 <button onClick={() => setRecording(r => !r)}
-                  className={`btn-ghost !py-1.5 text-xs flex-1 justify-center ${recording ? "border-rose-500/40 text-rose-600 dark:text-rose-400" : ""}`}>
+                  className={\`btn-ghost !py-1.5 text-xs flex-1 justify-center \${recording ? "border-rose-500/40 text-rose-600 dark:text-rose-400" : ""}\`}>
                   {recording ? <><MicOff size={13} /> Stop recording</> : <><Mic size={13} /> Record feedback</>}
                 </button>
                 <button className="btn-primary !py-1.5 text-xs flex-1 justify-center" onClick={submit}>Submit grade</button>
@@ -452,7 +452,7 @@ export function ParentPortalScreen() {
                   </div>
                 </div>
                 <div className="h-1.5 rounded-full bg-[var(--line)] overflow-hidden">
-                  <div className="h-full rounded-full transition-all duration-700" style={{ width: `${g.current}%`, background: g.current >= 85 ? "#10b981" : g.current >= 75 ? "#4f6df5" : "#f59e0b" }} />
+                  <div className="h-full rounded-full transition-all duration-700" style={{ width: \`\${g.current}%\`, background: g.current >= 85 ? "#10b981" : g.current >= 75 ? "#4f6df5" : "#f59e0b" }} />
                 </div>
               </div>
             ))}
@@ -465,7 +465,7 @@ export function ParentPortalScreen() {
               <div key={m} className="flex-1 flex flex-col items-center gap-1.5">
                 <span className="text-xs ink-2 font-mono">{attendanceMonths[i]}</span>
                 <div className="w-full rounded-t-md transition-all"
-                  style={{ height: `${(attendanceMonths[i] / 14) * 72}px`, background: attendanceMonths[i] >= 14 ? "#10b981" : attendanceMonths[i] >= 12 ? "#4f6df5" : "#f59e0b" }} />
+                  style={{ height: \`\${(attendanceMonths[i] / 14) * 72}px\`, background: attendanceMonths[i] >= 14 ? "#10b981" : attendanceMonths[i] >= 12 ? "#4f6df5" : "#f59e0b" }} />
                 <span className="text-[10px] ink-2">{m}</span>
               </div>
             ))}
@@ -485,7 +485,7 @@ export function ParentPortalScreen() {
           <div className="space-y-2">
             {teacherMessages.map(m => (
               <button key={m.from + m.time} onClick={() => { setSelectedMsg(m); setReplyOpen(true); reset(); }}
-                className={`w-full text-left rounded-lg border p-3 transition-colors hover:border-accent/40 ${!m.read ? "border-accent/40 bg-accent/5" : "border-[var(--line)]"}`}>
+                className={\`w-full text-left rounded-lg border p-3 transition-colors hover:border-accent/40 \${!m.read ? "border-accent/40 bg-accent/5" : "border-[var(--line)]"}\`}>
                 <div className="flex items-center justify-between mb-1">
                   <div className="text-sm font-medium">{m.from}</div>
                   <div className="text-[10px] ink-2">{m.time}</div>
@@ -529,3 +529,4 @@ export function ParentPortalScreen() {
     </div>
   );
 }
+`;export{e as default};

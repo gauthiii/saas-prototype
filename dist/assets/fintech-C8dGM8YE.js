@@ -1,4 +1,4 @@
-// src/domains/fintech.tsx
+const e=`// src/domains/fintech.tsx
 import { useState } from "react";
 import { HomePage, LoginPage, RegisterPage, ProfilePage, SettingsPage, FAQPage, SupportPage, DomainMeta } from "./pages";
 import { AboutPage, PrivacyPage, PricingPage, NotificationsPage, ChangelogPage, NotFoundPage, DomainExtra } from "./pages-extra";
@@ -132,7 +132,7 @@ export function FintechDashboard() {
                   <div className="text-xs ink-2 font-mono">{t.id}</div>
                 </div>
                 <div className="text-xs ink-2 hidden sm:block">{t.date}</div>
-                <div className={`text-sm font-semibold font-mono text-right ${t.amount > 0 ? "text-emerald-600 dark:text-emerald-400" : ""}`}>{money(t.amount)}</div>
+                <div className={\`text-sm font-semibold font-mono text-right \${t.amount > 0 ? "text-emerald-600 dark:text-emerald-400" : ""}\`}>{money(t.amount)}</div>
                 <div className="text-right"><Badge tone={statusTone[t.status]}>{t.status}</Badge></div>
               </button>
             ))}
@@ -156,7 +156,7 @@ export function FintechDashboard() {
       <Drawer open={!!selected} onClose={() => setSelected(null)} title="Transaction detail">
         {selected && (
           <div className="space-y-4">
-            <div className={`font-display text-3xl font-bold ${selected.amount > 0 ? "text-emerald-600 dark:text-emerald-400" : ""}`}>{money(selected.amount)}</div>
+            <div className={\`font-display text-3xl font-bold \${selected.amount > 0 ? "text-emerald-600 dark:text-emerald-400" : ""}\`}>{money(selected.amount)}</div>
             <Badge tone={statusTone[selected.status]} pulse={selected.status === "Pending"}>{selected.status}</Badge>
             <dl className="space-y-3 text-sm">
               {[["Counterparty", selected.party], ["Reference", selected.id], ["Date", selected.date], ["Method", selected.method], ["Account", "Operating · ••6610"]].map(([k, v]) => (
@@ -184,8 +184,8 @@ export function InvoiceForm() {
         <ol className="flex items-center gap-2 mb-6">
           {steps.map((s, i) => (
             <li key={s} className="flex items-center gap-2 flex-1">
-              <span className={`grid place-items-center h-6 w-6 rounded-full text-[11px] font-bold transition-colors ${i <= step ? "bg-accent text-white" : "surface ink-2"}`}>{i + 1}</span>
-              <span className={`text-xs font-medium ${i === step ? "" : "ink-2"}`}>{s}</span>
+              <span className={\`grid place-items-center h-6 w-6 rounded-full text-[11px] font-bold transition-colors \${i <= step ? "bg-accent text-white" : "surface ink-2"}\`}>{i + 1}</span>
+              <span className={\`text-xs font-medium \${i === step ? "" : "ink-2"}\`}>{s}</span>
               {i < steps.length - 1 && <span className="h-px flex-1 bg-[var(--line)]" />}
             </li>
           ))}
@@ -300,7 +300,7 @@ export function PaymentsScreen() {
         <div className="space-y-2">
           {payees.map(p => (
             <button key={p.name} onClick={() => setPayee(p.name)}
-              className={`w-full flex items-center justify-between rounded-lg border p-3 text-left transition-colors ${payee === p.name ? "border-accent/60 bg-accent/5" : "border-[var(--line)] hover:border-accent/40"}`}>
+              className={\`w-full flex items-center justify-between rounded-lg border p-3 text-left transition-colors \${payee === p.name ? "border-accent/60 bg-accent/5" : "border-[var(--line)] hover:border-accent/40"}\`}>
               <div>
                 <div className="text-sm font-medium">{p.name}</div>
                 <div className="text-xs ink-2">{p.detail}</div>
@@ -333,9 +333,9 @@ export function CardsScreen() {
           const pct = Math.round((c.spent / c.limit) * 100);
           const isFrozen = !!frozen[c.id];
           return (
-            <Card key={c.id} className={`card-hover transition-opacity ${isFrozen ? "opacity-60" : ""}`}>
+            <Card key={c.id} className={\`card-hover transition-opacity \${isFrozen ? "opacity-60" : ""}\`}>
               <div className="flex flex-wrap items-center gap-4">
-                <div className={`h-12 w-[76px] rounded-lg grid place-items-center text-white shrink-0 ${isFrozen ? "bg-zinc-500" : "bg-gradient-to-br from-accent to-grad"}`}>
+                <div className={\`h-12 w-[76px] rounded-lg grid place-items-center text-white shrink-0 \${isFrozen ? "bg-zinc-500" : "bg-gradient-to-br from-accent to-grad"}\`}>
                   <CreditCard size={18} />
                 </div>
                 <div className="flex-1 min-w-40">
@@ -349,11 +349,11 @@ export function CardsScreen() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Snowflake size={14} className={isFrozen ? "text-sky-500" : "ink-2"} />
-                  <Toggle on={isFrozen} onChange={v => setFrozen(f => ({ ...f, [c.id]: v }))} label={`Freeze card ${c.id}`} />
+                  <Toggle on={isFrozen} onChange={v => setFrozen(f => ({ ...f, [c.id]: v }))} label={\`Freeze card \${c.id}\`} />
                 </div>
               </div>
               <div className="mt-3 h-1.5 rounded-full bg-[var(--line)] overflow-hidden">
-                <div className={`h-full rounded-full transition-all duration-500 ${pct > 90 ? "bg-rose-500" : pct > 70 ? "bg-amber-500" : "bg-accent"}`} style={{ width: `${pct}%` }} />
+                <div className={\`h-full rounded-full transition-all duration-500 \${pct > 90 ? "bg-rose-500" : pct > 70 ? "bg-amber-500" : "bg-accent"}\`} style={{ width: \`\${pct}%\` }} />
               </div>
               {isFrozen && <div className="mt-2 text-xs text-sky-600 dark:text-sky-400 font-medium animate-fadeUp">Card frozen — all new authorizations will decline.</div>}
             </Card>
@@ -399,7 +399,7 @@ export function ExpenseApprovals() {
           {expensesSeed.map(e => {
             const verdict = decided[e.id];
             return (
-              <div key={e.id} className={`rounded-lg border p-4 transition-all duration-300 ${verdict === "approved" ? "border-emerald-500/40 bg-emerald-500/5" : verdict === "rejected" ? "border-rose-500/40 bg-rose-500/5 opacity-70" : "border-[var(--line)]"}`}>
+              <div key={e.id} className={\`rounded-lg border p-4 transition-all duration-300 \${verdict === "approved" ? "border-emerald-500/40 bg-emerald-500/5" : verdict === "rejected" ? "border-rose-500/40 bg-rose-500/5 opacity-70" : "border-[var(--line)]"}\`}>
                 <div className="flex flex-wrap items-center gap-3">
                   <div className="flex-1 min-w-44">
                     <div className="text-sm font-medium">{e.desc}</div>
@@ -462,7 +462,7 @@ export function BudgetsScreen() {
                     <span className="font-mono text-xs ink-2">{money(b.spent)} / {money(b.cap)} · <span className={pct > 85 ? "text-amber-600 dark:text-amber-400 font-semibold" : ""}>{pct}%</span></span>
                   </div>
                   <div className="h-2 rounded-full bg-[var(--line)] overflow-hidden">
-                    <div className="h-full rounded-full transition-all duration-700" style={{ width: `${pct}%`, background: pct > 85 ? "#f59e0b" : b.color }} />
+                    <div className="h-full rounded-full transition-all duration-700" style={{ width: \`\${pct}%\`, background: pct > 85 ? "#f59e0b" : b.color }} />
                   </div>
                 </div>
               );
@@ -504,7 +504,7 @@ export function RiskComplianceScreen() {
     <div className="grid gap-5 xl:grid-cols-3">
       <div className="xl:col-span-2 space-y-5">
         <div className="grid gap-4 sm:grid-cols-3">
-          <Stat label="Compliance score" value={`${score}/100`} delta="Satisfactory" deltaTone="green" icon={<Shield size={16} />} />
+          <Stat label="Compliance score" value={\`\${score}/100\`} delta="Satisfactory" deltaTone="green" icon={<Shield size={16} />} />
           <Stat label="Pending KYC" value="2" delta="Action needed" deltaTone="amber" icon={<AlertTriangle size={16} />} />
           <Stat label="AML alerts · 30d" value="3" delta="+1 vs prior month" deltaTone="red" icon={<AlertTriangle size={16} />} />
         </div>
@@ -529,7 +529,7 @@ export function RiskComplianceScreen() {
           <SectionTitle eyebrow="AML" title="Automated flag log" right={<Badge tone="red" pulse>Live</Badge>} />
           <div className="space-y-3">
             {amlFlags.map(f => (
-              <div key={f.id} className={`rounded-lg border p-3.5 ${f.severity === "red" ? "border-rose-500/30 bg-rose-500/5" : "border-amber-500/30 bg-amber-500/5"}`}>
+              <div key={f.id} className={\`rounded-lg border p-3.5 \${f.severity === "red" ? "border-rose-500/30 bg-rose-500/5" : "border-amber-500/30 bg-amber-500/5"}\`}>
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <div className="flex items-center gap-2 mb-1">
@@ -554,7 +554,7 @@ export function RiskComplianceScreen() {
               <svg viewBox="0 0 42 42" className="w-full h-full -rotate-90">
                 <circle cx="21" cy="21" r="15.9" fill="none" stroke="var(--line)" strokeWidth="4" />
                 <circle cx="21" cy="21" r="15.9" fill="none" stroke={score >= 80 ? "#10b981" : score >= 60 ? "#f59e0b" : "#f43f5e"} strokeWidth="4"
-                  strokeDasharray={`${(score / 100) * 100} 100`} strokeLinecap="round" />
+                  strokeDasharray={\`\${(score / 100) * 100} 100\`} strokeLinecap="round" />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <span className="font-display text-2xl font-bold">{score}</span>
@@ -568,7 +568,7 @@ export function RiskComplianceScreen() {
               <div key={k}>
                 <div className="flex justify-between text-xs mb-1"><span className="ink-2">{k}</span><span className="font-mono">{v}%</span></div>
                 <div className="h-1.5 rounded-full bg-[var(--line)] overflow-hidden">
-                  <div className="h-full rounded-full transition-all duration-700" style={{ width: `${v}%`, background: v >= 80 ? "#10b981" : v >= 60 ? "#f59e0b" : "#f43f5e" }} />
+                  <div className="h-full rounded-full transition-all duration-700" style={{ width: \`\${v}%\`, background: v >= 80 ? "#10b981" : v >= 60 ? "#f59e0b" : "#f43f5e" }} />
                 </div>
               </div>
             ))}
@@ -660,12 +660,12 @@ export function PayrollDisbursementScreen() {
             {approvalSteps.map((s, i) => (
               <div key={s.label} className="flex items-center flex-1">
                 <div className="flex flex-col items-center gap-1.5">
-                  <div className={`h-8 w-8 rounded-full grid place-items-center border-2 transition-colors ${s.done ? "border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "border-[var(--line)] ink-2"}`}>
+                  <div className={\`h-8 w-8 rounded-full grid place-items-center border-2 transition-colors \${s.done ? "border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "border-[var(--line)] ink-2"}\`}>
                     {s.done ? <CheckCircle2 size={16} /> : <span className="text-xs font-bold">{i + 1}</span>}
                   </div>
                   <span className="text-[10px] ink-2 text-center leading-tight w-16">{s.label}</span>
                 </div>
-                {i < approvalSteps.length - 1 && <div className={`flex-1 h-0.5 mb-5 mx-1 transition-colors ${s.done ? "bg-emerald-500/40" : "bg-[var(--line)]"}`} />}
+                {i < approvalSteps.length - 1 && <div className={\`flex-1 h-0.5 mb-5 mx-1 transition-colors \${s.done ? "bg-emerald-500/40" : "bg-[var(--line)]"}\`} />}
               </div>
             ))}
           </div>
@@ -694,7 +694,7 @@ export function PayrollDisbursementScreen() {
                   <span className="ink-2">{t.count} · avg {t.avg}</span>
                 </div>
                 <div className="h-2 rounded-full bg-[var(--line)] overflow-hidden">
-                  <div className="h-full rounded-full transition-all" style={{ width: `${(t.count / 26) * 100}%`, background: t.color }} />
+                  <div className="h-full rounded-full transition-all" style={{ width: \`\${(t.count / 26) * 100}%\`, background: t.color }} />
                 </div>
               </div>
             ))}
@@ -754,7 +754,7 @@ export function WealthOptimizerScreen() {
           <Stat label="Idle cash" value="$384k" delta="18% of total · deploy it" deltaTone="amber" />
         </div>
         <Card>
-          <SectionTitle eyebrow="Yield projection" title={`${horizon}-month return simulation`} right={
+          <SectionTitle eyebrow="Yield projection" title={\`\${horizon}-month return simulation\`} right={
             <div className="flex items-center gap-2 text-xs ink-2">
               Sweep funds
               <Toggle on={sweep} onChange={setSweep} label="Toggle sweep funds" />
@@ -763,7 +763,7 @@ export function WealthOptimizerScreen() {
           <AreaChart data={projData.slice(0, horizon)} stroke={sweep ? "#10b981" : "#4f6df5"} height={160} />
           <div className="mt-3 flex items-center justify-between text-sm">
             <span className="ink-2">Projected gain over {horizon} months</span>
-            <span className={`font-display font-bold text-base ${sweep ? "text-emerald-600 dark:text-emerald-400" : ""}`}>
+            <span className={\`font-display font-bold text-base \${sweep ? "text-emerald-600 dark:text-emerald-400" : ""}\`}>
               {sweep ? "+$124,000" : "+$12,840"}
             </span>
           </div>
@@ -812,3 +812,4 @@ export function WealthOptimizerScreen() {
     </div>
   );
 }
+`;export{e as default};

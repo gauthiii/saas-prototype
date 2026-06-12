@@ -1,4 +1,4 @@
-// src/domains/pages.tsx — shared page templates (Home, Auth, Profile, Settings, FAQ, Support)
+const e=`// src/domains/pages.tsx — shared page templates (Home, Auth, Profile, Settings, FAQ, Support)
 import { useState } from "react";
 import { User, Mail, Lock, Phone, MapPin, Bell, Palette, Shield, ChevronDown, ChevronRight, Send, CheckCircle2, Eye, EyeOff } from "lucide-react";
 import { Card, SectionTitle, Badge, Toggle } from "../components/ui";
@@ -175,7 +175,7 @@ export function RegisterPage({ meta }: { meta: DomainMeta }) {
 
       <div className="flex gap-2">
         {[1, 2].map(n => (
-          <div key={n} className={`flex-1 h-1.5 rounded-full transition-colors ${n <= step ? "bg-accent" : "bg-[var(--line)]"}`} />
+          <div key={n} className={\`flex-1 h-1.5 rounded-full transition-colors \${n <= step ? "bg-accent" : "bg-[var(--line)]"}\`} />
         ))}
       </div>
 
@@ -224,7 +224,7 @@ export function RegisterPage({ meta }: { meta: DomainMeta }) {
               <div className="text-sm font-semibold mb-1">Choose your plan</div>
               <div className="space-y-2">
                 {plans.map(p => (
-                  <label key={p.id} className={`flex items-center gap-3 rounded-xl border p-3 cursor-pointer transition-colors ${form.plan === p.id ? "border-accent bg-accent/5" : "border-[var(--line)]"}`}>
+                  <label key={p.id} className={\`flex items-center gap-3 rounded-xl border p-3 cursor-pointer transition-colors \${form.plan === p.id ? "border-accent bg-accent/5" : "border-[var(--line)]"}\`}>
                     <input type="radio" name="plan" value={p.id} checked={form.plan === p.id} onChange={upd("plan")} className="accent-[var(--accent)]" />
                     <div className="flex-1">
                       <div className="text-sm font-medium">{p.label}</div>
@@ -561,3 +561,4 @@ export function SupportPage({ meta }: { meta: DomainMeta }) {
     </div>
   );
 }
+`;export{e as default};

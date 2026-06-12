@@ -1,4 +1,4 @@
-// src/domains/healthtech.tsx
+const e=`// src/domains/healthtech.tsx
 import { Fragment, useState } from "react";
 import { HomePage, LoginPage, RegisterPage, ProfilePage, SettingsPage, FAQPage, SupportPage, DomainMeta } from "./pages";
 import { AboutPage, PrivacyPage, PricingPage, NotificationsPage, ChangelogPage, NotFoundPage, DomainExtra } from "./pages-extra";
@@ -136,7 +136,7 @@ export function HealthDashboard() {
             {triage.map(t => (
               <button key={t.name} onClick={() => setPatient(t)}
                 className="w-full flex items-center gap-3 rounded-lg border border-[var(--line)] p-3 hover:border-accent/40 transition-colors text-left">
-                <span className={`h-2.5 w-2.5 rounded-full shrink-0 ${t.priority === "Critical" ? "bg-rose-500 animate-pulseDot" : t.priority === "Urgent" ? "bg-amber-500" : "bg-emerald-500"}`} />
+                <span className={\`h-2.5 w-2.5 rounded-full shrink-0 \${t.priority === "Critical" ? "bg-rose-500 animate-pulseDot" : t.priority === "Urgent" ? "bg-amber-500" : "bg-emerald-500"}\`} />
                 <div className="flex-1">
                   <div className="text-sm font-medium">{t.name}</div>
                   <div className="text-xs ink-2">{t.complaint}</div>
@@ -220,11 +220,11 @@ export function SchedulerScreen() {
               <Fragment key={s}>
                 <div className="eyebrow py-2.5 text-right pr-1">{s}</div>
                 {days.map(d => {
-                  const k = `${d}-${s}`;
+                  const k = \`\${d}-\${s}\`;
                   const taken = booked[k];
                   return (
                     <button key={k} disabled={!!taken} onClick={() => setPicked(k)}
-                      className={`rounded-md border py-2.5 transition-all duration-150 ${taken ? "border-[var(--line)] ink-2 cursor-not-allowed opacity-60" : picked === k ? "border-accent bg-accent text-white shadow-glow" : "border-[var(--line)] hover:border-accent/50"}`}>
+                      className={\`rounded-md border py-2.5 transition-all duration-150 \${taken ? "border-[var(--line)] ink-2 cursor-not-allowed opacity-60" : picked === k ? "border-accent bg-accent text-white shadow-glow" : "border-[var(--line)] hover:border-accent/50"}\`}>
                       {taken ?? "Open"}
                     </button>
                   );
@@ -328,7 +328,7 @@ export function TelehealthScreen() {
           <div className="absolute top-3 left-3"><Badge tone="green" pulse>Encrypted</Badge></div>
           <div className="absolute bottom-4 inset-x-0 flex justify-center gap-3">
             <button onClick={() => setMuted(m => !m)} aria-label={muted ? "Unmute" : "Mute"}
-              className={`grid place-items-center h-11 w-11 rounded-full transition-colors ${muted ? "bg-amber-500 text-white" : "bg-white/15 text-white hover:bg-white/25"}`}>
+              className={\`grid place-items-center h-11 w-11 rounded-full transition-colors \${muted ? "bg-amber-500 text-white" : "bg-white/15 text-white hover:bg-white/25"}\`}>
               {muted ? <MicOff size={18} /> : <Mic size={18} />}
             </button>
             <button className="grid place-items-center h-11 w-11 rounded-full bg-white/15 text-white hover:bg-white/25 transition-colors" aria-label="Camera settings"><Video size={18} /></button>
@@ -344,8 +344,8 @@ export function TelehealthScreen() {
         <div className="px-5 py-3.5 border-b border-[var(--line)]"><SectionTitle eyebrow="Visit chat" title="Messages" /></div>
         <div className="flex-1 p-4 space-y-3 overflow-y-auto min-h-64">
           {msgs.map((m, i) => (
-            <div key={i} className={`max-w-[85%] rounded-xl px-3.5 py-2 text-sm animate-fadeUp ${m.who === "You" ? "ml-auto bg-accent text-white rounded-br-sm" : "surface rounded-bl-sm"}`}>
-              <div className={`text-[10px] font-semibold mb-0.5 ${m.who === "You" ? "text-white/75" : "ink-2"}`}>{m.who}</div>
+            <div key={i} className={\`max-w-[85%] rounded-xl px-3.5 py-2 text-sm animate-fadeUp \${m.who === "You" ? "ml-auto bg-accent text-white rounded-br-sm" : "surface rounded-bl-sm"}\`}>
+              <div className={\`text-[10px] font-semibold mb-0.5 \${m.who === "You" ? "text-white/75" : "ink-2"}\`}>{m.who}</div>
               {m.text}
             </div>
           ))}
@@ -391,13 +391,13 @@ export function PharmacyInventory() {
                     <div className="text-sm font-medium">{s.drug}</div>
                     <div className="text-xs ink-2 mt-0.5">Par level {s.par} · expires {s.expiry}</div>
                   </div>
-                  <span className={`text-sm font-mono font-semibold ${isLow ? "text-rose-600 dark:text-rose-400" : ""}`}>{s.onHand} units</span>
+                  <span className={\`text-sm font-mono font-semibold \${isLow ? "text-rose-600 dark:text-rose-400" : ""}\`}>{s.onHand} units</span>
                   {isLow && (isOrdered
                     ? <Badge tone="green">PO created</Badge>
                     : <button className="btn-primary !py-1.5 text-xs" onClick={() => setOrdered(o => ({ ...o, [s.drug]: true }))}>Reorder</button>)}
                 </div>
                 <div className="mt-3 h-1.5 rounded-full bg-[var(--line)] overflow-hidden">
-                  <div className={`h-full rounded-full transition-all duration-500 ${isLow ? "bg-rose-500" : pct < 80 ? "bg-amber-500" : "bg-emerald-500"}`} style={{ width: `${pct}%` }} />
+                  <div className={\`h-full rounded-full transition-all duration-500 \${isLow ? "bg-rose-500" : pct < 80 ? "bg-amber-500" : "bg-emerald-500"}\`} style={{ width: \`\${pct}%\` }} />
                 </div>
               </div>
             );
@@ -455,7 +455,7 @@ export function WardOccupancy() {
   return (
     <div className="max-w-3xl mx-auto space-y-5">
       <div className="grid gap-4 sm:grid-cols-3">
-        <Stat label="Occupancy" value={`${Math.round((occ / all.length) * 100)}%`} delta={`${occ} of ${all.length} beds`} deltaTone="blue" icon={<BedDouble size={16} />} />
+        <Stat label="Occupancy" value={\`\${Math.round((occ / all.length) * 100)}%\`} delta={\`\${occ} of \${all.length} beds\`} deltaTone="blue" icon={<BedDouble size={16} />} />
         <Stat label="Avg. length of stay" value="3.6 days" delta="−0.4 vs target" />
         <Stat label="Discharges today" value="5" delta="3 before noon" />
       </div>
@@ -476,8 +476,8 @@ export function WardOccupancy() {
               </div>
               <div className="grid grid-cols-8 gap-2">
                 {w.beds.map((b, i) => (
-                  <div key={i} title={`Bed ${i + 1}: ${b}`}
-                    className={`aspect-[4/3] rounded-md border grid place-items-center text-[10px] font-mono transition-colors cursor-default ${bedClass[b]}`}>
+                  <div key={i} title={\`Bed \${i + 1}: \${b}\`}
+                    className={\`aspect-[4/3] rounded-md border grid place-items-center text-[10px] font-mono transition-colors cursor-default \${bedClass[b]}\`}>
                     {i + 1}
                   </div>
                 ))}
@@ -515,17 +515,17 @@ export function MedicalBillingScreen() {
       <div className="xl:col-span-2 space-y-5">
         <div className="grid gap-4 sm:grid-cols-3">
           <Stat label="Claims · 30d" value="142" delta="+8 vs prior month" />
-          <Stat label="Paid · MTD" value={`$${(totalPaid / 1000).toFixed(1)}k`} delta="Collected" deltaTone="green" />
+          <Stat label="Paid · MTD" value={\`$\${(totalPaid / 1000).toFixed(1)}k\`} delta="Collected" deltaTone="green" />
           <Stat label="Denial rate" value="12.4%" delta="Industry avg 14%" deltaTone="green" />
         </div>
         <Card>
           <SectionTitle eyebrow="Pipeline" title="Claims by stage" />
           <div className="grid grid-cols-4 gap-3 mt-2">
             {claimStages.map(s => (
-              <div key={s} className={`rounded-lg border p-3 text-center ${s === "Denied" ? "border-rose-500/30 bg-rose-500/5" : s === "Paid" ? "border-emerald-500/30 bg-emerald-500/5" : "border-[var(--line)]"}`}>
+              <div key={s} className={\`rounded-lg border p-3 text-center \${s === "Denied" ? "border-rose-500/30 bg-rose-500/5" : s === "Paid" ? "border-emerald-500/30 bg-emerald-500/5" : "border-[var(--line)]"}\`}>
                 <Badge tone={claimTone[s]}>{s}</Badge>
                 <div className="font-display text-2xl font-bold mt-2">{byStage(s).length}</div>
-                <div className="text-xs ink-2">{s === "Paid" ? `$${(byStage(s).reduce((a, c) => a + c.amount, 0) / 1000).toFixed(1)}k` : "claims"}</div>
+                <div className="text-xs ink-2">{s === "Paid" ? \`$\${(byStage(s).reduce((a, c) => a + c.amount, 0) / 1000).toFixed(1)}k\` : "claims"}</div>
               </div>
             ))}
           </div>
@@ -547,7 +547,7 @@ export function MedicalBillingScreen() {
                   <div className="text-xs ink-2">{c.icd} · {c.payer}</div>
                 </div>
                 <div className="text-xs ink-2 hidden sm:block">{c.date}</div>
-                <div className="text-sm font-mono font-semibold text-right">${c.amount.toLocaleString()}</div>
+                <div className="text-sm font-mono font-semibold text-right">\${c.amount.toLocaleString()}</div>
                 <div className="text-right"><Badge tone={claimTone[c.status]}>{c.status}</Badge></div>
               </button>
             ))}
@@ -578,7 +578,7 @@ export function MedicalBillingScreen() {
       <Drawer open={!!selected} onClose={() => setSelected(null)} title="Claim detail">
         {selected && (
           <div className="space-y-4">
-            <div className="font-display text-2xl font-bold">${selected.amount.toLocaleString()}</div>
+            <div className="font-display text-2xl font-bold">\${selected.amount.toLocaleString()}</div>
             <Badge tone={claimTone[selected.status]} pulse={selected.status === "Submitted"}>{selected.status}</Badge>
             <dl className="space-y-3 text-sm">
               {[["Claim ID", selected.id], ["Patient", selected.patient], ["Provider", selected.provider], ["Diagnosis", selected.icd], ["Payer", selected.payer], ["Submitted", selected.date]].map(([k, v]) => (
@@ -602,3 +602,4 @@ export function MedicalBillingScreen() {
     </div>
   );
 }
+`;export{e as default};
