@@ -202,28 +202,17 @@ export default function App() {
       {/* Main */}
       <div className="flex-1 min-w-0">
         <header className="sticky top-0 z-20 surface border-b backdrop-blur px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
-          {showAbout ? (
-            <button onClick={() => setShowAbout(false)} className="btn-ghost !pl-2.5 gap-2 flex items-center">
-              <Home size={16} />
-              <span className="text-sm font-semibold hidden sm:inline">Back to Templates</span>
-            </button>
-          ) : (
-            <DomainPicker domain={domain} onPick={pick} />
-          )}
+          <DomainPicker domain={domain} onPick={pick} />
           <div className="flex items-center gap-2">
-            {!showAbout && (
-              <>
-                <span className="hidden sm:block text-xs ink-2">Generated template · <span className="font-mono">{domain.id}/{view.id}</span></span>
-                <button onClick={() => setThemeOpen(true)} className="btn-ghost !p-2" aria-label="Open theme studio" title="Change theme colours">
-                  <Paintbrush size={16} />
-                </button>
-                <button onClick={doExport} disabled={exporting} className="btn-ghost !px-3 !py-2 gap-1.5 disabled:opacity-60"
-                  aria-label={`Export ${domain.label} as Vite project`} title="Export this domain as a Vite project zip">
-                  {exporting ? <Loader2 size={15} className="animate-spin" /> : <Download size={15} />}
-                  <span className="hidden sm:inline text-xs font-semibold">{exporting ? "Exporting…" : "Export project"}</span>
-                </button>
-              </>
-            )}
+            <span className="hidden sm:block text-xs ink-2">Generated template · <span className="font-mono">{domain.id}/{showAbout ? "about" : view.id}</span></span>
+            <button onClick={() => setThemeOpen(true)} className="btn-ghost !p-2" aria-label="Open theme studio" title="Change theme colours">
+              <Paintbrush size={16} />
+            </button>
+            <button onClick={doExport} disabled={exporting} className="btn-ghost !px-3 !py-2 gap-1.5 disabled:opacity-60"
+              aria-label={`Export ${domain.label} as Vite project`} title="Export this domain as a Vite project zip">
+              {exporting ? <Loader2 size={15} className="animate-spin" /> : <Download size={15} />}
+              <span className="hidden sm:inline text-xs font-semibold">{exporting ? "Exporting…" : "Export project"}</span>
+            </button>
             <button onClick={() => setDark(d => !d)} className="btn-ghost !p-2" aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}>
               {dark ? <Sun size={16} /> : <Moon size={16} />}
             </button>
