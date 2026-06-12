@@ -4,6 +4,7 @@ import JSZip from "jszip";
 import { DomainDef } from "./registry";
 import { Theme } from "../theme";
 import { injectTheme, genAppTsx, genPackageJson, genReadme, genIndexHtml, VITE_CONFIG } from "./generate";
+import { generateDeck } from "./generateDeck";
 
 // Raw source embeds. Keys are root-relative paths.
 const RAW_FILES = import.meta.glob(
@@ -48,6 +49,7 @@ export async function exportProject(domain: DomainDef, theme: Theme): Promise<vo
   root.file("tsconfig.json", await raw("/tsconfig.json"));
   root.file("tsconfig.node.json", await raw("/tsconfig.node.json"));
   root.file(".gitignore", "node_modules\ndist\n*.local\n.DS_Store\n");
+  root.file(`${domain.productName}-walkthrough.pptx`, await generateDeck(domain, theme));
 
   const src = root.folder("src")!;
   src.file("main.tsx", await raw("/src/main.tsx"));

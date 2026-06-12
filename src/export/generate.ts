@@ -172,6 +172,10 @@ ${flow}
 
 Navigation lives in the left sidebar (mobile: horizontal tabs). The flow runs top-to-bottom: public/marketing pages first, then the core app screens, then account and resource pages.
 
+## Walkthrough deck
+
+\`${domain.productName}-walkthrough.pptx\` (next to this README) is a ready-to-present slide deck that introduces the prototype, walks through every core app screen with its purpose, and summarizes the public/account/resource pages — styled with the same theme colors as the app. Use it to pitch or demo the prototype without running it.
+
 ## Theme
 
 This export was generated with your chosen theme baked in:
