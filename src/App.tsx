@@ -20,6 +20,7 @@ import * as edtech from "./domains/edtech";
 import { DOMAIN_DEFS, DomainDef } from "./export/registry";
 import { exportProject } from "./export/exportProject";
 import { ThemeStudio } from "./components/ThemeStudio";
+import { About } from "./components/About";
 import { Theme, loadTheme, applyTheme, saveTheme } from "./theme";
 
 type IconType = typeof LayoutDashboard;
@@ -109,6 +110,7 @@ function DomainPicker({ domain, onPick }: { domain: Domain; onPick: (d: Domain) 
 
 export default function App() {
   const [dark, setDark] = useState(() => window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false);
+  const [showAbout, setShowAbout] = useState(false);
   const [domain, setDomain] = useState(DOMAINS[0]);
   const [viewId, setViewId] = useState(DOMAINS[0].views[0].id);
   const [theme, setTheme] = useState<Theme>(loadTheme);
@@ -122,7 +124,7 @@ export default function App() {
 
   useEffect(() => { applyTheme(theme); }, [theme]);
 
-  const pick = (d: Domain) => { setDomain(d); setViewId(d.views[0].id); };
+  const pick = (d: Domain) => { setDomain(d); setViewId(d.views[0].id); setShowAbout(false); };
   const applySelectedTheme = (nextTheme: Theme) => {
     setTheme(nextTheme);
     saveTheme(nextTheme);
@@ -156,15 +158,20 @@ export default function App() {
     <div className="min-h-full flex">
       {/* Sidebar */}
       <aside className="hidden md:flex w-60 shrink-0 flex-col surface border-r min-h-screen sticky top-0">
-        <div className="px-5 py-5 flex items-center gap-2.5 border-b border-[var(--line)]">
-          <span className="grid place-items-center h-8 w-8 rounded-xl bg-gradient-to-br from-accent to-grad text-white font-display font-bold text-sm">F</span>
-          <div className="leading-tight">
-            <div className="font-display font-bold tracking-tight">ForgeUI</div>
-            <div className="text-[10px] ink-2 font-mono">template builder</div>
-          </div>
+        <div className="px-5 py-5 border-b border-[var(--line)] space-y-2">
+          <button onClick={() => setShowAbout(true)} className="flex items-center gap-2.5 w-full hover:opacity-75 transition-opacity">
+            <span className="grid place-items-center h-8 w-8 rounded-xl bg-gradient-to-br from-accent to-grad text-white font-display font-bold text-sm">F</span>
+            <div className="leading-tight text-left">
+              <div className="font-display font-bold tracking-tight">ForgeUI</div>
+              <div className="text-[10px] ink-2 font-mono">template builder</div>
+            </div>
+          </button>
+          <button onClick={() => setShowAbout(true)} className="text-left px-2 py-1.5 rounded-lg text-xs font-medium ink-2 hover:bg-accent/8 hover:text-[var(--ink)] transition-all w-full">
+            About Us
+          </button>
         </div>
         <nav className="p-3 space-y-3 flex-1 overflow-y-auto" aria-label="Screens">
-          {Object.entries(groups).map(([group, views]) => (
+          {!showAbout && Object.entries(groups).map(([group, views]) => (
             <div key={group}>
               <div className="eyebrow px-2.5 pt-1 pb-1.5">{group}</div>
               <div className="space-y-0.5">
@@ -180,43 +187,70 @@ export default function App() {
           ))}
         </nav>
         <div className="p-4 border-t border-[var(--line)] text-[11px] ink-2 leading-relaxed">
-          Interactive UI prototype. Wire your own APIs behind every action.
+          {showAbout ? (
+            <>
+              ForgeUI © 2024 · Developed by Gautham Vijayaraj
+            </>
+          ) : (
+            <>
+              Interactive UI prototype. Wire your own APIs behind every action.
+            </>
+          )}
         </div>
       </aside>
 
       {/* Main */}
       <div className="flex-1 min-w-0">
         <header className="sticky top-0 z-20 surface border-b backdrop-blur px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
-          <DomainPicker domain={domain} onPick={pick} />
+          {showAbout ? (
+            <button onClick={() => setShowAbout(false)} className="btn-ghost !pl-2.5 gap-2 flex items-center">
+              <Home size={16} />
+              <span className="text-sm font-semibold hidden sm:inline">Back to Templates</span>
+            </button>
+          ) : (
+            <DomainPicker domain={domain} onPick={pick} />
+          )}
           <div className="flex items-center gap-2">
-            <span className="hidden sm:block text-xs ink-2">Generated template · <span className="font-mono">{domain.id}/{view.id}</span></span>
-            <button onClick={() => setThemeOpen(true)} className="btn-ghost !p-2" aria-label="Open theme studio" title="Change theme colours">
-              <Paintbrush size={16} />
-            </button>
-            <button onClick={doExport} disabled={exporting} className="btn-ghost !px-3 !py-2 gap-1.5 disabled:opacity-60"
-              aria-label={`Export ${domain.label} as Vite project`} title="Export this domain as a Vite project zip">
-              {exporting ? <Loader2 size={15} className="animate-spin" /> : <Download size={15} />}
-              <span className="hidden sm:inline text-xs font-semibold">{exporting ? "Exporting…" : "Export project"}</span>
-            </button>
+            {!showAbout && (
+              <>
+                <span className="hidden sm:block text-xs ink-2">Generated template · <span className="font-mono">{domain.id}/{view.id}</span></span>
+                <button onClick={() => setThemeOpen(true)} className="btn-ghost !p-2" aria-label="Open theme studio" title="Change theme colours">
+                  <Paintbrush size={16} />
+                </button>
+                <button onClick={doExport} disabled={exporting} className="btn-ghost !px-3 !py-2 gap-1.5 disabled:opacity-60"
+                  aria-label={`Export ${domain.label} as Vite project`} title="Export this domain as a Vite project zip">
+                  {exporting ? <Loader2 size={15} className="animate-spin" /> : <Download size={15} />}
+                  <span className="hidden sm:inline text-xs font-semibold">{exporting ? "Exporting…" : "Export project"}</span>
+                </button>
+              </>
+            )}
             <button onClick={() => setDark(d => !d)} className="btn-ghost !p-2" aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}>
               {dark ? <Sun size={16} /> : <Moon size={16} />}
             </button>
           </div>
         </header>
 
-        {/* Mobile screen tabs */}
-        <div className="md:hidden flex gap-2 overflow-x-auto px-4 pt-3 pb-1">
-          {domain.views.map(v => (
-            <button key={v.id} onClick={() => setViewId(v.id)}
-              className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium border transition-colors ${v.id === view.id ? "bg-accent text-white border-accent" : "surface ink-2"}`}>
-              {v.label}
-            </button>
-          ))}
-        </div>
+        {showAbout ? (
+          <main className="p-4 sm:p-6 animate-fadeUp">
+            <About onNavigateToDomain={() => setShowAbout(false)} />
+          </main>
+        ) : (
+          <>
+            {/* Mobile screen tabs */}
+            <div className="md:hidden flex gap-2 overflow-x-auto px-4 pt-3 pb-1">
+              {domain.views.map(v => (
+                <button key={v.id} onClick={() => setViewId(v.id)}
+                  className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium border transition-colors ${v.id === view.id ? "bg-accent text-white border-accent" : "surface ink-2"}`}>
+                  {v.label}
+                </button>
+              ))}
+            </div>
 
-        <main key={`${domain.id}-${view.id}`} className="p-4 sm:p-6 animate-fadeUp">
-          {view.el}
-        </main>
+            <main key={`${domain.id}-${view.id}`} className="p-4 sm:p-6 animate-fadeUp">
+              {view.el}
+            </main>
+          </>
+        )}
       </div>
 
       {themeOpen && (
