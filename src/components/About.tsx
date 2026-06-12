@@ -1,9 +1,17 @@
+// src/components/About.tsx
+import { Dispatch, SetStateAction } from "react";
 import {
   Linkedin, Mail, ArrowRight, Paintbrush, Download,
   Landmark, HeartPulse, TerminalSquare, Users, GraduationCap,
   Search, Check, ChevronsUpDown, Sun, Moon, RotateCcw,
   Zap, Layers, Palette, Package, Code2, Sparkles,
 } from "lucide-react";
+
+interface AboutProps {
+  onNavigateToDomain: () => void;
+  dark: boolean;
+  setDark: Dispatch<SetStateAction<boolean>>;
+}
 
 /* ─────────────────────────────────────────────
    Inline UI replica: DomainPicker open state
@@ -187,9 +195,9 @@ function ThemeStudioMock() {
 }
 
 /* ─────────────────────────────────────────────
-   Topbar strip mock (for dark/light toggle)
+   Topbar strip mock
 ───────────────────────────────────────────── */
-function TopbarMock() {
+function TopbarMock({ dark, onToggle }: { dark: boolean; onToggle: () => void }) {
   return (
     <div className="rounded-xl border border-[var(--line)] bg-[var(--surface)] shadow-card overflow-hidden">
       <div className="flex items-center justify-between px-4 py-2.5 border-b border-[var(--line)]">
@@ -205,9 +213,12 @@ function TopbarMock() {
             <Download size={13} />
             <span className="text-xs font-semibold hidden sm:inline">Export project</span>
           </div>
-          <div className="flex items-center gap-1 rounded-lg border border-[var(--line)] px-2.5 py-1.5 text-[var(--ink-2)]">
-            <Moon size={13} />
-          </div>
+          <button 
+            onClick={onToggle}
+            className="flex items-center gap-1 rounded-lg border border-accent/30 bg-accent/8 px-2.5 py-1.5 text-accent hover:bg-accent/16 transition-all"
+          >
+            {dark ? <Sun size={13} /> : <Moon size={13} />}
+          </button>
         </div>
       </div>
     </div>
@@ -229,7 +240,7 @@ const FEATURES = [
 /* ─────────────────────────────────────────────
    Main About component
 ───────────────────────────────────────────── */
-export function About({ onNavigateToDomain }: { onNavigateToDomain: () => void }) {
+export function About({ onNavigateToDomain, dark, setDark }: AboutProps) {
   return (
     <div className="max-w-4xl mx-auto space-y-24 pb-24">
 
@@ -238,7 +249,13 @@ export function About({ onNavigateToDomain }: { onNavigateToDomain: () => void }
         <div className="inline-flex items-center gap-2 rounded-full border border-accent/25 bg-accent/8 px-4 py-1.5 text-xs font-semibold text-accent mb-2">
           <Sparkles size={12} /> Premium UI Prototype Builder
         </div>
-        <h1 className="text-5xl sm:text-6xl font-display font-bold tracking-tight leading-[1.08]">
+        
+        {/* Added Title string here */}
+        <div className="font-display text-base tracking-wider font-bold text-[var(--ink-2)] uppercase opacity-85">
+          ForgeUI: Template Builder
+        </div>
+
+        <h1 className="text-5xl sm:text-6xl font-display font-bold tracking-tight leading-[1.08] mt-2">
           Build stunning{" "}
           <span className="bg-gradient-to-r from-accent to-grad bg-clip-text text-transparent">
             SaaS interfaces
@@ -259,6 +276,14 @@ export function About({ onNavigateToDomain }: { onNavigateToDomain: () => void }
             className="btn-ghost px-5 py-2.5 gap-2 inline-flex items-center text-sm">
             GitHub
           </a>
+          <button
+            onClick={() => setDark(d => !d)}
+            className="btn-ghost px-4 py-2.5 rounded-xl border border-[var(--line)] text-[var(--ink)] hover:bg-accent/8 transition-all inline-flex items-center justify-center gap-2 text-sm font-medium"
+            title="Toggle light/dark mode"
+          >
+            {dark ? <Sun size={15} className="text-amber-500" /> : <Moon size={15} />}
+            <span>Theme</span>
+          </button>
         </div>
       </section>
 
@@ -372,12 +397,21 @@ export function About({ onNavigateToDomain }: { onNavigateToDomain: () => void }
             <p className="text-[var(--ink-2)] text-sm leading-relaxed">
               Click the <strong className="text-[var(--ink)]"><Sun size={13} className="inline -mt-0.5" /> / <Moon size={13} className="inline -mt-0.5" /> icon</strong> in the top-right corner at any time. Every screen adapts with smooth transitions. Both modes are fully designed and production-ready.
             </p>
+            <div className="pt-2">
+              <button 
+                onClick={() => setDark(d => !d)}
+                className="btn-primary !bg-gradient-to-r from-accent to-grad text-xs px-4 py-2 rounded-xl flex items-center gap-2 font-semibold shadow-md active:scale-95 transition-transform"
+              >
+                {dark ? <Sun size={14} /> : <Moon size={14} />}
+                Test Toggle Theme Live
+              </button>
+            </div>
           </div>
           <div className="space-y-2">
             <div className="text-[10px] font-semibold uppercase tracking-widest text-[var(--ink-2)] mb-3 flex items-center gap-2">
-              <span className="h-px flex-1 bg-[var(--line)]" /> Live UI reference <span className="h-px flex-1 bg-[var(--line)]" />
+              <span className="h-px flex-1 bg-[var(--line)]" /> Live UI reference (Click moon/sun) <span className="h-px flex-1 bg-[var(--line)]" />
             </div>
-            <TopbarMock />
+            <TopbarMock dark={dark} onToggle={() => setDark(d => !d)} />
           </div>
         </div>
 

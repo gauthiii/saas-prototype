@@ -25,7 +25,6 @@ import { Theme, loadTheme, applyTheme, saveTheme } from "./theme";
 
 type IconType = typeof LayoutDashboard;
 
-// Icon names referenced by the registry, resolved to the explicit imports above.
 const ICONS: Record<string, IconType> = {
   Landmark, HeartPulse, TerminalSquare, Users, GraduationCap,
   LayoutDashboard, FileText, CalendarDays, ListChecks, BarChart3,
@@ -82,7 +81,7 @@ function DomainPicker({ domain, onPick }: { domain: Domain; onPick: (d: Domain) 
           <div className="absolute z-40 mt-2 w-72 card !p-0 overflow-hidden shadow-lift animate-fadeUp">
             <div className="flex items-center gap-2 border-b border-[var(--line)] px-3 py-2.5">
               <Search size={14} className="ink-2" />
-              <input autoFocus value={q} onChange={e => setQ(e.target.value)} placeholder="Search domain templates…"
+              <input autoFocus value={q} onChange={e => setQ(e.target.value)} placeholder="Search domain templates..."
                 className="w-full bg-transparent text-sm outline-none placeholder:text-[var(--ink-2)]" />
             </div>
             <ul role="listbox" className="max-h-72 overflow-y-auto p-1.5">
@@ -110,7 +109,7 @@ function DomainPicker({ domain, onPick }: { domain: Domain; onPick: (d: Domain) 
 
 export default function App() {
   const [dark, setDark] = useState(() => window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false);
-  const [showAbout, setShowAbout] = useState(false);
+  const [showAbout, setShowAbout] = useState(true);
   const [domain, setDomain] = useState(DOMAINS[0]);
   const [viewId, setViewId] = useState(DOMAINS[0].views[0].id);
   const [theme, setTheme] = useState<Theme>(loadTheme);
@@ -144,7 +143,6 @@ export default function App() {
     }
   };
 
-  // Group views by their group label for the sidebar
   const groups = useMemo(() => {
     const map: Record<string, View[]> = {};
     for (const v of domain.views) {
@@ -156,75 +154,75 @@ export default function App() {
 
   return (
     <div className="min-h-full flex">
-      {/* Sidebar */}
-      <aside className="hidden md:flex w-60 shrink-0 flex-col surface border-r min-h-screen sticky top-0">
-        <div className="px-5 py-5 border-b border-[var(--line)] space-y-2">
-          <button onClick={() => setShowAbout(true)} className="flex items-center gap-2.5 w-full hover:opacity-75 transition-opacity">
-            <span className="grid place-items-center h-8 w-8 rounded-xl bg-gradient-to-br from-accent to-grad text-white font-display font-bold text-sm">F</span>
-            <div className="leading-tight text-left">
-              <div className="font-display font-bold tracking-tight">ForgeUI</div>
-              <div className="text-[10px] ink-2 font-mono">template builder</div>
-            </div>
-          </button>
-          <button onClick={() => setShowAbout(true)} className="text-left px-2 py-1.5 rounded-lg text-xs font-medium ink-2 hover:bg-accent/8 hover:text-[var(--ink)] transition-all w-full">
-            About Us
-          </button>
-        </div>
-        <nav className="p-3 space-y-3 flex-1 overflow-y-auto" aria-label="Screens">
-          {!showAbout && Object.entries(groups).map(([group, views]) => (
-            <div key={group}>
-              <div className="eyebrow px-2.5 pt-1 pb-1.5">{group}</div>
-              <div className="space-y-0.5">
-                {views.map(v => (
-                  <button key={v.id} onClick={() => setViewId(v.id)}
-                    className={`w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-medium transition-all duration-150
-                      ${v.id === view.id ? "bg-accent text-white shadow-card" : "ink-2 hover:bg-accent/8 hover:text-[var(--ink)]"}`}>
-                    <v.icon size={15} /> {v.label}
-                  </button>
-                ))}
+      {/* Sidebar - completely hidden if showAbout state is active */}
+      {!showAbout && (
+        <aside className="hidden md:flex w-60 shrink-0 flex-col surface border-r min-h-screen sticky top-0">
+          <div className="px-5 py-5 border-b border-[var(--line)] space-y-2">
+            <button onClick={() => setShowAbout(true)} className="flex items-center gap-2.5 w-full hover:opacity-75 transition-opacity">
+              <span className="grid place-items-center h-8 w-8 rounded-xl bg-gradient-to-br from-accent to-grad text-white font-display font-bold text-sm">F</span>
+              <div className="leading-tight text-left">
+                <div className="font-display font-bold tracking-tight">ForgeUI</div>
+                <div className="text-[10px] ink-2 font-mono">template builder</div>
               </div>
-            </div>
-          ))}
-        </nav>
-        <div className="p-4 border-t border-[var(--line)] text-[11px] ink-2 leading-relaxed">
-          {showAbout ? (
-            <>
-              ForgeUI © 2024 · Developed by Gautham Vijayaraj
-            </>
-          ) : (
-            <>
-              Interactive UI prototype. Wire your own APIs behind every action.
-            </>
-          )}
-        </div>
-      </aside>
-
-      {/* Main */}
-      <div className="flex-1 min-w-0">
-        <header className="sticky top-0 z-20 surface border-b backdrop-blur px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
-          <DomainPicker domain={domain} onPick={pick} />
-          <div className="flex items-center gap-2">
-            <span className="hidden sm:block text-xs ink-2">Generated template · <span className="font-mono">{domain.id}/{showAbout ? "about" : view.id}</span></span>
-            <button onClick={() => setThemeOpen(true)} className="btn-ghost !p-2" aria-label="Open theme studio" title="Change theme colours">
-              <Paintbrush size={16} />
             </button>
-            <button onClick={doExport} disabled={exporting} className="btn-ghost !px-3 !py-2 gap-1.5 disabled:opacity-60"
-              aria-label={`Export ${domain.label} as Vite project`} title="Export this domain as a Vite project zip">
-              {exporting ? <Loader2 size={15} className="animate-spin" /> : <Download size={15} />}
-              <span className="hidden sm:inline text-xs font-semibold">{exporting ? "Exporting…" : "Export project"}</span>
-            </button>
-            <button onClick={() => setDark(d => !d)} className="btn-ghost !p-2" aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}>
-              {dark ? <Sun size={16} /> : <Moon size={16} />}
-            </button>
+            {/* <button onClick={() => setShowAbout(true)} className="text-left px-2 py-1.5 rounded-lg text-xs font-medium ink-2 hover:bg-accent/8 hover:text-[var(--ink)] transition-all w-full">
+              About Us
+            </button> */}
           </div>
-        </header>
+          <nav className="p-3 space-y-3 flex-1 overflow-y-auto" aria-label="Screens">
+            {Object.entries(groups).map(([group, views]) => (
+              <div key={group}>
+                <div className="eyebrow px-2.5 pt-1 pb-1.5">{group}</div>
+                <div className="space-y-0.5">
+                  {views.map(v => (
+                    <button key={v.id} onClick={() => setViewId(v.id)}
+                      className={`w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-medium transition-all duration-150
+                        ${v.id === view.id ? "bg-accent text-white shadow-card" : "ink-2 hover:bg-accent/8 hover:text-[var(--ink)]"}`}>
+                      <v.icon size={15} /> {v.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </nav>
+          <div className="p-4 border-t border-[var(--line)] text-[11px] ink-2 leading-relaxed">
+            Interactive UI prototype. Wire your own APIs behind every action.
+          </div>
+        </aside>
+      )}
 
+      {/* Main Container */}
+      <div className="flex-1 min-w-0">
         {showAbout ? (
-          <main className="p-4 sm:p-6 animate-fadeUp">
-            <About onNavigateToDomain={() => setShowAbout(false)} />
-          </main>
+          /* Render ONLY the About component. No top navigation bars or mobile sub headers are shown. */
+        <main className="p-4 sm:p-6 animate-fadeUp">
+          <About 
+            onNavigateToDomain={() => setShowAbout(false)} 
+            dark={dark} 
+            setDark={setDark} 
+          />
+        </main>
         ) : (
+          /* Render normal Layout with Top Navigation Bar + screen specific components */
           <>
+            <header className="sticky top-0 z-20 surface border-b backdrop-blur px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
+              <DomainPicker domain={domain} onPick={pick} />
+              <div className="flex items-center gap-2">
+                <span className="hidden sm:block text-xs ink-2">Generated template · <span className="font-mono">{domain.id}/{view.id}</span></span>
+                <button onClick={() => setThemeOpen(true)} className="btn-ghost !p-2" aria-label="Open theme studio" title="Change theme colours">
+                  <Paintbrush size={16} />
+                </button>
+                <button onClick={doExport} disabled={exporting} className="btn-ghost !px-3 !py-2 gap-1.5 disabled:opacity-60"
+                  aria-label={`Export ${domain.label} as Vite project`} title="Export this domain as a Vite project zip">
+                  {exporting ? <Loader2 size={15} className="animate-spin" /> : <Download size={15} />}
+                  <span className="hidden sm:inline text-xs font-semibold">{exporting ? "Exporting…" : "Export project"}</span>
+                </button>
+                <button onClick={() => setDark(d => !d)} className="btn-ghost !p-2" aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}>
+                  {dark ? <Sun size={16} /> : <Moon size={16} />}
+                </button>
+              </div>
+            </header>
+
             {/* Mobile screen tabs */}
             <div className="md:hidden flex gap-2 overflow-x-auto px-4 pt-3 pb-1">
               {domain.views.map(v => (
