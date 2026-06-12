@@ -120,4 +120,21 @@ export const DOMAIN_DEFS: DomainDef[] = [
       ...SHARED_RESOURCES("EdTech"),
     ],
   },
+  {
+    id: "retail", label: "RetailTech", sub: "POS · Inventory · Orders · Loyalty", icon: "ShoppingCart", file: "retailtech", productName: "RetailIQ",
+    views: [
+      ...SHARED_PUBLIC("Retail"),
+      { id: "dash", label: "Retail dashboard", icon: "LayoutDashboard", comp: "RetailDashboard", group: "App" },
+      { id: "pos", label: "POS terminal", icon: "CreditCard", comp: "POSTerminal", group: "App" },
+      { id: "inventory", label: "Inventory manager", icon: "Package", comp: "InventoryScreen", group: "App" },
+      { id: "orders", label: "Order center", icon: "Truck", comp: "OrderCenterScreen", group: "App" },
+      { id: "promotions", label: "Promotions", icon: "Percent", comp: "PromotionsScreen", group: "App" },
+      { id: "loyalty", label: "Customer loyalty", icon: "Star", comp: "LoyaltyScreen", group: "App" },
+      { id: "suppliers", label: "Supplier portal", icon: "Building2", comp: "SupplierPortalScreen", group: "App" },
+      { id: "analytics", label: "Store analytics", icon: "BarChart3", comp: "StoreAnalyticsScreen", group: "App" },
+      { id: "catalog", label: "Product catalog", icon: "Tag", comp: "ProductCatalogScreen", group: "App" },
+      ...SHARED_ACCOUNT("Retail"),
+      ...SHARED_RESOURCES("Retail"),
+    ],
+  },
 ];

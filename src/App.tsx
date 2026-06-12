@@ -11,12 +11,14 @@ import {
   Home, LogIn, UserPlus, User, Settings, HelpCircle, Headphones,
   Info, Tag, ShieldCheck, Sparkles, AlertTriangle,
   Paintbrush, Download, Loader2, Eye,
+  ShoppingCart, Package, Truck, Percent, Star,
 } from "lucide-react";
 import * as fintech from "./domains/fintech";
 import * as healthtech from "./domains/healthtech";
 import * as devops from "./domains/devops";
 import * as hrtech from "./domains/hrtech";
 import * as edtech from "./domains/edtech";
+import * as retailtech from "./domains/retailtech";
 import { DOMAIN_DEFS, DomainDef } from "./export/registry";
 import { exportProject } from "./export/exportProject";
 import { ThemeStudio } from "./components/ThemeStudio";
@@ -35,9 +37,10 @@ const ICONS: Record<string, IconType> = {
   UserCheck, Briefcase, MessageCircle,
   Home, LogIn, UserPlus, User, Settings, HelpCircle, Headphones,
   Info, Tag, ShieldCheck, Sparkles, AlertTriangle,
+  ShoppingCart, Package, Truck, Percent, Star,
 };
 
-const MODULES: Record<string, Record<string, unknown>> = { fintech, healthtech, devops, hrtech, edtech };
+const MODULES: Record<string, Record<string, unknown>> = { fintech, healthtech, devops, hrtech, edtech, retailtech };
 
 type View = { id: string; label: string; icon: IconType; el: JSX.Element; group?: string };
 type Domain = { id: string; label: string; sub: string; icon: IconType; def: DomainDef; views: View[] };
