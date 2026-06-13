@@ -76,11 +76,22 @@ const energyExtra: DomainExtra = {
     { version: "v4.1", date: "May 18, 2026", tag: "Improved", items: ["SCADA-to-meter reconciliation latency cut from 5 min to under 60s", "Performance-ratio now accounts for curtailment losses separately", "Investor report exports now include audit-trail appendix"] },
     { version: "v4.0", date: "Apr 26, 2026", tag: "Fixed", items: ["Double-counted RECs when an asset spanned two market regions", "Wind availability miscalculated during partial-curtailment hours", "Carbon factor not refreshing on hourly grid-mix update"] },
   ],
+  stats: [
+    { value: "18 GW", label: "Capacity under management" },
+    { value: "2,400 assets", label: "Wind, solar & storage monitored" },
+    { value: "12M tCO₂", label: "Emissions avoided annually" },
+    { value: "99.98%", label: "Grid dispatch uptime" },
+  ],
+  testimonial: {
+    quote: "Helios gave us a single control room for the entire fleet. We caught a curtailment-driven shortfall before settlement and re-balanced our PPA book the same afternoon.",
+    author: "Marta Lindqvist",
+    role: "Head of Generation, Nordwind Renewables",
+  },
 };
 
 // ─── Shared page wrappers ─────────────────────────────────────────────────────
 
-export function EnergyHome() { return <HomePage meta={energyMeta} />; }
+export function EnergyHome() { return <HomePage meta={energyMeta} stats={energyExtra.stats} testimonial={energyExtra.testimonial} />; }
 export function EnergyLogin() { return <LoginPage meta={energyMeta} />; }
 export function EnergyRegister() { return <RegisterPage meta={energyMeta} />; }
 export function EnergyProfile() { return <ProfilePage meta={energyMeta} />; }

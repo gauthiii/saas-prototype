@@ -25,7 +25,7 @@ const devopsMeta: DomainMeta = {
   supportEmail: "support@stackops.io",
 };
 
-export function DevOpsHome() { return <HomePage meta={devopsMeta} />; }
+export function DevOpsHome() { return <HomePage meta={devopsMeta} stats={devopsExtra.stats} testimonial={devopsExtra.testimonial} />; }
 export function DevOpsLogin() { return <LoginPage meta={devopsMeta} />; }
 export function DevOpsRegister() { return <RegisterPage meta={devopsMeta} />; }
 export function DevOpsProfile() { return <ProfilePage meta={devopsMeta} />; }
@@ -72,6 +72,17 @@ const devopsExtra: DomainExtra = {
     { version: "v3.8", date: "May 15, 2026", tag: "Improved", items: ["Log search now 5× faster on 90-day windows", "Alert grouping reduces page noise by ~40%", "Dark-mode contrast tuning across dashboards"] },
     { version: "v3.7", date: "Apr 24, 2026", tag: "Fixed", items: ["On-call handoff notifications across DST changes", "Flaky GitHub webhook retries on large monorepos", "Cost data lag for newly linked Azure accounts"] },
   ],
+  stats: [
+    { value: "50k+", label: "Deploys shipped daily" },
+    { value: "−60% MTTR", label: "Faster incident recovery" },
+    { value: "2PB/day", label: "Logs ingested" },
+    { value: "99.99%", label: "Platform uptime" },
+  ],
+  testimonial: {
+    quote: "StackOps unified our logs, CI/CD, and on-call in one place. We cut MTTR by more than half and finally killed the 3am alert noise that used to wreck our weeks.",
+    author: "Priya Raghavan",
+    role: "Staff SRE, Northwind Cloud",
+  },
 };
 
 export function DevOpsAbout() { return <AboutPage meta={devopsMeta} extra={devopsExtra} />; }

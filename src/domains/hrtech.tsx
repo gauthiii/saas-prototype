@@ -25,7 +25,7 @@ const hrtechMeta: DomainMeta = {
   supportEmail: "support@talentos.io",
 };
 
-export function HRHome() { return <HomePage meta={hrtechMeta} />; }
+export function HRHome() { return <HomePage meta={hrtechMeta} stats={hrtechExtra.stats} testimonial={hrtechExtra.testimonial} />; }
 export function HRLogin() { return <LoginPage meta={hrtechMeta} />; }
 export function HRRegister() { return <RegisterPage meta={hrtechMeta} />; }
 export function HRProfile() { return <ProfilePage meta={hrtechMeta} />; }
@@ -72,6 +72,17 @@ const hrtechExtra: DomainExtra = {
     { version: "v4.5", date: "May 19, 2026", tag: "Improved", items: ["Resume parsing accuracy for non-English CVs", "Bulk pipeline actions with undo", "Faster DEI dashboard loads on large orgs"] },
     { version: "v4.4", date: "Apr 28, 2026", tag: "Fixed", items: ["Duplicate candidates from simultaneous job-board applies", "Calendar sync conflicts for panel interviews", "Time-zone display on offer expiry dates"] },
   ],
+  stats: [
+    { value: "500k+", label: "Hires made" },
+    { value: "−45%", label: "Time-to-hire" },
+    { value: "12M", label: "Candidates processed" },
+    { value: "1,200 teams", label: "Companies hiring" },
+  ],
+  testimonial: {
+    quote: "TalentOS gave our recruiters a single pipeline for sourcing, interviews, and onboarding — we cut time-to-hire nearly in half and finally trust our DEI numbers.",
+    author: "Priya Natarajan",
+    role: "Head of Talent, Northwind Labs",
+  },
 };
 
 export function HRAbout() { return <AboutPage meta={hrtechMeta} extra={hrtechExtra} />; }

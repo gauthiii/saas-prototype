@@ -73,11 +73,22 @@ const nukeExtra: DomainExtra = {
     { version: "v5.2", date: "May 12, 2026", tag: "Improved", items: ["Outage critical-path now models surveillance-test float", "Effluent reconciliation against continuous monitors", "Technical-specification LCO action-tracking timers"] },
     { version: "v5.1", date: "Apr 17, 2026", tag: "Fixed", items: ["Burnup accumulation drift on partial-cycle assemblies", "Dose-rate trend smoothing during detector calibration", "Spent-fuel pool inventory mismatch after a fuel move"] },
   ],
+  stats: [
+    { value: "24 reactors", label: "Managed across the fleet" },
+    { value: "94% capacity factor", label: "Fleet-wide availability" },
+    { value: "210 TWh clean", label: "Carbon-free energy delivered" },
+    { value: "100% NRC compliance", label: "Regulatory inspections passed" },
+  ],
+  testimonial: {
+    quote: "Atria gives our control room and outage teams a single source of truth for reactor state, dose budgets, and refueling critical paths. We've shortened outages and walked into every NRC inspection with the data already in hand.",
+    author: "Dr. Lena Okafor",
+    role: "Reactor Operations Director, Cascade Power Authority",
+  },
 };
 
 // ─── Shared page wrappers ─────────────────────────────────────────────────────
 
-export function NuclearHome() { return <HomePage meta={nukeMeta} />; }
+export function NuclearHome() { return <HomePage meta={nukeMeta} stats={nukeExtra.stats} testimonial={nukeExtra.testimonial} />; }
 export function NuclearLogin() { return <LoginPage meta={nukeMeta} />; }
 export function NuclearRegister() { return <RegisterPage meta={nukeMeta} />; }
 export function NuclearProfile() { return <ProfilePage meta={nukeMeta} />; }

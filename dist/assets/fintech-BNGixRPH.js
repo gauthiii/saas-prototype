@@ -25,7 +25,7 @@ const fintechMeta: DomainMeta = {
   supportEmail: "support@finflow.io",
 };
 
-export function FintechHome() { return <HomePage meta={fintechMeta} />; }
+export function FintechHome() { return <HomePage meta={fintechMeta} stats={fintechExtra.stats} testimonial={fintechExtra.testimonial} />; }
 export function FintechLogin() { return <LoginPage meta={fintechMeta} />; }
 export function FintechRegister() { return <RegisterPage meta={fintechMeta} />; }
 export function FintechProfile() { return <ProfilePage meta={fintechMeta} />; }
@@ -72,6 +72,17 @@ const fintechExtra: DomainExtra = {
     { version: "v2.13", date: "May 12, 2026", tag: "Improved", items: ["2× faster reconciliation engine", "Redesigned approval queues with keyboard shortcuts", "Card spend limits now support per-merchant rules"] },
     { version: "v2.12", date: "Apr 21, 2026", tag: "Fixed", items: ["Duplicate webhook deliveries on retried ACH returns", "Timezone drift in scheduled payment runs", "CSV export encoding for non-Latin payee names"] },
   ],
+  stats: [
+    { value: "$4B+", label: "Processed monthly" },
+    { value: "10,000+", label: "Finance teams" },
+    { value: "<2s", label: "Avg. payment time" },
+    { value: "99.99%", label: "Ledger uptime" },
+  ],
+  testimonial: {
+    quote: "We closed our books 6 days faster the first month on FinFlow. Cash visibility went from a spreadsheet guess to a live number.",
+    author: "Priya Nair",
+    role: "VP Finance, Northwind Logistics",
+  },
 };
 
 export function FintechAbout() { return <AboutPage meta={fintechMeta} extra={fintechExtra} />; }

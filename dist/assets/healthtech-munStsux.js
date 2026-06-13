@@ -25,7 +25,7 @@ const healthMeta: DomainMeta = {
   supportEmail: "support@medos.io",
 };
 
-export function HealthHome() { return <HomePage meta={healthMeta} />; }
+export function HealthHome() { return <HomePage meta={healthMeta} stats={healthExtra.stats} testimonial={healthExtra.testimonial} />; }
 export function HealthLogin() { return <LoginPage meta={healthMeta} />; }
 export function HealthRegister() { return <RegisterPage meta={healthMeta} />; }
 export function HealthProfile() { return <ProfilePage meta={healthMeta} />; }
@@ -72,6 +72,17 @@ const healthExtra: DomainExtra = {
     { version: "v5.1", date: "May 8, 2026", tag: "Improved", items: ["Telehealth video quality on low bandwidth", "Faster chart loading for long patient histories", "Smarter appointment-reminder timing"] },
     { version: "v5.0", date: "Apr 14, 2026", tag: "New", items: ["Redesigned clinical dashboard", "FHIR R4 bulk export", "Ward occupancy heatmaps"] },
   ],
+  stats: [
+    { value: "12M", label: "Patients served" },
+    { value: "3,400", label: "Clinics & providers" },
+    { value: "−38%", label: "Appointment no-shows" },
+    { value: "99.99%", label: "Platform uptime" },
+  ],
+  testimonial: {
+    quote: "MedOS cut our charting time nearly in half and gave our providers their evenings back. Eligibility checks and telehealth just work — our care teams finally trust the system instead of fighting it.",
+    author: "Dr. Priya Nair",
+    role: "Chief Medical Officer, Riverbend Health Network",
+  },
 };
 
 export function HealthAbout() { return <AboutPage meta={healthMeta} extra={healthExtra} />; }

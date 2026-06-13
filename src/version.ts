@@ -16,6 +16,21 @@ export interface VersionEntry {
 
 export const VERSIONS: VersionEntry[] = [
   {
+    version: "1.8.0",
+    date: "2026-06-12",
+    title: "Shared page templates overhaul",
+    commit: "local",
+    tag: "Improvement",
+    changes: [
+      "Rebuilt the Home landing page: removed hardcoded placeholder social proof and added per-domain stats and a customer testimonial.",
+      "Pricing page gained an enterprise \"Contact sales\" band and a trust row; About page now shows domain stats and a testimonial.",
+      "Changelog was reframed as per-domain product news (email subscribe + New/Improved/Fixed filters) to distinguish it from this version history.",
+      "FAQ added search, result counts, and helpful voting; Notifications added All/Unread tabs; Support added a live system-status banner.",
+      "Profile, Privacy, 404, and Sign in pages were polished (activity strip, data-rights controls, search + popular links, and SSO options).",
+      "Added optional per-domain stats and testimonial data across all 11 domains.",
+    ],
+  },
+  {
     version: "1.7.0",
     date: "2026-06-12",
     title: "Energy domains expansion",

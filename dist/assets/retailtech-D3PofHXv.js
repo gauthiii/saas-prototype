@@ -76,11 +76,22 @@ const retailExtra: DomainExtra = {
     { version: "v3.7", date: "May 22, 2026", tag: "Improved", items: ["Inventory sync latency reduced from 5s to <200ms", "Loyalty tier recalculation now runs in real time", "Barcode scanner reliability on Android POS devices"] },
     { version: "v3.6", date: "Apr 30, 2026", tag: "Fixed", items: ["Duplicate orders when customer refreshed checkout page", "Incorrect tax calculation for mixed-category carts", "Loyalty points not awarded on exchange transactions"] },
   ],
+  stats: [
+    { value: "$9B GMV", label: "Processed annually" },
+    { value: "12,000 stores", label: "Live on RetailIQ" },
+    { value: "4M SKUs", label: "Managed in inventory" },
+    { value: "99.99%", label: "POS uptime" },
+  ],
+  testimonial: {
+    quote: "RetailIQ unified our POS, inventory, and loyalty into one system. Checkout lines move faster and our stock counts are finally accurate across every location.",
+    author: "Marcus Halloran",
+    role: "Director of Stores, Northbend Markets",
+  },
 };
 
 // ─── Shared page wrappers ─────────────────────────────────────────────────────
 
-export function RetailHome() { return <HomePage meta={retailMeta} />; }
+export function RetailHome() { return <HomePage meta={retailMeta} stats={retailExtra.stats} testimonial={retailExtra.testimonial} />; }
 export function RetailLogin() { return <LoginPage meta={retailMeta} />; }
 export function RetailRegister() { return <RegisterPage meta={retailMeta} />; }
 export function RetailProfile() { return <ProfilePage meta={retailMeta} />; }

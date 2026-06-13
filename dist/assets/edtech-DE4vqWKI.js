@@ -25,7 +25,7 @@ const edtechMeta: DomainMeta = {
   supportEmail: "support@learnlab.io",
 };
 
-export function EdTechHome() { return <HomePage meta={edtechMeta} />; }
+export function EdTechHome() { return <HomePage meta={edtechMeta} stats={edtechExtra.stats} testimonial={edtechExtra.testimonial} />; }
 export function EdTechLogin() { return <LoginPage meta={edtechMeta} />; }
 export function EdTechRegister() { return <RegisterPage meta={edtechMeta} />; }
 export function EdTechProfile() { return <ProfilePage meta={edtechMeta} />; }
@@ -72,6 +72,17 @@ const edtechExtra: DomainExtra = {
     { version: "v6.2", date: "May 16, 2026", tag: "Improved", items: ["Gradebook performance for 1,000+ student courses", "Caption accuracy in live classrooms", "Parent digest emails now weekly-configurable"] },
     { version: "v6.1", date: "Apr 25, 2026", tag: "Fixed", items: ["Quiz timer drift on tab refocus", "Duplicate parent-portal notifications", "SCORM import errors for legacy 1.2 packages"] },
   ],
+  stats: [
+    { value: "3M", label: "Active learners" },
+    { value: "5,000 schools", label: "Institutions onboard" },
+    { value: "92% completion", label: "Course completion rate" },
+    { value: "40M lessons", label: "Lessons delivered" },
+  ],
+  testimonial: {
+    quote: "LearnLab gave our teachers their evenings back. Live classrooms, auto-graded quizzes, and the parent portal all live in one place, and engagement is the highest we've ever measured.",
+    author: "Dr. Amara Okafor",
+    role: "Principal, Brookfield Academy",
+  },
 };
 
 export function EdTechAbout() { return <AboutPage meta={edtechMeta} extra={edtechExtra} />; }

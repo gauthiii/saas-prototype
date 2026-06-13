@@ -25,7 +25,7 @@ const bankingMeta: DomainMeta = {
   supportEmail: "help@vaultbank.com",
 };
 
-export function BankingHome() { return <HomePage meta={bankingMeta} />; }
+export function BankingHome() { return <HomePage meta={bankingMeta} stats={bankingExtra.stats} testimonial={bankingExtra.testimonial} />; }
 export function BankingLogin() { return <LoginPage meta={bankingMeta} />; }
 export function BankingRegister() { return <RegisterPage meta={bankingMeta} />; }
 export function BankingProfile() { return <ProfilePage meta={bankingMeta} />; }
@@ -72,6 +72,17 @@ const bankingExtra: DomainExtra = {
     { version: "v3.7", date: "May 14, 2026", tag: "Improved", items: ["Check deposits now clear up to $1,000 instantly", "Redesigned card controls with merchant-level locks", "Faster biometric login on Android"] },
     { version: "v3.6", date: "Apr 18, 2026", tag: "Fixed", items: ["Duplicate push notifications on bill reminders", "Statement PDFs missing pending interest line", "FX rate refresh stalling on slow connections"] },
   ],
+  stats: [
+    { value: "2.4M", label: "Active customers" },
+    { value: "$28B", label: "Deposits held" },
+    { value: "4.8★", label: "App Store rating" },
+    { value: "99.99%", label: "Service uptime" },
+  ],
+  testimonial: {
+    quote: "VaultBank made managing my shop's finances effortless. Instant transfers, real-time card controls, and bill pay that just works — I haven't set foot in a branch in years.",
+    author: "Priya Nair",
+    role: "Small-business owner, VaultBank customer since 2021",
+  },
 };
 
 export function BankingAbout() { return <AboutPage meta={bankingMeta} extra={bankingExtra} />; }

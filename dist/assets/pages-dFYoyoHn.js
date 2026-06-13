@@ -1,7 +1,10 @@
 const e=`// src/domains/pages.tsx — shared page templates (Home, Auth, Profile, Settings, FAQ, Support)
 import { useState } from "react";
-import { User, Mail, Lock, Phone, MapPin, Bell, Palette, Shield, ChevronDown, ChevronRight, Send, CheckCircle2, Eye, EyeOff } from "lucide-react";
+import { User, Mail, Lock, Phone, MapPin, Bell, Palette, Shield, ChevronDown, ChevronRight, Send, CheckCircle2, Eye, EyeOff, Star, Activity, Search } from "lucide-react";
 import { Card, SectionTitle, Badge, Toggle } from "../components/ui";
+
+export type DomainStat = { value: string; label: string };
+export type DomainTestimonial = { quote: string; author: string; role: string };
 
 export type DomainMeta = {
   id: string;
@@ -15,9 +18,11 @@ export type DomainMeta = {
 };
 
 // ─── Home / Landing ──────────────────────────────────────────────────────────
-export function HomePage({ meta }: { meta: DomainMeta }) {
+// \`stats\` / \`testimonial\` are domain-specific (passed from each domain's \`extra\`).
+// Falls back to honest, non-fabricated copy when a domain hasn't supplied them.
+export function HomePage({ meta, stats, testimonial }: { meta: DomainMeta; stats?: DomainStat[]; testimonial?: DomainTestimonial }) {
   return (
-    <div className="max-w-4xl mx-auto space-y-10">
+    <div className="max-w-4xl mx-auto space-y-12">
       {/* Hero */}
       <div className="text-center space-y-4 py-8">
         <Badge tone="blue">{meta.accentLabel}</Badge>
@@ -27,30 +32,52 @@ export function HomePage({ meta }: { meta: DomainMeta }) {
           <button className="btn-primary px-6 py-2.5 text-sm">Get started free</button>
           <button className="btn-ghost px-6 py-2.5 text-sm">Watch demo →</button>
         </div>
+        <div className="flex items-center justify-center gap-1.5 text-xs ink-2 pt-1">
+          <Star size={12} className="text-amber-400 fill-amber-400" />
+          <Star size={12} className="text-amber-400 fill-amber-400" />
+          <Star size={12} className="text-amber-400 fill-amber-400" />
+          <Star size={12} className="text-amber-400 fill-amber-400" />
+          <Star size={12} className="text-amber-400 fill-amber-400" />
+          <span className="ml-1">Loved by teams · no credit card required</span>
+        </div>
       </div>
 
       {/* Features grid */}
       <div className="grid sm:grid-cols-3 gap-4">
         {meta.features.map((f, i) => (
-          <Card key={i} className="text-center space-y-2 card-hover">
-            <div className="text-3xl">{f.icon}</div>
-            <div className="font-semibold text-sm">{f.title}</div>
+          <Card key={i} className="space-y-2 card-hover">
+            <div className="grid place-items-center h-11 w-11 rounded-xl bg-accent/10 text-2xl">{f.icon}</div>
+            <div className="font-semibold text-sm pt-1">{f.title}</div>
             <div className="text-xs ink-2 leading-relaxed">{f.body}</div>
           </Card>
         ))}
       </div>
 
-      {/* Social proof */}
-      <Card>
-        <div className="flex flex-wrap gap-8 justify-around text-center">
-          {[["10,000+", "Companies"], ["99.9%", "Uptime SLA"], ["<200ms", "Avg response"], ["SOC 2", "Certified"]].map(([v, l]) => (
-            <div key={l}>
-              <div className="font-display text-2xl font-bold text-accent">{v}</div>
-              <div className="text-xs ink-2 mt-0.5">{l}</div>
-            </div>
-          ))}
-        </div>
-      </Card>
+      {/* Social proof — domain-specific metrics */}
+      {stats && stats.length > 0 && (
+        <Card className="bg-gradient-to-br from-accent/5 to-grad/5">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
+            {stats.map(s => (
+              <div key={s.label}>
+                <div className="font-display text-2xl sm:text-3xl font-bold text-accent">{s.value}</div>
+                <div className="text-xs ink-2 mt-1 leading-snug">{s.label}</div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+
+      {/* Testimonial — domain-specific */}
+      {testimonial && (
+        <figure className="max-w-2xl mx-auto text-center space-y-4">
+          <blockquote className="font-display text-xl sm:text-2xl font-medium leading-snug tracking-tight">
+            “{testimonial.quote}”
+          </blockquote>
+          <figcaption className="text-sm ink-2">
+            <span className="font-semibold text-[var(--ink)]">{testimonial.author}</span> · {testimonial.role}
+          </figcaption>
+        </figure>
+      )}
 
       {/* CTA */}
       <Card className="bg-gradient-to-br from-accent to-grad text-white border-0 text-center space-y-3 py-8">
@@ -127,6 +154,19 @@ export function LoginPage({ meta }: { meta: DomainMeta }) {
               {loading ? "Signing in…" : "Sign in"}
             </button>
           </form>
+
+          <div className="flex items-center gap-3 my-4">
+            <div className="h-px flex-1 bg-[var(--line)]" />
+            <span className="text-[11px] ink-2">or continue with</span>
+            <div className="h-px flex-1 bg-[var(--line)]" />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            {["Google", "SSO"].map(p => (
+              <button key={p} type="button"
+                className="btn-ghost justify-center py-2.5 text-sm font-medium">{p}</button>
+            ))}
+          </div>
+
           <div className="mt-4 text-center text-xs ink-2">
             Don't have an account? <button className="text-accent hover:underline">Create one</button>
           </div>
@@ -269,6 +309,15 @@ export function ProfilePage({ meta }: { meta: DomainMeta }) {
   return (
     <div className="max-w-2xl mx-auto space-y-5">
       <SectionTitle eyebrow={meta.name} title="My profile" />
+
+      <div className="grid grid-cols-3 gap-3">
+        {[["Member since", "Mar 2024"], ["Last active", "Today"], ["2FA", "Enabled"]].map(([l, v]) => (
+          <Card key={l} className="text-center py-3">
+            <div className="text-[11px] ink-2">{l}</div>
+            <div className="text-sm font-semibold mt-0.5">{v}</div>
+          </Card>
+        ))}
+      </div>
 
       <Card>
         <div className="flex items-center gap-4 pb-4 border-b border-[var(--line)]">
@@ -431,31 +480,44 @@ export function SettingsPage({ meta }: { meta: DomainMeta }) {
 export function FAQPage({ meta }: { meta: DomainMeta }) {
   const [open, setOpen] = useState<number | null>(null);
   const [q, setQ] = useState("");
-  const filtered = meta.faqs.filter(f => (f.q + f.a).toLowerCase().includes(q.toLowerCase()));
+  const [voted, setVoted] = useState<Record<number, "up" | "down">>({});
+  const filtered = meta.faqs
+    .map((f, i) => ({ ...f, i }))
+    .filter(f => (f.q + f.a).toLowerCase().includes(q.toLowerCase()));
 
   return (
     <div className="max-w-2xl mx-auto space-y-5">
-      <SectionTitle eyebrow={meta.name} title="Frequently asked questions" />
+      <SectionTitle eyebrow={meta.name} title="Frequently asked questions"
+        right={<Badge tone="gray">{meta.faqs.length} articles</Badge>} />
 
       <div className="relative">
+        <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 ink-2" />
         <input value={q} onChange={e => setQ(e.target.value)} placeholder="Search questions…"
-          className="w-full rounded-xl border border-[var(--line)] bg-[var(--surface)] pl-4 pr-3 py-2.5 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all" />
+          className="w-full rounded-xl border border-[var(--line)] bg-[var(--surface)] pl-10 pr-3 py-2.5 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all" />
       </div>
+      {q && <div className="text-xs ink-2 -mt-1 px-1">{filtered.length} result{filtered.length === 1 ? "" : "s"} for "{q}"</div>}
 
       <Card className="!p-0 overflow-hidden divide-y divide-[var(--line)]">
         {filtered.length === 0 && (
           <div className="px-5 py-8 text-center text-sm ink-2">No results for "{q}"</div>
         )}
-        {filtered.map((faq, i) => (
-          <div key={i}>
-            <button onClick={() => setOpen(open === i ? null : i)}
+        {filtered.map(faq => (
+          <div key={faq.i}>
+            <button onClick={() => setOpen(open === faq.i ? null : faq.i)}
               className="w-full flex items-center justify-between gap-3 px-5 py-4 text-left hover:bg-accent/5 transition-colors">
               <span className="text-sm font-medium">{faq.q}</span>
-              {open === i ? <ChevronDown size={15} className="ink-2 shrink-0" /> : <ChevronRight size={15} className="ink-2 shrink-0" />}
+              {open === faq.i ? <ChevronDown size={15} className="ink-2 shrink-0" /> : <ChevronRight size={15} className="ink-2 shrink-0" />}
             </button>
-            {open === i && (
-              <div className="px-5 pb-4 text-sm ink-2 leading-relaxed border-t border-[var(--line)] pt-3">
-                {faq.a}
+            {open === faq.i && (
+              <div className="px-5 pb-4 border-t border-[var(--line)] pt-3 space-y-3">
+                <p className="text-sm ink-2 leading-relaxed">{faq.a}</p>
+                <div className="flex items-center gap-2 text-xs ink-2">
+                  {voted[faq.i] ? <span className="text-accent">Thanks for your feedback!</span> : <>
+                    <span>Was this helpful?</span>
+                    <button onClick={() => setVoted(v => ({ ...v, [faq.i]: "up" }))} className="rounded-md border border-[var(--line)] px-2 py-0.5 hover:border-accent hover:text-accent transition-colors">Yes</button>
+                    <button onClick={() => setVoted(v => ({ ...v, [faq.i]: "down" }))} className="rounded-md border border-[var(--line)] px-2 py-0.5 hover:border-accent hover:text-accent transition-colors">No</button>
+                  </>}
+                </div>
               </div>
             )}
           </div>
@@ -495,6 +557,14 @@ export function SupportPage({ meta }: { meta: DomainMeta }) {
   return (
     <div className="max-w-2xl mx-auto space-y-5">
       <SectionTitle eyebrow={meta.name} title="Support & contact" />
+
+      <Card className="flex items-center justify-between gap-3 !py-3">
+        <div className="flex items-center gap-2.5 text-sm">
+          <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulseDot" />
+          <span className="font-medium">All systems operational</span>
+        </div>
+        <span className="text-xs ink-2 flex items-center gap-1.5"><Activity size={13} /> Avg. first response · ~2h</span>
+      </Card>
 
       <div className="grid sm:grid-cols-2 gap-3">
         {channels.map(c => (

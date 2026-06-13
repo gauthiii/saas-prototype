@@ -73,11 +73,22 @@ const renExtra: DomainExtra = {
     { version: "v3.3", date: "May 16, 2026", tag: "Improved", items: ["VPP dispatch latency cut to under 1s across 31k sites", "Savings now reconciled against scanned utility bills", "Install scheduler auto-routes crews by drive time"] },
     { version: "v3.2", date: "Apr 19, 2026", tag: "Fixed", items: ["Net-metering credit miscount during daylight-saving shift", "Battery state-of-charge drift on firmware v2.7 units", "Community-solar allocation rounding on partial months"] },
   ],
+  stats: [
+    { value: "240k homes", label: "Powered by Sunhive solar" },
+    { value: "600 MW VPP", label: "Dispatchable home batteries" },
+    { value: "1.8M tCO₂", label: "Carbon avoided to date" },
+    { value: "$31M saved", label: "Returned to subscribers" },
+  ],
+  testimonial: {
+    quote: "Our panels, battery, and EV all work as one. Sunhive shifts our usage automatically and we earn credits when the grid needs power — our bill dropped to almost nothing.",
+    author: "Priya Nair",
+    role: "Sunhive subscriber",
+  },
 };
 
 // ─── Shared page wrappers ─────────────────────────────────────────────────────
 
-export function RenewableHome() { return <HomePage meta={renMeta} />; }
+export function RenewableHome() { return <HomePage meta={renMeta} stats={renExtra.stats} testimonial={renExtra.testimonial} />; }
 export function RenewableLogin() { return <LoginPage meta={renMeta} />; }
 export function RenewableRegister() { return <RegisterPage meta={renMeta} />; }
 export function RenewableProfile() { return <ProfilePage meta={renMeta} />; }

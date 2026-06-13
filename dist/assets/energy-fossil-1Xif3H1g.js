@@ -73,11 +73,22 @@ const fossilExtra: DomainExtra = {
     { version: "v6.0", date: "May 14, 2026", tag: "Improved", items: ["Decline-curve forecasts now blend ML with Arps fits", "Pipeline leak-detection latency cut to under 90s", "Hedge book marks to intraday forward curves"] },
     { version: "v5.8", date: "Apr 22, 2026", tag: "Fixed", items: ["Allocation mismatch when a well swung between batteries", "Flare CO₂e double-counted during compressor restarts", "VaR understated for cross-commodity gas/power spreads"] },
   ],
+  stats: [
+    { value: "1.2M bbl/day", label: "Oil-equivalent produced" },
+    { value: "8,500 wells", label: "Monitored in real time" },
+    { value: "12,000 mi", label: "Pipeline under management" },
+    { value: "0.4 TRIR", label: "Recordable incident rate" },
+  ],
+  testimonial: {
+    quote: "Vulcan put our wellhead telemetry, refinery yields, and hedge book on one screen. A deferment that used to take days to reach the trading desk now shows up in minutes — and our flaring is down 30% since rollout.",
+    author: "Ray Mendoza",
+    role: "VP Operations, Gulf Coast Upstream & Midstream",
+  },
 };
 
 // ─── Shared page wrappers ─────────────────────────────────────────────────────
 
-export function FossilHome() { return <HomePage meta={fossilMeta} />; }
+export function FossilHome() { return <HomePage meta={fossilMeta} stats={fossilExtra.stats} testimonial={fossilExtra.testimonial} />; }
 export function FossilLogin() { return <LoginPage meta={fossilMeta} />; }
 export function FossilRegister() { return <RegisterPage meta={fossilMeta} />; }
 export function FossilProfile() { return <ProfilePage meta={fossilMeta} />; }

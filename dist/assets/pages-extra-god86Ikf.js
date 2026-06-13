@@ -1,8 +1,8 @@
 const e=`// src/domains/pages-extra.tsx — shared page templates (About, Privacy & Compliance, Pricing, Notifications, Changelog, 404)
 import { useState } from "react";
-import { ShieldCheck, FileText, CheckCircle2, Bell, Sparkles, AlertTriangle, Check, Clock } from "lucide-react";
+import { ShieldCheck, FileText, CheckCircle2, Bell, Sparkles, AlertTriangle, Check, Clock, Home, Search, ArrowRight, Mail as MailIcon } from "lucide-react";
 import { Card, SectionTitle, Badge, Tone } from "../components/ui";
-import { DomainMeta } from "./pages";
+import { DomainMeta, DomainStat, DomainTestimonial } from "./pages";
 
 export type TeamMember = { name: string; role: string; bio: string; emoji: string };
 export type ComplianceItem = { name: string; desc: string; status: "Certified" | "Compliant" | "In progress" };
@@ -20,6 +20,9 @@ export type DomainExtra = {
   plans: PricingPlan[];
   notifications: Notification[];
   changelog: ChangelogEntry[];
+  // Domain-specific marketing data (optional — templates fall back gracefully).
+  stats?: DomainStat[];
+  testimonial?: DomainTestimonial;
 };
 
 // ─── About ───────────────────────────────────────────────────────────────────
@@ -32,12 +35,36 @@ export function AboutPage({ meta, extra }: { meta: DomainMeta; extra: DomainExtr
         <p className="ink-2 max-w-xl mx-auto leading-relaxed">{extra.mission}</p>
       </div>
 
+      {extra.stats && extra.stats.length > 0 && (
+        <Card className="bg-gradient-to-br from-accent/5 to-grad/5">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
+            {extra.stats.map(s => (
+              <div key={s.label}>
+                <div className="font-display text-2xl font-bold text-accent">{s.value}</div>
+                <div className="text-xs ink-2 mt-1 leading-snug">{s.label}</div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+
       <Card>
         <SectionTitle eyebrow="Our story" title="How it started" />
         <div className="space-y-3 text-sm ink-2 leading-relaxed">
           {extra.story.map((p, i) => <p key={i}>{p}</p>)}
         </div>
       </Card>
+
+      {extra.testimonial && (
+        <figure className="text-center space-y-3 py-2">
+          <blockquote className="font-display text-lg sm:text-xl font-medium leading-snug max-w-xl mx-auto">
+            “{extra.testimonial.quote}”
+          </blockquote>
+          <figcaption className="text-xs ink-2">
+            <span className="font-semibold text-[var(--ink)]">{extra.testimonial.author}</span> · {extra.testimonial.role}
+          </figcaption>
+        </figure>
+      )}
 
       <div>
         <SectionTitle eyebrow="The team" title="People behind the product" />
@@ -112,6 +139,22 @@ export function PrivacyPage({ meta, extra }: { meta: DomainMeta; extra: DomainEx
         </div>
       </Card>
 
+      <div>
+        <SectionTitle eyebrow="Your data, your rights" title="Self-service controls" />
+        <div className="grid sm:grid-cols-3 gap-3">
+          {[
+            { t: "Export my data", d: "Download a machine-readable copy of everything we hold." },
+            { t: "Request correction", d: "Update inaccurate personal information on file." },
+            { t: "Delete my account", d: "Erase your data within 30 days, subject to legal holds." },
+          ].map(a => (
+            <Card key={a.t} className="card-hover cursor-pointer">
+              <div className="text-sm font-medium flex items-center justify-between">{a.t} <ArrowRight size={14} className="ink-2" /></div>
+              <p className="text-xs ink-2 mt-1 leading-relaxed">{a.d}</p>
+            </Card>
+          ))}
+        </div>
+      </div>
+
       <Card className="text-center space-y-2 py-6">
         <div className="font-semibold text-sm">Questions about privacy or compliance?</div>
         <div className="text-xs ink-2">Contact our Data Protection Officer at <span className="text-accent">privacy@{meta.id}.io</span></div>
@@ -158,7 +201,20 @@ export function PricingPage({ meta, extra }: { meta: DomainMeta; extra: DomainEx
         ))}
       </div>
 
-      <div className="text-center text-xs ink-2">All plans include TLS encryption, SSO, and email support. Prices in USD.</div>
+      <Card className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-gradient-to-br from-accent/5 to-grad/5">
+        <div>
+          <div className="font-semibold text-sm">Need a custom plan?</div>
+          <p className="text-xs ink-2 mt-0.5">Volume discounts, custom contracts, and dedicated onboarding for larger teams.</p>
+        </div>
+        <button className="btn-ghost px-5 py-2 text-sm shrink-0 gap-1.5">Contact sales <ArrowRight size={14} /></button>
+      </Card>
+
+      <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-1.5 text-center text-xs ink-2">
+        <span className="flex items-center gap-1.5"><Check size={13} className="text-accent" /> 14-day free trial</span>
+        <span className="flex items-center gap-1.5"><Check size={13} className="text-accent" /> Cancel anytime</span>
+        <span className="flex items-center gap-1.5"><Check size={13} className="text-accent" /> TLS encryption & SSO</span>
+        <span className="flex items-center gap-1.5"><Check size={13} className="text-accent" /> Prices in USD</span>
+      </div>
     </div>
   );
 }
@@ -166,7 +222,9 @@ export function PricingPage({ meta, extra }: { meta: DomainMeta; extra: DomainEx
 // ─── Notifications / Activity ────────────────────────────────────────────────
 export function NotificationsPage({ meta, extra }: { meta: DomainMeta; extra: DomainExtra }) {
   const [items, setItems] = useState(extra.notifications);
+  const [tab, setTab] = useState<"all" | "unread">("all");
   const unread = items.filter(n => n.unread).length;
+  const shown = tab === "unread" ? items.filter(n => n.unread) : items;
   return (
     <div className="max-w-2xl mx-auto space-y-5">
       <SectionTitle eyebrow={meta.name} title="Notifications"
@@ -174,8 +232,18 @@ export function NotificationsPage({ meta, extra }: { meta: DomainMeta; extra: Do
           ? <button onClick={() => setItems(ns => ns.map(n => ({ ...n, unread: false })))} className="btn-ghost !px-3 !py-1.5 text-xs">Mark all read</button>
           : <Badge tone="gray">All caught up</Badge>} />
 
+      <div className="inline-flex items-center gap-1 rounded-xl border border-[var(--line)] p-1 text-xs font-medium">
+        {([["all", \`All (\${items.length})\`], ["unread", \`Unread (\${unread})\`]] as const).map(([id, label]) => (
+          <button key={id} onClick={() => setTab(id)}
+            className={\`rounded-lg px-3 py-1.5 transition-colors \${tab === id ? "bg-accent text-white" : "ink-2 hover:text-[var(--ink)]"}\`}>{label}</button>
+        ))}
+      </div>
+
       <Card className="!p-0 overflow-hidden divide-y divide-[var(--line)]">
-        {items.map((n, i) => (
+        {shown.length === 0 && (
+          <div className="px-5 py-8 text-center text-sm ink-2">No unread notifications. You're all caught up.</div>
+        )}
+        {shown.map((n, i) => (
           <div key={i} className={\`flex items-start gap-3 px-5 py-4 transition-colors \${n.unread ? "bg-accent/5" : ""}\`}>
             <span className="grid place-items-center h-8 w-8 rounded-lg bg-accent/12 text-accent shrink-0 mt-0.5"><Bell size={14} /></span>
             <div className="flex-1 min-w-0">
@@ -199,11 +267,42 @@ export function NotificationsPage({ meta, extra }: { meta: DomainMeta; extra: Do
 // ─── Changelog ───────────────────────────────────────────────────────────────
 export function ChangelogPage({ meta, extra }: { meta: DomainMeta; extra: DomainExtra }) {
   const tagTone: Record<ChangelogEntry["tag"], Tone> = { New: "green", Improved: "blue", Fixed: "amber" };
+  const [filter, setFilter] = useState<"All" | ChangelogEntry["tag"]>("All");
+  const [subscribed, setSubscribed] = useState(false);
+  const entries = filter === "All" ? extra.changelog : extra.changelog.filter(e => e.tag === filter);
   return (
     <div className="max-w-2xl mx-auto space-y-5">
-      <SectionTitle eyebrow={meta.name} title="What's new" right={<Sparkles size={16} className="ink-2" />} />
+      <SectionTitle eyebrow={\`\${meta.name} · product updates\`} title="What's new" right={<Sparkles size={16} className="ink-2" />} />
+
+      {/* Subscribe band — product-news framing (distinct from the build-log Version History) */}
+      <Card className="flex flex-col sm:flex-row items-center gap-3 bg-gradient-to-br from-accent/5 to-grad/5">
+        <div className="flex-1 text-center sm:text-left">
+          <div className="text-sm font-medium">Get product updates in your inbox</div>
+          <div className="text-xs ink-2 mt-0.5">New features, improvements, and fixes — about once a month.</div>
+        </div>
+        {subscribed ? (
+          <span className="text-xs text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5"><CheckCircle2 size={14} /> Subscribed</span>
+        ) : (
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <div className="relative flex-1 sm:w-52">
+              <MailIcon size={14} className="absolute left-3 top-1/2 -translate-y-1/2 ink-2" />
+              <input placeholder="you@company.com"
+                className="w-full rounded-xl border border-[var(--line)] bg-[var(--surface)] pl-9 pr-3 py-2 text-sm outline-none focus:border-accent transition-all" />
+            </div>
+            <button onClick={() => setSubscribed(true)} className="btn-primary px-4 py-2 text-sm shrink-0">Subscribe</button>
+          </div>
+        )}
+      </Card>
+
+      <div className="inline-flex items-center gap-1 rounded-xl border border-[var(--line)] p-1 text-xs font-medium">
+        {(["All", "New", "Improved", "Fixed"] as const).map(t => (
+          <button key={t} onClick={() => setFilter(t)}
+            className={\`rounded-lg px-3 py-1.5 transition-colors \${filter === t ? "bg-accent text-white" : "ink-2 hover:text-[var(--ink)]"}\`}>{t}</button>
+        ))}
+      </div>
+
       <div className="space-y-4">
-        {extra.changelog.map(e => (
+        {entries.map(e => (
           <Card key={e.version}>
             <div className="flex items-center gap-3">
               <span className="font-mono text-sm font-semibold text-accent">{e.version}</span>
@@ -220,7 +319,6 @@ export function ChangelogPage({ meta, extra }: { meta: DomainMeta; extra: Domain
           </Card>
         ))}
       </div>
-      <div className="text-center text-xs ink-2">Subscribe to release notes at <span className="text-accent">changelog.{meta.id}.io</span></div>
     </div>
   );
 }
@@ -236,9 +334,25 @@ export function NotFoundPage({ meta }: { meta: DomainMeta }) {
         <div className="font-display text-5xl font-bold tracking-tight">404</div>
         <p className="ink-2 mt-2 text-sm">This page doesn't exist or was moved. Check the URL, or head back to your {meta.name} dashboard.</p>
       </div>
+
+      <div className="relative max-w-xs mx-auto">
+        <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 ink-2" />
+        <input placeholder={\`Search \${meta.name}…\`}
+          className="w-full rounded-xl border border-[var(--line)] bg-[var(--surface)] pl-10 pr-3 py-2.5 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all" />
+      </div>
+
       <div className="flex gap-3 justify-center">
-        <button className="btn-primary px-5 py-2 text-sm">Go to dashboard</button>
+        <button className="btn-primary px-5 py-2 text-sm gap-1.5"><Home size={14} /> Go to dashboard</button>
         <button className="btn-ghost px-5 py-2 text-sm">Contact support</button>
+      </div>
+
+      <div className="pt-2">
+        <div className="text-[11px] ink-2 mb-2">Popular pages</div>
+        <div className="flex flex-wrap gap-2 justify-center">
+          {["Dashboard", "Pricing", "Settings", "Support", "What's new"].map(l => (
+            <span key={l} className="rounded-full border border-[var(--line)] px-3 py-1 text-xs ink-2 hover:border-accent hover:text-accent transition-colors cursor-pointer">{l}</span>
+          ))}
+        </div>
       </div>
     </div>
   );
