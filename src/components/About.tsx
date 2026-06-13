@@ -5,10 +5,13 @@ import {
   Landmark, HeartPulse, TerminalSquare, Users, GraduationCap,
   Search, Check, ChevronsUpDown, Sun, Moon, RotateCcw,
   Zap, Layers, Palette, Package, Code2, Sparkles,
+  GitBranch, ArrowUpRight,
 } from "lucide-react";
+import { APP_VERSION } from "../version";
 
 interface AboutProps {
   onNavigateToDomain: () => void;
+  onViewVersions: () => void;
   dark: boolean;
   setDark: Dispatch<SetStateAction<boolean>>;
 }
@@ -240,7 +243,7 @@ const FEATURES = [
 /* ─────────────────────────────────────────────
    Main About component
 ───────────────────────────────────────────── */
-export function About({ onNavigateToDomain, dark, setDark }: AboutProps) {
+export function About({ onNavigateToDomain, onViewVersions, dark, setDark }: AboutProps) {
   return (
     <div className="max-w-4xl mx-auto space-y-24 pb-24">
 
@@ -527,6 +530,28 @@ export function About({ onNavigateToDomain, dark, setDark }: AboutProps) {
             </button>
           </div>
         </div>
+      </section>
+
+      {/* ── Version ──────────────────────────── */}
+      <section className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-6 flex items-center justify-between gap-4 flex-wrap">
+        <div className="flex items-center gap-4">
+          <div className="h-11 w-11 rounded-xl bg-accent/12 text-accent grid place-items-center shrink-0">
+            <GitBranch size={18} />
+          </div>
+          <div className="space-y-0.5">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-semibold">ForgeUI</span>
+              <span className="font-mono text-xs font-semibold text-accent">v{APP_VERSION}</span>
+            </div>
+            <p className="text-xs text-[var(--ink-2)]">See what changed in every release.</p>
+          </div>
+        </div>
+        <button
+          onClick={onViewVersions}
+          className="btn-ghost !px-4 !py-2 gap-1.5 text-sm font-semibold"
+        >
+          View version history <ArrowUpRight size={15} />
+        </button>
       </section>
 
       {/* ── Footer ───────────────────────────── */}

@@ -31,6 +31,7 @@ import { DOMAIN_DEFS, DomainDef } from "./export/registry";
 import { exportProject } from "./export/exportProject";
 import { ThemeStudio } from "./components/ThemeStudio";
 import { About } from "./components/About";
+import { VersionHistory } from "./components/VersionHistory";
 import { AppPreview } from "./components/AppPreview";
 import { Theme, loadTheme, applyTheme, saveTheme } from "./theme";
 
@@ -129,6 +130,7 @@ function DomainPicker({ domain, onPick }: { domain: Domain; onPick: (d: Domain) 
 export default function App() {
   const [dark, setDark] = useState(() => window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false);
   const [showAbout, setShowAbout] = useState(true);
+  const [showVersions, setShowVersions] = useState(false);
   const [domain, setDomain] = useState(DOMAINS[0]);
   const [viewId, setViewId] = useState(DOMAINS[0].views[0].id);
   const [theme, setTheme] = useState<Theme>(loadTheme);
@@ -174,8 +176,8 @@ export default function App() {
 
   return (
     <div className="min-h-full flex">
-      {/* Sidebar - completely hidden if showAbout state is active */}
-      {!showAbout && (
+      {/* Sidebar - completely hidden if showAbout / version history is active */}
+      {!showAbout && !showVersions && (
         <aside className="hidden md:flex w-60 shrink-0 flex-col surface border-r min-h-screen sticky top-0">
           <div className="px-5 py-5 border-b border-[var(--line)] space-y-2">
             <button onClick={() => setShowAbout(true)} className="flex items-center gap-2.5 w-full hover:opacity-75 transition-opacity">
@@ -222,13 +224,19 @@ export default function App() {
 
       {/* Main Container */}
       <div className="flex-1 min-w-0">
-        {showAbout ? (
+        {showVersions ? (
+          /* Render ONLY the Version History page. */
+        <main className="p-4 sm:p-6 animate-fadeUp">
+          <VersionHistory onBack={() => setShowVersions(false)} />
+        </main>
+        ) : showAbout ? (
           /* Render ONLY the About component. No top navigation bars or mobile sub headers are shown. */
         <main className="p-4 sm:p-6 animate-fadeUp">
-          <About 
-            onNavigateToDomain={() => setShowAbout(false)} 
-            dark={dark} 
-            setDark={setDark} 
+          <About
+            onNavigateToDomain={() => setShowAbout(false)}
+            onViewVersions={() => setShowVersions(true)}
+            dark={dark}
+            setDark={setDark}
           />
         </main>
         ) : (
