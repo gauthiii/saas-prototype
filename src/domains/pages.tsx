@@ -46,7 +46,7 @@ export function HomePage({ meta, stats, testimonial }: { meta: DomainMeta; stats
       <div className="grid sm:grid-cols-3 gap-4">
         {meta.features.map((f, i) => (
           <Card key={i} className="space-y-2 card-hover">
-            <div className="grid place-items-center h-11 w-11 rounded-xl bg-accent/10 text-2xl">{f.icon}</div>
+            <div className="grid place-items-center h-11 w-11 rounded-xl bg-accent/10 text-2xl" role="img" aria-label={f.title}>{f.icon}</div>
             <div className="font-semibold text-sm pt-1">{f.title}</div>
             <div className="text-xs ink-2 leading-relaxed">{f.body}</div>
           </Card>

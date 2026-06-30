@@ -1,14 +1,14 @@
 // src/components/AppPreview.tsx — Mac-browser-styled modal that previews how the
 // exported app will look and behave: a live replica of the generated App shell
 // (sidebar, header, screens) plus prev/next flow stepper in the browser chrome.
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Lock, Moon, RotateCw, Sun, X } from "lucide-react";
 
 type PreviewView = {
   id: string;
   label: string;
   icon: React.ComponentType<{ size?: number | string }>;
-  el: JSX.Element;
+  el: React.ReactElement;
   group?: string;
 };
 
@@ -25,6 +25,7 @@ type Props = {
 export function AppPreview({ productName, sub, domainId, views, dark, setDark, onClose }: Props) {
   const [idx, setIdx] = useState(0);
   const view = views[idx];
+  const scrollRef = useRef<HTMLElement>(null);
 
   const groups = useMemo(() => {
     const map: Record<string, PreviewView[]> = {};
@@ -35,6 +36,12 @@ export function AppPreview({ productName, sub, domainId, views, dark, setDark, o
   const prev = () => setIdx(i => Math.max(0, i - 1));
   const next = () => setIdx(i => Math.min(views.length - 1, i + 1));
 
+  // U10: reset scroll to top on view change
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: 0 });
+  }, [idx]);
+
+  // B4: include prev/next in dependency array to avoid stale closures
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") { onClose(); return; }
@@ -45,7 +52,7 @@ export function AppPreview({ productName, sub, domainId, views, dark, setDark, o
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [onClose, views.length]);
+  }, [onClose, views.length, prev, next]);
 
   return (
     <div className="fixed inset-0 z-50 grid place-items-center p-3 sm:p-6">
@@ -148,7 +155,7 @@ export function AppPreview({ productName, sub, domainId, views, dark, setDark, o
               ))}
             </div>
 
-            <main key={view.id} className="flex-1 overflow-y-auto p-4 sm:p-6 animate-fadeUp">
+            <main ref={scrollRef} key={view.id} className="flex-1 overflow-y-auto p-4 sm:p-6 animate-fadeUp">
               {view.el}
             </main>
           </div>

@@ -8,7 +8,7 @@ import {
 import { HomePage, LoginPage, RegisterPage, ProfilePage, SettingsPage, FAQPage, SupportPage, DomainMeta } from "./pages";
 import { AboutPage, PrivacyPage, PricingPage, NotificationsPage, ChangelogPage, NotFoundPage, DomainExtra } from "./pages-extra";
 import { Card, SectionTitle, Badge, Stat, Tone } from "../components/ui";
-import { Bars, AreaChart, Donut } from "../components/charts";
+import { Bars, AreaChart, Donut, Sparkline } from "../components/charts";
 import { AIPanel, Insight } from "../components/AIPanel";
 
 // ─── Domain meta ─────────────────────────────────────────────────────────────
@@ -140,12 +140,12 @@ export function ReactorDashboard() {
             <SectionTitle eyebrow="Fleet" title="Unit status · now" right={<Badge tone="gray">6 of 18</Badge>} />
             <div className="space-y-2">
               {[
-                { name: "Unit 1 — PWR", type: "1,180 MWe · cycle 22", state: "100% power", margin: "DNBR 1.84", trend: "up" },
-                { name: "Unit 2 — PWR", type: "1,180 MWe · cycle 19", state: "0% — tripped", margin: "Decay heat", trend: "down" },
-                { name: "Unit 3 — BWR", type: "1,310 MWe · refuel", state: "Outage day 14", margin: "Defueled", trend: "down" },
-                { name: "Unit 4 — PWR", type: "1,180 MWe · cycle 17", state: "92% load-follow", margin: "DNBR 1.79", trend: "down" },
-                { name: "Unit 5 — SMR", type: "77 MWe · module A", state: "100% power", margin: "Nominal", trend: "up" },
-                { name: "Unit 6 — SMR", type: "77 MWe · module B", state: "100% power", margin: "Nominal", trend: "up" },
+                { name: "Unit 1 — PWR", type: "1,180 MWe · cycle 22", state: "100% power", margin: "DNBR 1.84", trend: "up", spark: [98, 99, 100, 100, 100, 100] },
+                { name: "Unit 2 — PWR", type: "1,180 MWe · cycle 19", state: "0% — tripped", margin: "Decay heat", trend: "down", spark: [100, 98, 60, 20, 5, 0] },
+                { name: "Unit 3 — BWR", type: "1,310 MWe · refuel", state: "Outage day 14", margin: "Defueled", trend: "down", spark: [100, 80, 40, 10, 0, 0] },
+                { name: "Unit 4 — PWR", type: "1,180 MWe · cycle 17", state: "92% load-follow", margin: "DNBR 1.79", trend: "down", spark: [100, 96, 94, 92, 92, 92] },
+                { name: "Unit 5 — SMR", type: "77 MWe · module A", state: "100% power", margin: "Nominal", trend: "up", spark: [99, 100, 100, 100, 100, 100] },
+                { name: "Unit 6 — SMR", type: "77 MWe · module B", state: "100% power", margin: "Nominal", trend: "up", spark: [98, 99, 99, 100, 100, 100] },
               ].map(u => (
                 <div key={u.name} className="flex items-center gap-3 rounded-lg border border-[var(--line)] p-3.5">
                   <span className="grid place-items-center h-9 w-9 rounded-lg bg-accent/12 text-accent shrink-0"><Atom size={15} /></span>
@@ -153,6 +153,7 @@ export function ReactorDashboard() {
                     <div className="text-sm font-medium truncate">{u.name}</div>
                     <div className="text-xs ink-2 font-mono">{u.type}</div>
                   </div>
+                  <div className="hidden sm:block"><Sparkline data={u.spark} /></div>
                   <div className="text-right shrink-0">
                     <div className="text-sm font-semibold">{u.state}</div>
                     <div className="text-xs ink-2 font-mono">{u.margin}</div>

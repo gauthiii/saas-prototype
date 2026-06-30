@@ -1,5 +1,5 @@
 // src/components/ThemeStudio.tsx — colour changer modal with live mac-window teaser
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, Paintbrush, RotateCcw, Check } from "lucide-react";
 import { Theme, DEFAULT_THEME, THEME_PRESETS } from "../theme";
 
@@ -61,13 +61,21 @@ export function ThemeStudio({ open, onClose, theme, onApply }: {
 }) {
   const [draft, setDraft] = useState<Theme>(theme);
   const [applied, setApplied] = useState(false);
+
+  // U5: sync draft when the external theme changes (e.g. preset applied elsewhere)
+  useEffect(() => { setDraft(theme); }, [theme]);
+
   if (!open) return null;
 
   const apply = () => {
     onApply(draft);
     setApplied(true);
-    setTimeout(() => setApplied(false), 1600);
+    // U6: close modal after a short confirmation window
+    setTimeout(() => { setApplied(false); onClose(); }, 900);
   };
+
+  // C3: determine which preset matches the current draft
+  const activePreset = THEME_PRESETS.find(p => p.theme.accent === draft.accent && p.theme.grad === draft.grad);
 
   return (
     <div className="fixed inset-0 z-50 grid place-items-center p-4">
@@ -108,13 +116,18 @@ export function ThemeStudio({ open, onClose, theme, onApply }: {
           <div>
             <div className="eyebrow mb-2">Presets</div>
             <div className="flex flex-wrap gap-2">
-              {THEME_PRESETS.map(p => (
-                <button key={p.name} onClick={() => setDraft(p.theme)}
-                  className="btn-ghost !px-3 !py-1.5 text-xs gap-2">
-                  <span className="h-3.5 w-3.5 rounded-full" style={{ background: `linear-gradient(135deg, ${p.theme.accent}, ${p.theme.grad})` }} />
-                  {p.name}
-                </button>
-              ))}
+              {THEME_PRESETS.map(p => {
+                const isActive = activePreset?.name === p.name;
+                return (
+                  <button key={p.name} onClick={() => setDraft(p.theme)}
+                    className={`btn-ghost !px-3 !py-1.5 text-xs gap-2 ${isActive ? "ring-2 ring-accent ring-offset-1" : ""}`}>
+                    <span className="h-3.5 w-3.5 rounded-full relative" style={{ background: `linear-gradient(135deg, ${p.theme.accent}, ${p.theme.grad})` }}>
+                      {isActive && <Check size={9} className="absolute inset-0 m-auto text-white" />}
+                    </span>
+                    {p.name}
+                  </button>
+                );
+              })}
             </div>
           </div>
 

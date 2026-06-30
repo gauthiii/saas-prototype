@@ -8,7 +8,7 @@ import {
 import { HomePage, LoginPage, RegisterPage, ProfilePage, SettingsPage, FAQPage, SupportPage, DomainMeta } from "./pages";
 import { AboutPage, PrivacyPage, PricingPage, NotificationsPage, ChangelogPage, NotFoundPage, DomainExtra } from "./pages-extra";
 import { Card, SectionTitle, Badge, Stat, Tone } from "../components/ui";
-import { Bars, AreaChart, Donut } from "../components/charts";
+import { Bars, AreaChart, Donut, Sparkline } from "../components/charts";
 import { AIPanel, Insight } from "../components/AIPanel";
 
 // ─── Domain meta ─────────────────────────────────────────────────────────────
@@ -140,16 +140,17 @@ export function FleetDashboard() {
             <SectionTitle eyebrow="By region" title="Top producing clusters · now" right={<Badge tone="gray">4 of 38</Badge>} />
             <div className="space-y-2">
               {[
-                { name: "San Diego County", type: "14,200 sites · solar+storage", output: "31 MW", health: "99%", trend: "up" },
-                { name: "Phoenix Metro", type: "11,800 sites · solar", output: "28 MW", health: "98%", trend: "up" },
-                { name: "Austin", type: "8,400 sites · solar+storage", output: "19 MW", health: "97%", trend: "down" },
-                { name: "Sacramento Valley", type: "9,100 sites · solar", output: "17 MW", health: "96%", trend: "up" },
+                { name: "San Diego County", type: "14,200 sites · solar+storage", output: "31 MW", health: "99%", trend: "up", spark: [25, 27, 29, 30, 31, 31] },
+                { name: "Phoenix Metro", type: "11,800 sites · solar", output: "28 MW", health: "98%", trend: "up", spark: [22, 24, 25, 27, 28, 28] },
+                { name: "Austin", type: "8,400 sites · solar+storage", output: "19 MW", health: "97%", trend: "down", spark: [22, 20, 19, 19, 20, 19] },
+                { name: "Sacramento Valley", type: "9,100 sites · solar", output: "17 MW", health: "96%", trend: "up", spark: [14, 15, 15, 16, 17, 17] },
               ].map(c => (
                 <div key={c.name} className="flex items-center gap-3 rounded-lg border border-[var(--line)] p-3.5">
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-medium truncate">{c.name}</div>
                     <div className="text-xs ink-2 font-mono">{c.type}</div>
                   </div>
+                  <div className="hidden sm:block"><Sparkline data={c.spark} /></div>
                   <div className="text-right shrink-0">
                     <div className="text-sm font-semibold">{c.output}</div>
                     <div className="text-xs ink-2">Health {c.health}</div>

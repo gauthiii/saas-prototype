@@ -1,5 +1,6 @@
 // src/domains/energytech.tsx — Helios · renewable energy IPP (independent power producer)
 import { useState } from "react";
+import type { ReactElement } from "react";
 import {
   Zap, Sun, Wind, BatteryCharging, Leaf, Gauge, Wrench, Factory,
   LayoutDashboard, TrendingUp, BarChart3, Briefcase, CheckCircle2,
@@ -203,7 +204,7 @@ const assets: { name: string; region: string; type: AssetType; capacity: string;
   { name: "Delta Storage", region: "Gujarat, IN", type: "Storage", capacity: "60 MW / 240 MWh", output: 22, cap: 60, avail: 94.2, status: "Fault" },
 ];
 
-const typeIcon: Record<AssetType, JSX.Element> = {
+const typeIcon: Record<AssetType, ReactElement> = {
   Solar: <Sun size={15} />,
   Wind: <Wind size={15} />,
   Storage: <BatteryCharging size={15} />,

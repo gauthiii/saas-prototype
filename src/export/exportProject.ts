@@ -78,5 +78,5 @@ export async function exportProject(domain: DomainDef, theme: Theme): Promise<vo
   a.href = url;
   a.download = `${rootName}.zip`;
   a.click();
-  URL.revokeObjectURL(url);
+  setTimeout(() => URL.revokeObjectURL(url), 100);
 }

@@ -5,10 +5,19 @@ import { Theme, hexToRgbTriple, darken } from "../theme";
 
 /** Bake the currently applied theme into the exported stylesheet defaults. */
 export function injectTheme(css: string, theme: Theme): string {
-  return css
-    .replace(/--accent-rgb:\s*[\d ]+;/, `--accent-rgb: ${hexToRgbTriple(theme.accent)};`)
-    .replace(/--accent-dark-rgb:\s*[\d ]+;/, `--accent-dark-rgb: ${hexToRgbTriple(darken(theme.accent))};`)
-    .replace(/--grad-rgb:\s*[\d ]+;/, `--grad-rgb: ${hexToRgbTriple(theme.grad)};`);
+  const replaced = {
+    accent: false,
+    accentDark: false,
+    grad: false,
+  };
+  const result = css
+    .replace(/--accent-rgb:\s*[\d ]+;/, () => { replaced.accent = true; return `--accent-rgb: ${hexToRgbTriple(theme.accent)};`; })
+    .replace(/--accent-dark-rgb:\s*[\d ]+;/, () => { replaced.accentDark = true; return `--accent-dark-rgb: ${hexToRgbTriple(darken(theme.accent))};`; })
+    .replace(/--grad-rgb:\s*[\d ]+;/, () => { replaced.grad = true; return `--grad-rgb: ${hexToRgbTriple(theme.grad)};`; });
+  if (!replaced.accent || !replaced.accentDark || !replaced.grad) {
+    console.warn("[ForgeUI export] injectTheme: one or more CSS variable patterns did not match — exported stylesheet may use default theme colors.", replaced);
+  }
+  return result;
 }
 
 export function genAppTsx(domain: DomainDef): string {
@@ -21,6 +30,7 @@ export function genAppTsx(domain: DomainDef): string {
 
   return `// src/App.tsx — ${domain.productName} (${domain.label}) screens, exported from ForgeUI
 import { useEffect, useMemo, useState } from "react";
+import type { ReactElement } from "react";
 import {
   ${icons.join(", ")},
 } from "lucide-react";
@@ -28,7 +38,7 @@ import {
   ${comps.join(", ")},
 } from "./domains/${domain.file}";
 
-type View = { id: string; label: string; icon: typeof Sun; el: JSX.Element; group: string };
+type View = { id: string; label: string; icon: typeof Sun; el: ReactElement; group: string };
 
 const VIEWS: View[] = [
 ${viewLines}

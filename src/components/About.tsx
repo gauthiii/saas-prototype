@@ -5,9 +5,10 @@ import {
   Landmark, HeartPulse, TerminalSquare, Users, GraduationCap,
   Search, Check, ChevronsUpDown, Sun, Moon, RotateCcw,
   Zap, Layers, Palette, Package, Code2, Sparkles,
-  GitBranch, ArrowUpRight,
+  GitBranch, ArrowUpRight, ShoppingCart, Banknote, Leaf, Atom, Factory,
 } from "lucide-react";
 import { APP_VERSION } from "../version";
+import { THEME_PRESETS } from "../theme";
 
 interface AboutProps {
   onNavigateToDomain: () => void;
@@ -20,11 +21,17 @@ interface AboutProps {
    Inline UI replica: DomainPicker open state
 ───────────────────────────────────────────── */
 const DOMAIN_ITEMS = [
-  { icon: Landmark,        label: "FinTech",      sub: "Treasury · Invoices · Analytics",  active: false },
-  { icon: HeartPulse,      label: "HealthTech",   sub: "EHR · Vitals · Appointments",      active: false },
-  { icon: TerminalSquare,  label: "DevOps",       sub: "Logs · Infra · Incidents",         active: false },
-  { icon: Users,           label: "HRTech (ATS)", sub: "Pipelines · Resumes · Interviews", active: false },
-  { icon: GraduationCap,   label: "EdTech (LMS)", sub: "Curriculum · Quizzes · Skills",   active: true  },
+  { icon: Landmark,        label: "FinTech",          sub: "Treasury · Invoices · Analytics",  active: false },
+  { icon: Banknote,        label: "Banking",          sub: "Accounts · Loans · Transfers",     active: false },
+  { icon: HeartPulse,      label: "HealthTech",       sub: "EHR · Vitals · Appointments",      active: false },
+  { icon: TerminalSquare,  label: "DevOps",           sub: "Logs · Infra · Incidents",         active: false },
+  { icon: Users,           label: "HRTech (ATS)",     sub: "Pipelines · Resumes · Interviews", active: false },
+  { icon: GraduationCap,   label: "EdTech (LMS)",     sub: "Curriculum · Quizzes · Skills",    active: false },
+  { icon: ShoppingCart,    label: "RetailTech",       sub: "POS · Inventory · Orders",         active: false },
+  { icon: Zap,             label: "EnergyTech",       sub: "Grid · Usage · Billing",           active: false },
+  { icon: Factory,         label: "Energy (Fossil)",  sub: "Wells · Pipelines · Compliance",   active: false },
+  { icon: Leaf,            label: "Energy (Renew.)",  sub: "Solar · Wind · Storage",           active: false },
+  { icon: Atom,            label: "Energy (Nuclear)", sub: "Reactors · Safety · Output",       active: true  },
 ];
 
 function DomainPickerMock() {
@@ -72,23 +79,14 @@ function DomainPickerMock() {
 /* ─────────────────────────────────────────────
    Inline UI replica: ThemeStudio panel
 ───────────────────────────────────────────── */
-const PRESETS = [
-  { name: "Electric", accent: "#6366f1", grad: "#a78bfa" },
-  { name: "Indigo",   accent: "#4f46e5", grad: "#7c3aed" },
-  { name: "Midnight", accent: "#0ea5e9", grad: "#6366f1" },
-  { name: "Emerald",  accent: "#10b981", grad: "#06b6d4" },
-  { name: "Rose",     accent: "#f43f5e", grad: "#fb923c" },
-  { name: "Amber",    accent: "#f59e0b", grad: "#ef4444" },
-  { name: "Sky",      accent: "#38bdf8", grad: "#818cf8" },
-  { name: "Slate",    accent: "#64748b", grad: "#94a3b8" },
-];
+const PRESETS = THEME_PRESETS.map(p => ({ name: p.name, accent: p.theme.accent, grad: p.theme.grad }));
 
 function MacWindowMock({ dark }: { dark: boolean }) {
   const c = dark
     ? { bg: "#0a0c10", surface: "#0f1218", line: "#232938", ink2: "#8b93a5" }
     : { bg: "#f7f8fa", surface: "#ffffff", line: "#e6e8ee", ink2: "#8b93a5" };
-  const accent = "#6366f1";
-  const grad = "#a78bfa";
+  const accent = THEME_PRESETS[0].theme.accent;
+  const grad = THEME_PRESETS[0].theme.grad;
   return (
     <div className="flex-1 rounded-xl overflow-hidden border shadow-card" style={{ borderColor: c.line }}>
       <div className="flex items-center gap-1.5 px-3 py-2" style={{ background: c.surface, borderBottom: `1px solid ${c.line}` }}>
@@ -232,7 +230,7 @@ function TopbarMock({ dark, onToggle }: { dark: boolean; onToggle: () => void })
    Feature cards data
 ───────────────────────────────────────────── */
 const FEATURES = [
-  { icon: Layers,    title: "5+ Domain Templates",   desc: "FinTech, HealthTech, DevOps, HRTech, and EdTech — each fully designed with 10+ screens." },
+  { icon: Layers,    title: "11 Domain Templates",    desc: "FinTech, Banking, HealthTech, DevOps, HRTech, EdTech, RetailTech, EnergyTech, and more — each fully designed with 10+ screens." },
   { icon: Palette,   title: "Dynamic Theme Studio",  desc: "Pick any accent and gradient color with live Mac-window previews in both light and dark." },
   { icon: Zap,       title: "Light & Dark Mode",     desc: "Every screen adapts with smooth CSS transitions. Both modes are production-ready." },
   { icon: Package,   title: "One-Click Export",      desc: "Download your selected domain as a complete, ready-to-run Vite + TypeScript project zip." },
@@ -556,7 +554,7 @@ export function About({ onNavigateToDomain, onViewVersions, dark, setDark }: Abo
 
       {/* ── Footer ───────────────────────────── */}
       <footer className="text-center text-xs text-[var(--ink-2)] py-4 border-t border-[var(--line)]">
-        ForgeUI © 2025 · Developed by Gautham Vijayaraj
+        ForgeUI © {new Date().getFullYear()} · Developed by Gautham Vijayaraj
       </footer>
     </div>
   );

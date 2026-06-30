@@ -22,7 +22,14 @@ const STORAGE_KEY = "forgeui-theme";
 const STORAGE_VERSION_KEY = "forgeui-theme-version";
 const STORAGE_VERSION = "2";
 
+const HEX_RE = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i;
+
+export function isValidHex(hex: string): boolean {
+  return HEX_RE.test(hex);
+}
+
 export function hexToRgbTriple(hex: string): string {
+  if (!isValidHex(hex)) return "31 128 255"; // fall back to default accent
   const h = hex.replace("#", "");
   const n = parseInt(h.length === 3 ? h.split("").map(c => c + c).join("") : h, 16);
   return `${(n >> 16) & 255} ${(n >> 8) & 255} ${n & 255}`;
@@ -53,7 +60,11 @@ export function loadTheme(): Theme {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
-      const parsed = { ...DEFAULT_THEME, ...JSON.parse(raw) };
+      const raw_parsed = JSON.parse(raw);
+      const parsed: Theme = {
+        accent: isValidHex(raw_parsed?.accent) ? raw_parsed.accent : DEFAULT_THEME.accent,
+        grad:   isValidHex(raw_parsed?.grad)   ? raw_parsed.grad   : DEFAULT_THEME.grad,
+      };
       const version = localStorage.getItem(STORAGE_VERSION_KEY);
       const wasLegacyDefault = LEGACY_DEFAULT_THEMES.some(t =>
         parsed.accent.toLowerCase() === t.accent &&

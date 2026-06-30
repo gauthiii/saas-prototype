@@ -1,5 +1,6 @@
 // src/domains/devops.tsx
 import { useEffect, useRef, useState } from "react";
+import type { ReactElement } from "react";
 import { HomePage, LoginPage, RegisterPage, ProfilePage, SettingsPage, FAQPage, SupportPage, DomainMeta } from "./pages";
 import { AboutPage, PrivacyPage, PricingPage, NotificationsPage, ChangelogPage, NotFoundPage, DomainExtra } from "./pages-extra";
 
@@ -232,7 +233,7 @@ export function KanbanMini() {
 }
 
 type StageState = "passed" | "running" | "failed" | "queued";
-const stageIcon: Record<StageState, JSX.Element> = {
+const stageIcon: Record<StageState, ReactElement> = {
   passed: <CheckCircle2 size={16} className="text-emerald-500" />,
   running: <CircleDashed size={16} className="text-accent animate-spin" />,
   failed: <XCircle size={16} className="text-rose-500" />,

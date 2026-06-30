@@ -16,10 +16,34 @@ export interface VersionEntry {
 
 export const VERSIONS: VersionEntry[] = [
   {
+    version: "1.9.0",
+    date: "2026-06-29",
+    title: "Bug fixes, UX improvements & URL navigation",
+    commit: "fc626af",
+    tag: "Improvement",
+    changes: [
+      "Added top-level ErrorBoundary — prevents blank white screen on component errors.",
+      "Added react-router-dom: domain and view are now in the URL (e.g. /fintech/dashboard); deep links, back/forward, and refresh all work.",
+      "Mobile navigation now uses a two-row grouped layout (group chips + view pills) instead of a flat 23-tab scroll.",
+      "Preview (Eye) button moved to the top toolbar — always accessible from any view group.",
+      "Dark mode preference is now persisted to localStorage across reloads.",
+      "ThemeStudio: draft now syncs when theme changes externally; Apply closes the modal; active preset shows a ring indicator.",
+      "Extracted shared icon map to src/lib/iconMap.ts — deck exports for Energy, Banking, and Retail now use correct icons.",
+      "Fixed Safari ZIP download (deferred blob URL revoke).",
+      "AIPanel: removed non-functional Apply button; Regenerate now shuffles insights.",
+      "AppPreview: scroll resets to top on view change; keyboard handler stale closure fixed.",
+      "About page updated to reflect all 11 domain templates.",
+      "Footer copyright year updated dynamically.",
+      "Added export progress modal with stage labels and cancel button.",
+      "Domain picker now supports full keyboard navigation (ArrowUp/Down, Enter, Escape).",
+      "useFakeSubmit now auto-resets to idle after 2 s of done state.",
+    ],
+  },
+  {
     version: "1.8.0",
     date: "2026-06-12",
     title: "Shared page templates overhaul",
-    commit: "local",
+    commit: "fc626af",
     tag: "Improvement",
     changes: [
       "Rebuilt the Home landing page: removed hardcoded placeholder social proof and added per-domain stats and a customer testimonial.",

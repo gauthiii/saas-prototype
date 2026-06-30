@@ -3,34 +3,12 @@
 // labels come from registry.ts; colors come from the user's chosen theme.
 import pptxgen from "pptxgenjs";
 import { createElement } from "react";
-import type { LucideIcon } from "lucide-react";
 import { renderToStaticMarkup } from "react-dom/server";
-import {
-  Landmark, HeartPulse, TerminalSquare, Users, GraduationCap,
-  LayoutDashboard, FileText, CalendarDays, ListChecks, BarChart3,
-  Boxes, CreditCard, Send, PiggyBank, Shield, TrendingUp, Building2,
-  Video, Pill, BedDouble, ClipboardList, Receipt,
-  GitBranch, BellRing, Flag, DollarSign, Lock,
-  UserCheck, Briefcase, MessageCircle,
-  Home, LogIn, UserPlus, User, Settings, HelpCircle, Headphones,
-  Info, Tag, ShieldCheck, Sparkles, AlertTriangle, Palette, Rocket,
-} from "lucide-react";
+import { Sparkles } from "lucide-react";
+import { ICONS, IconType } from "../lib/iconMap";
 import { DomainDef, ViewDef } from "./registry";
 import { DECK_CONTENT } from "./deckContent";
 import { Theme, darken } from "../theme";
-
-type IconType = LucideIcon;
-
-const ICONS: Record<string, IconType> = {
-  Landmark, HeartPulse, TerminalSquare, Users, GraduationCap,
-  LayoutDashboard, FileText, CalendarDays, ListChecks, BarChart3,
-  Boxes, CreditCard, Send, PiggyBank, Shield, TrendingUp, Building2,
-  Video, Pill, BedDouble, ClipboardList, Receipt,
-  GitBranch, BellRing, Flag, DollarSign, Lock,
-  UserCheck, Briefcase, MessageCircle,
-  Home, LogIn, UserPlus, User, Settings, HelpCircle, Headphones,
-  Info, Tag, ShieldCheck, Sparkles, AlertTriangle, Palette, Rocket,
-};
 
 // ---- color helpers (deck is dark; ensure accent stays readable on it) ----
 const hexNo = (h: string) => h.replace("#", "").toUpperCase();
@@ -190,13 +168,20 @@ export async function generateDeck(domain: DomainDef, theme: Theme): Promise<Blo
   });
   // core app screens as pills
   s.addText("CORE APP SCREENS", { x: 0.5, y: 2.7, w: 4, h: 0.3, fontSize: 10, bold: true, color: INK2, charSpacing: 2, fontFace: F, margin: 0 });
-  const perRow = 4, pillW = 2.2, pillH = 0.62;
-  appViews.forEach((v, i) => {
-    const x = 0.5 + (i % perRow) * (pillW + 0.13);
+  // B2: scale perRow up for large domains to prevent Y overflow (slide canvas is ~7.5 in tall, usable ~4.5 in from y=3.05)
+  const perRow = appViews.length > 12 ? 5 : 4;
+  const pillW = appViews.length > 12 ? 1.82 : 2.2;
+  const pillH = 0.62;
+  const maxRows = Math.floor(4.4 / (pillH + 0.12));
+  appViews.slice(0, perRow * maxRows).forEach((v, i) => {
+    const x = 0.5 + (i % perRow) * (pillW + 0.11);
     const y = 3.05 + Math.floor(i / perRow) * (pillH + 0.12);
     s.addShape(pres.ShapeType.roundRect, { x, y, w: pillW, h: pillH, rectRadius: 0.06, fill: { color: CARD }, line: { color: LINE, width: 0.75 } });
     s.addText(`${i + 1}. ${v.label}`, { x: x + 0.12, y, w: pillW - 0.24, h: pillH, fontSize: 10.5, bold: true, color: INK, valign: "middle", fontFace: F, margin: 0 });
   });
+  if (appViews.length > perRow * maxRows) {
+    s.addText(`+ ${appViews.length - perRow * maxRows} more screens`, { x: 0.5, y: 3.05 + maxRows * (pillH + 0.12), w: 9, h: 0.4, fontSize: 10, color: INK2, fontFace: F, italic: true, margin: 0 });
+  }
 
   // ---------- 4..N. One slide per core App screen ----------
   for (let i = 0; i < appViews.length; i++) {
@@ -237,7 +222,7 @@ export async function generateDeck(domain: DomainDef, theme: Theme): Promise<Blo
     s.addShape(pres.ShapeType.roundRect, { x, y, w: 2.85, h: 1.65, rectRadius: 0.08, fill: { color: CARD }, shadow: sh() });
     s.addImage({ data: await need(v.icon, ACCENT_TXT), x: x + 0.22, y: y + 0.2, w: 0.34, h: 0.34 });
     s.addText(v.label, { x: x + 0.68, y: y + 0.16, w: 2.0, h: 0.42, fontSize: 13, bold: true, color: WHITE, fontFace: F, margin: 0, valign: "middle" });
-    s.addText(pub.notes[v.id] ?? "", { x: x + 0.22, y: y + 0.68, w: 2.4, h: 0.85, fontSize: 10.5, color: INK, fontFace: F, margin: 0 });
+    s.addText(story.slideNotes?.[v.id] ?? pub.notes[v.id] ?? "", { x: x + 0.22, y: y + 0.68, w: 2.4, h: 0.85, fontSize: 10.5, color: INK, fontFace: F, margin: 0 });
   }
 
   s = newSlide();
@@ -251,7 +236,7 @@ export async function generateDeck(domain: DomainDef, theme: Theme): Promise<Blo
     s.addShape(pres.ShapeType.roundRect, { x, y, w: 2.2, h: 1.65, rectRadius: 0.08, fill: { color: CARD }, shadow: sh() });
     s.addImage({ data: await need(v.icon, v.group === "Resources" ? GRAD_TXT : ACCENT_TXT), x: x + 0.2, y: y + 0.18, w: 0.32, h: 0.32 });
     s.addText(v.label, { x: x + 0.2, y: y + 0.55, w: 1.85, h: 0.4, fontSize: 11.5, bold: true, color: WHITE, fontFace: F, margin: 0 });
-    s.addText(notes[v.id] ?? "", { x: x + 0.2, y: y + 0.92, w: 1.85, h: 0.65, fontSize: 9, color: INK2, fontFace: F, margin: 0 });
+    s.addText(story.slideNotes?.[v.id] ?? notes[v.id] ?? "", { x: x + 0.2, y: y + 0.92, w: 1.85, h: 0.65, fontSize: 9, color: INK2, fontFace: F, margin: 0 });
   }
 
   // ---------- Closing: theme + run instructions ----------

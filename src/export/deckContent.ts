@@ -11,8 +11,10 @@ export type DomainStory = {
   tagline: string;            // title-slide subtitle
   audience: string;           // who this prototype is for
   narrative: string;          // story slide paragraph
-  stats: [string, string][];  // 3 [value, label] highlight chips
+  stats: [[string, string], [string, string], [string, string]];  // exactly 3 [value, label] highlight chips
   screens: Record<string, ScreenStory>; // keyed by App-group view id
+  /** Optional per-domain overrides for generic group-slide notes. Keys are view ids. */
+  slideNotes?: Record<string, string>;
 };
 
 export const DECK_CONTENT: Record<string, DomainStory> = {
@@ -201,6 +203,18 @@ export const DECK_CONTENT: Record<string, DomainStory> = {
       outage: { blurb: "Plan and execute the refueling outage critical path.", bullets: ["Outage-day and critical-path progress", "Phase checklist from defuel to restart", "Work-order burn-down to restart date"] },
       regulatory: { blurb: "Keep the license and commitments defensible.", bullets: ["License status and open NRC items", "LERs, amendments, and corrective actions", "Regulatory-program compliance status"] },
       grid: { blurb: "Show carbon-free baseload delivered to the grid.", bullets: ["Fleet generation trend and capacity factor", "Clean-firm-power impact metrics", "Grid contribution by unit"] },
+    },
+    slideNotes: {
+      home: "Fleet landing page — links to control-room dashboard and unit register",
+      login: "Operator sign-in with role-based access (control room vs. planning vs. read-only)",
+      register: "New-user provisioning (requires security officer approval before access is granted)",
+      profile: "Operator profile with assigned role, dose history reference, and certifications",
+      settings: "Preferences for alert thresholds, unit filters, and dashboard layout",
+      faq: "Operations & compliance FAQ (LCO definitions, outage procedures, reporting timelines)",
+      support: "24/7 outage control-room support line and NRC reporting contacts",
+      privacy: "Data governance and regulatory record-retention policy",
+      changelog: "Product release notes — new monitoring rules, UI changes, and compliance updates",
+      notfound: "404 — navigates back to the control-room dashboard",
     },
   },
 };

@@ -4,6 +4,7 @@ import { VERSIONS, APP_VERSION, ChangeTag } from "../version";
 
 interface VersionHistoryProps {
   onBack: () => void;
+  backLabel?: string;
 }
 
 const TAG_META: Record<ChangeTag, { tone: string; icon: typeof Sparkles }> = {
@@ -13,7 +14,7 @@ const TAG_META: Record<ChangeTag, { tone: string; icon: typeof Sparkles }> = {
   Release:     { tone: "text-violet-600 bg-violet-500/12 border-violet-500/25",    icon: Rocket },
 };
 
-export function VersionHistory({ onBack }: VersionHistoryProps) {
+export function VersionHistory({ onBack, backLabel = "Back" }: VersionHistoryProps) {
   return (
     <div className="max-w-3xl mx-auto space-y-8">
       {/* ── Header ────────────────────────────── */}
@@ -22,7 +23,7 @@ export function VersionHistory({ onBack }: VersionHistoryProps) {
           onClick={onBack}
           className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--ink-2)] hover:text-accent transition-colors"
         >
-          <ArrowLeft size={15} /> Back to About
+          <ArrowLeft size={15} /> {backLabel}
         </button>
 
         <div className="flex items-start gap-4">
@@ -89,7 +90,7 @@ export function VersionHistory({ onBack }: VersionHistoryProps) {
       </div>
 
       <footer className="text-center text-xs text-[var(--ink-2)] py-4 border-t border-[var(--line)]">
-        ForgeUI © 2025 · Developed by Gautham Vijayaraj
+        ForgeUI © {new Date().getFullYear()} · Developed by Gautham Vijayaraj
       </footer>
     </div>
   );

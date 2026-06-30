@@ -87,5 +87,10 @@ export function useFakeSubmit(delay = 1200) {
     const t = setTimeout(() => setState("done"), delay);
     return () => clearTimeout(t);
   }, [state, delay]);
+  useEffect(() => {
+    if (state !== "done") return;
+    const t = setTimeout(() => setState("idle"), 1500);
+    return () => clearTimeout(t);
+  }, [state]);
   return { state, submit: () => setState("loading"), reset: () => setState("idle") };
 }
