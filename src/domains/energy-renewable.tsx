@@ -637,3 +637,6 @@ export function ImpactScreen() {
     </div>
   );
 }
+
+// Exposed for shared Workspace/Utility pages and the export pipeline.
+export { renMeta as meta, renExtra as extra };

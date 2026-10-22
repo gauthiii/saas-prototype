@@ -540,3 +540,6 @@ export function ParentPortalScreen() {
     </div>
   );
 }
+
+// Exposed for shared Workspace/Utility pages and the export pipeline.
+export { edtechMeta as meta, edtechExtra as extra };

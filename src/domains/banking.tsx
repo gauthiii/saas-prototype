@@ -856,3 +856,6 @@ export function SpendingInsightsScreen() {
     </div>
   );
 }
+
+// Exposed for shared Workspace/Utility pages and the export pipeline.
+export { bankingMeta as meta, bankingExtra as extra };

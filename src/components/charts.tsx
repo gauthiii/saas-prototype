@@ -1,13 +1,23 @@
 // src/components/charts.tsx
 // Hand-rolled SVG charts: zero chart dependencies, fully themeable.
+// Colours accept any CSS colour, including theme variables like "rgb(var(--accent-rgb))".
+import { useId } from "react";
 
-export function AreaChart({ data, height = 140, stroke = "#4f6df5" }: { data: number[]; height?: number; stroke?: string }) {
+export const ACCENT = "rgb(var(--accent-rgb))";
+export const GRAD = "rgb(var(--grad-rgb))";
+/** Categorical series palette: theme accent + gradient first, then fixed hues. */
+export const SERIES = [ACCENT, GRAD, "#10b981", "#f59e0b", "#f43f5e", "#06b6d4", "#8b5cf6", "#64748b"];
+
+export function AreaChart({ data, height = 140, stroke = ACCENT, compare }: { data: number[]; height?: number; stroke?: string; compare?: number[] }) {
   const w = 100, h = 40;
-  const max = Math.max(...data), min = Math.min(...data);
-  const pts = data.map((v, i) => [(i / (data.length - 1)) * w, h - ((v - min) / (max - min || 1)) * (h - 6) - 2]);
-  const line = pts.map((p, i) => `${i ? "L" : "M"}${p[0].toFixed(2)},${p[1].toFixed(2)}`).join(" ");
+  const all = compare ? [...data, ...compare] : data;
+  const max = Math.max(...all), min = Math.min(...all);
+  const toLine = (series: number[]) => series
+    .map((v, i) => [(i / (series.length - 1)) * w, h - ((v - min) / (max - min || 1)) * (h - 6) - 2])
+    .map((p, i) => `${i ? "L" : "M"}${p[0].toFixed(2)},${p[1].toFixed(2)}`).join(" ");
+  const line = toLine(data);
   const area = `${line} L${w},${h} L0,${h} Z`;
-  const id = `g${stroke.replace("#", "")}`;
+  const id = `g${useId().replace(/[^a-zA-Z0-9]/g, "")}`;
   return (
     <svg viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" style={{ width: "100%", height }} role="img" aria-label="Trend chart">
       <defs>
@@ -17,12 +27,13 @@ export function AreaChart({ data, height = 140, stroke = "#4f6df5" }: { data: nu
         </linearGradient>
       </defs>
       <path d={area} fill={`url(#${id})`} />
+      {compare && <path d={toLine(compare)} fill="none" stroke="var(--ink-2)" strokeWidth=".7" strokeDasharray="2 1.5" vectorEffect="non-scaling-stroke" opacity=".6" />}
       <path d={line} fill="none" stroke={stroke} strokeWidth=".9" vectorEffect="non-scaling-stroke" strokeLinecap="round" />
     </svg>
   );
 }
 
-export function Bars({ data, height = 120, color = "#4f6df5" }: { data: { label: string; value: number }[]; height?: number; color?: string }) {
+export function Bars({ data, height = 120, color = ACCENT }: { data: { label: string; value: number }[]; height?: number; color?: string }) {
   const max = Math.max(...data.map(d => d.value));
   return (
     <div className="flex items-end gap-2" style={{ height }}>
@@ -69,13 +80,13 @@ export function Donut({ segments, size = 140, label, sublabel }: { segments: { v
         offset += frac;
         return el;
       })}
-      {label && <text x="21" y="21" textAnchor="middle" fontSize="6.5" fontWeight="700" fill="var(--ink)" fontFamily="Inter">{label}</text>}
-      {sublabel && <text x="21" y="27" textAnchor="middle" fontSize="3.2" fill="var(--ink-2)" fontFamily="Inter">{sublabel}</text>}
+      {label && <text x="21" y="21" textAnchor="middle" fontSize="6.5" fontWeight="700" fill="var(--ink)" fontFamily="var(--font-body)">{label}</text>}
+      {sublabel && <text x="21" y="27" textAnchor="middle" fontSize="3.2" fill="var(--ink-2)" fontFamily="var(--font-body)">{sublabel}</text>}
     </svg>
   );
 }
 
-export function Radar({ axes, values, size = 220, color = "#4f6df5" }: { axes: string[]; values: number[]; size?: number; color?: string }) {
+export function Radar({ axes, values, size = 220, color = ACCENT }: { axes: string[]; values: number[]; size?: number; color?: string }) {
   const c = 50, r = 38, n = axes.length;
   const pt = (i: number, scale: number) => {
     const a = (Math.PI * 2 * i) / n - Math.PI / 2;
@@ -90,7 +101,7 @@ export function Radar({ axes, values, size = 220, color = "#4f6df5" }: { axes: s
       ))}
       {axes.map((a, i) => {
         const [x, y] = pt(i, 1.18);
-        return <text key={a} x={x} y={y} fontSize="4.2" textAnchor="middle" fill="var(--ink-2)" fontFamily="Inter">{a}</text>;
+        return <text key={a} x={x} y={y} fontSize="4.2" textAnchor="middle" fill="var(--ink-2)" fontFamily="var(--font-body)">{a}</text>;
       })}
       <polygon points={valPoly} fill={color} fillOpacity=".25" stroke={color} strokeWidth=".8" strokeLinejoin="round" />
       {values.map((v, i) => {

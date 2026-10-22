@@ -1,13 +1,16 @@
 // src/export/generateDeck.ts — builds the themed walkthrough .pptx for an exported
-// domain, fully client-side. Slide story comes from deckContent.ts; structure and
-// labels come from registry.ts; colors come from the user's chosen theme.
+// domain, fully client-side. Slide story comes from story.ts (deckContent.ts for hand-coded
+// domains, data.ts for archetype industries); structure and labels come from the industry's
+// view list; colors come from the user's chosen theme.
 import pptxgen from "pptxgenjs";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { Sparkles } from "lucide-react";
-import { ICONS, IconType } from "../lib/iconMap";
-import { DomainDef, ViewDef } from "./registry";
-import { DECK_CONTENT } from "./deckContent";
+import { icon, IconType } from "../lib/iconMap";
+import type { DomainStory } from "./deckContent";
+import type { Group } from "../industries/views";
+
+export type DeckDomain = { id: string; label: string; sub: string; icon: string; productName: string; views: { id: string; label: string; icon: string; group: Group }[] };
 import { Theme, darken } from "../theme";
 
 // ---- color helpers (deck is dark; ensure accent stays readable on it) ----
@@ -64,6 +67,26 @@ const GENERIC_GROUPS: Record<string, { title: string; blurb: string; notes: Reco
       support: "Contact / support request screen",
     },
   },
+  Workspace: {
+    title: "Workspace Pages",
+    blurb: "The collaborative surfaces of a real SaaS product — setup, people, money and messages.",
+    notes: {
+      setup: "Guided first-run setup wizard with industry-specific steps",
+      team: "Members and role-based permissions with invites",
+      subscription: "Plan, usage meters, invoices and payment method",
+      inbox: "Threaded messaging with quick replies",
+    },
+  },
+  Utilities: {
+    title: "Utility Pages",
+    blurb: "Cross-cutting pages every product ends up needing.",
+    notes: {
+      search: "Global search results with facets",
+      calendar: "Month calendar with a day agenda",
+      reports: "Scheduled and on-demand report library",
+      states: "Empty, offline, error, permission and timeout states",
+    },
+  },
   Resources: {
     title: "Resources & Utility Pages",
     blurb: "The pages teams usually leave for last — included from day one.",
@@ -75,10 +98,7 @@ const GENERIC_GROUPS: Record<string, { title: string; blurb: string; notes: Reco
   },
 };
 
-export async function generateDeck(domain: DomainDef, theme: Theme): Promise<Blob> {
-  const story = DECK_CONTENT[domain.id];
-  if (!story) throw new Error(`Deck export: no deck content for domain "${domain.id}"`);
-
+export async function generateDeck(domain: DeckDomain, theme: Theme, story: DomainStory): Promise<Blob> {
   // Palette — fixed dark chrome + the user's theme baked in.
   const BG = "0F172A", CARD = "1E293B", CARD2 = "273449", LINE = "334155";
   const WHITE = "FFFFFF", INK = "CBD5E1", INK2 = "94A3B8";
@@ -98,13 +118,13 @@ export async function generateDeck(domain: DomainDef, theme: Theme): Promise<Blo
   pres.title = `${domain.productName} — ${domain.label} Prototype Walkthrough`;
 
   const appViews = domain.views.filter(v => v.group === "App");
-  const byGroup = (g: ViewDef["group"]) => domain.views.filter(v => v.group === g);
+  const byGroup = (g: Group) => domain.views.filter(v => v.group === g);
 
   // Pre-render every icon we need.
   const icons = new Map<string, string>();
   const need = async (name: string, color: string) => {
     const key = `${name}/${color}`;
-    if (!icons.has(key)) icons.set(key, await iconPng(ICONS[name] ?? Sparkles, color));
+    if (!icons.has(key)) icons.set(key, await iconPng(icon(name) ?? Sparkles, color));
     return icons.get(key)!;
   };
 
@@ -118,7 +138,7 @@ export async function generateDeck(domain: DomainDef, theme: Theme): Promise<Blo
     `${domain.productName} · ${domain.label} prototype · ${n} / ${total}`,
     { x: 0.5, y: 5.22, w: 9, h: 0.3, fontSize: 9, color: LINE, fontFace: F, margin: 0, align: "right" });
 
-  const totalSlides = 6 + appViews.length;
+  const totalSlides = 7 + appViews.length;
   let slideNo = 0;
   const newSlide = () => {
     const s = pres.addSlide();
@@ -158,13 +178,13 @@ export async function generateDeck(domain: DomainDef, theme: Theme): Promise<Blo
   s = newSlide();
   TITLE(s, "How the App Flows");
   SUB(s, "Top-to-bottom in the sidebar: public pages first, then the core app, then account & resources");
-  const groupsMeta: { g: ViewDef["group"]; hot?: boolean }[] = [
-    { g: "Public" }, { g: "App", hot: true }, { g: "Account" }, { g: "Resources" },
+  const groupsMeta: { g: Group; hot?: boolean }[] = [
+    { g: "Public" }, { g: "App", hot: true }, { g: "Workspace" }, { g: "Account" }, { g: "Resources" }, { g: "Utilities" },
   ];
   groupsMeta.forEach(({ g, hot }, i) => {
-    const x = 0.5 + i * 2.42;
-    s.addShape(pres.ShapeType.chevron, { x, y: 1.55, w: 2.42, h: 0.85, fill: { color: hot ? ACCENT_DK : CARD2 }, line: { color: hot ? ACCENT : LINE, width: 1 } });
-    s.addText(`${g}  ·  ${byGroup(g).length}`, { x: x + 0.25, y: 1.55, w: 1.95, h: 0.85, fontSize: 13, bold: true, color: hot ? ACCENT_TXT : WHITE, align: "center", valign: "middle", fontFace: F, margin: 0 });
+    const x = 0.5 + i * 1.6;
+    s.addShape(pres.ShapeType.chevron, { x, y: 1.55, w: 1.6, h: 0.85, fill: { color: hot ? ACCENT_DK : CARD2 }, line: { color: hot ? ACCENT : LINE, width: 1 } });
+    s.addText(`${g} · ${byGroup(g).length}`, { x: x + 0.2, y: 1.55, w: 1.2, h: 0.85, fontSize: 10.5, bold: true, color: hot ? ACCENT_TXT : WHITE, align: "center", valign: "middle", fontFace: F, margin: 0 });
   });
   // core app screens as pills
   s.addText("CORE APP SCREENS", { x: 0.5, y: 2.7, w: 4, h: 0.3, fontSize: 10, bold: true, color: INK2, charSpacing: 2, fontFace: F, margin: 0 });
@@ -237,6 +257,21 @@ export async function generateDeck(domain: DomainDef, theme: Theme): Promise<Blo
     s.addImage({ data: await need(v.icon, v.group === "Resources" ? GRAD_TXT : ACCENT_TXT), x: x + 0.2, y: y + 0.18, w: 0.32, h: 0.32 });
     s.addText(v.label, { x: x + 0.2, y: y + 0.55, w: 1.85, h: 0.4, fontSize: 11.5, bold: true, color: WHITE, fontFace: F, margin: 0 });
     s.addText(story.slideNotes?.[v.id] ?? notes[v.id] ?? "", { x: x + 0.2, y: y + 0.92, w: 1.85, h: 0.65, fontSize: 9, color: INK2, fontFace: F, margin: 0 });
+  }
+
+  // ---------- Workspace + Utilities ----------
+  s = newSlide();
+  TITLE(s, "Workspace & Utility Pages");
+  SUB(s, GENERIC_GROUPS.Workspace.blurb);
+  const wsUt = [...byGroup("Workspace"), ...byGroup("Utilities")];
+  for (let i = 0; i < wsUt.length; i++) {
+    const v = wsUt[i];
+    const notes = { ...GENERIC_GROUPS.Workspace.notes, ...GENERIC_GROUPS.Utilities.notes };
+    const x = 0.5 + (i % 4) * 2.37, y = 1.55 + Math.floor(i / 4) * 1.85;
+    s.addShape(pres.ShapeType.roundRect, { x, y, w: 2.2, h: 1.65, rectRadius: 0.08, fill: { color: CARD }, shadow: sh() });
+    s.addImage({ data: await need(v.icon, v.group === "Utilities" ? GRAD_TXT : ACCENT_TXT), x: x + 0.2, y: y + 0.18, w: 0.32, h: 0.32 });
+    s.addText(v.label, { x: x + 0.2, y: y + 0.55, w: 1.85, h: 0.4, fontSize: 11.5, bold: true, color: WHITE, fontFace: F, margin: 0 });
+    s.addText(notes[v.id] ?? "", { x: x + 0.2, y: y + 0.92, w: 1.85, h: 0.65, fontSize: 9, color: INK2, fontFace: F, margin: 0 });
   }
 
   // ---------- Closing: theme + run instructions ----------

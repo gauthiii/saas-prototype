@@ -8,7 +8,8 @@ export interface VersionEntry {
   version: string;
   date: string;
   title: string;
-  commit: string;
+  /** Short SHA of the release commit. Omitted for the release a commit introduces (it can't contain its own hash). */
+  commit?: string;
   tag: ChangeTag;
   /** What changed compared to the previous version. */
   changes: string[];
@@ -16,10 +17,29 @@ export interface VersionEntry {
 
 export const VERSIONS: VersionEntry[] = [
   {
+    version: "2.0.0",
+    date: "2026-10-21",
+    title: "Design styles, 23 industries & 69 sub-categories",
+    tag: "Release",
+    changes: [
+      "16 design styles — Minimal, Modern, Glassmorphism, Neumorphism, Liquid Glass, Aurora, Colorful, Claymorphism, Neo-Brutalism, Bento, Retro/Y2K, Cyber/Terminal, Enterprise, Clinical, Editorial/Swiss and Pro Dark — each restyling every screen and meeting WCAG AA contrast.",
+      "Every industry opens in the style that suits it, with a shortlist of recommended alternatives; choose Auto or any style in the new Design Studio.",
+      "Design Studio replaces Theme Studio: Style, Colour and Layout tabs with live preview, saved locally and shareable through the URL.",
+      "Four app shells (sidebar, top nav, icon rail, mobile app frame) and three layouts each for the home hero, sign-in and pricing pages.",
+      "16 new industries with 48 sub-categories, plus 17 new sub-categories for existing industries — 23 industries and 69 sub-categories in total.",
+      "25 archetype screens (dashboards, maps, calendars, kanban, trackers, heatmaps, scorecards, booking flows…) drive 12 app screens per new industry; the original domains gain archetype screens to reach 12+.",
+      "Every industry gets 8 new shared pages: Onboarding, Team & roles, Billing & invoices, Inbox, Search results, Calendar, Reports and an Empty & error states gallery.",
+      "⌘K command palette and an Industry library page for navigating 92 industries and sub-categories.",
+      "Industries are lazy-loaded, one chunk each; exports carry the chosen style, shell and page layouts and now build against React 19 and Vite 8.",
+      "Upgraded to React 19, Vite 8, @vitejs/plugin-react 6 and lucide-react 1.x.",
+      "Fixed GitHub Pages deep links (router basename + SPA fallback) and an unreachable Renewable screen whose id collided with Home.",
+    ],
+  },
+  {
     version: "1.9.0",
     date: "2026-06-29",
     title: "Bug fixes, UX improvements & URL navigation",
-    commit: "fc626af",
+    commit: "e67c5e3",
     tag: "Improvement",
     changes: [
       "Added top-level ErrorBoundary — prevents blank white screen on component errors.",

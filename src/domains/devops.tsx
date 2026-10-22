@@ -598,3 +598,6 @@ export function IAMSecurityScreen() {
     </div>
   );
 }
+
+// Exposed for shared Workspace/Utility pages and the export pipeline.
+export { devopsMeta as meta, devopsExtra as extra };

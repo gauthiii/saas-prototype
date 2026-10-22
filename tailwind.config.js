@@ -6,9 +6,14 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        display: ['"Space Grotesk"', "system-ui", "sans-serif"],
-        body: ["Inter", "system-ui", "sans-serif"],
-        mono: ['"JetBrains Mono"', "ui-monospace", "monospace"],
+        display: ["var(--font-display)"],
+        body: ["var(--font-body)"],
+        mono: ["var(--font-mono)"],
+      },
+      // Radius scale is tokenised so each design style can square off or round up every screen.
+      borderRadius: {
+        sm: "var(--r-sm)", DEFAULT: "var(--r-md)", md: "var(--r-md)", lg: "var(--r-lg)",
+        xl: "var(--r-xl)", "2xl": "var(--r-2xl)", "3xl": "var(--r-3xl)",
       },
       colors: {
         obsidian: {
@@ -26,8 +31,8 @@ export default {
         grad: "rgb(var(--grad-rgb) / <alpha-value>)",
       },
       boxShadow: {
-        card: "0 1px 2px rgba(16,24,40,.05), 0 1px 3px rgba(16,24,40,.06)",
-        lift: "0 8px 24px rgba(16,24,40,.12)",
+        card: "var(--shadow-card)",
+        lift: "var(--shadow-lift)",
         glow: "0 0 0 1px rgb(var(--accent-rgb) / .35), 0 8px 30px rgb(var(--accent-rgb) / .25)",
       },
       keyframes: {
@@ -35,6 +40,7 @@ export default {
         fadeUp: { from: { opacity: "0", transform: "translateY(8px)" }, to: { opacity: "1", transform: "translateY(0)" } },
         shimmer: { from: { backgroundPosition: "200% 0" }, to: { backgroundPosition: "-200% 0" } },
         pulseDot: { "0%,100%": { opacity: "1" }, "50%": { opacity: ".35" } },
+        drift: { "0%": { transform: "translate3d(0,0,0) rotate(0deg)" }, "100%": { transform: "translate3d(4%,-3%,0) rotate(8deg)" } },
       },
       animation: {
         slideIn: "slideIn .28s cubic-bezier(.21,1.02,.55,1)",

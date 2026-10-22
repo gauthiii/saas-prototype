@@ -3,6 +3,7 @@ import { useState } from "react";
 import { ShieldCheck, FileText, CheckCircle2, Bell, Sparkles, AlertTriangle, Check, Clock, Home, Search, ArrowRight, Mail as MailIcon } from "lucide-react";
 import { Card, SectionTitle, Badge, Tone } from "../components/ui";
 import { DomainMeta, DomainStat, DomainTestimonial } from "./pages";
+import { useDesign } from "../design/design";
 
 export type TeamMember = { name: string; role: string; bio: string; emoji: string };
 export type ComplianceItem = { name: string; desc: string; status: "Certified" | "Compliant" | "In progress" };
@@ -164,8 +165,108 @@ export function PrivacyPage({ meta, extra }: { meta: DomainMeta; extra: DomainEx
 }
 
 // ─── Pricing ─────────────────────────────────────────────────────────────────
+/** Numeric price of a plan ("$39" → 39); null for "Custom", "Free" → 0. */
+const priceNum = (p: PricingPlan) => (/free/i.test(p.price) ? 0 : /\d/.test(p.price) ? parseFloat(p.price.replace(/[^\d.]/g, "")) : null);
+
+function PricingTable({ extra }: { extra: DomainExtra }) {
+  const features = Array.from(new Set(extra.plans.flatMap(p => p.features.filter(f => !/^everything in/i.test(f)))));
+  // A plan includes a feature if it lists it, or inherits it from the plan it says "Everything in …".
+  const has = (pi: number, f: string): boolean => {
+    const p = extra.plans[pi];
+    if (p.features.includes(f)) return true;
+    const inherits = p.features.find(x => /^everything in/i.test(x));
+    const parent = inherits ? extra.plans.findIndex(q => inherits.toLowerCase().includes(q.name.toLowerCase())) : -1;
+    return parent >= 0 && parent !== pi && has(parent, f);
+  };
+  return (
+    <Card className="!p-0 overflow-x-auto">
+      <table className="w-full text-sm">
+        <thead>
+          <tr>
+            <th className="w-1/3" />
+            {extra.plans.map(p => (
+              <th key={p.name} className={`px-4 pt-6 pb-4 text-left align-top ${p.highlight ? "bg-accent/8" : ""}`}>
+                {p.highlight && <Badge tone="blue">Most popular</Badge>}
+                <div className="font-display text-lg mt-1">{p.name}</div>
+                <div className="font-display text-2xl font-bold">{p.price}{p.period && <span className="text-xs ink-2 font-normal"> /{p.period}</span>}</div>
+                <button className={`mt-3 w-full justify-center ${p.highlight ? "btn-primary" : "btn-ghost"}`}>{p.cta}</button>
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {features.map(f => (
+            <tr key={f} className="border-t border-[var(--line)]">
+              <td className="px-4 py-3 ink-2">{f}</td>
+              {extra.plans.map((p, i) => (
+                <td key={p.name} className={`px-4 py-3 ${p.highlight ? "bg-accent/8" : ""}`}>
+                  {has(i, f) ? <Check size={16} className="text-accent" aria-label="Included" /> : <span className="ink-2" aria-label="Not included">—</span>}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </Card>
+  );
+}
+
+function PricingSlider({ meta, extra }: { meta: DomainMeta; extra: DomainExtra }) {
+  const [seats, setSeats] = useState(12);
+  const priced = extra.plans.map(p => ({ p, n: priceNum(p) }));
+  // Small teams → first plan, mid → highlighted plan, large → last plan.
+  const pick = seats <= 3 ? 0 : seats <= 60 ? Math.max(0, extra.plans.findIndex(p => p.highlight)) : extra.plans.length - 1;
+  const cur = priced[pick];
+  const perSeat = cur.p.period ? /agent|seat|user|member|provider|clinician|employee|learner|location|store|site/i.test(cur.p.period) : false;
+  const total = cur.n === null ? null : perSeat ? cur.n * seats : cur.n;
+  return (
+    <div className="grid lg:grid-cols-[1.3fr_1fr] gap-4">
+      <Card className="space-y-6">
+        <div>
+          <div className="eyebrow">Estimate your plan</div>
+          <h2 className="font-display text-xl mt-1">How big is your team?</h2>
+        </div>
+        <div>
+          <div className="flex justify-between text-sm mb-2"><span className="ink-2">Team size</span><span className="font-display text-2xl tabular">{seats}{seats === 200 ? "+" : ""}</span></div>
+          <input type="range" min={1} max={200} value={seats} onChange={e => setSeats(+e.target.value)} className="w-full accent-[rgb(var(--accent-rgb))]" aria-label="Team size" />
+          <div className="flex justify-between text-[10px] ink-2 mt-1"><span>1</span><span>50</span><span>100</span><span>150</span><span>200+</span></div>
+        </div>
+        <div className="grid grid-cols-3 gap-2">
+          {extra.plans.map((p, i) => (
+            <div key={p.name} className={`rounded-xl border p-3 text-center transition-all ${i === pick ? "border-accent bg-accent/8 ring-2 ring-accent/30" : "border-[var(--line)] opacity-60"}`}>
+              <div className="text-xs font-semibold">{p.name}</div>
+              <div className="font-display text-lg">{p.price}</div>
+            </div>
+          ))}
+        </div>
+      </Card>
+      <Card className="flex flex-col gap-4 bg-gradient-to-br from-accent/8 to-grad/8">
+        <div className="eyebrow">Recommended for you</div>
+        <div className="font-display text-2xl">{cur.p.name}</div>
+        <div className="font-display text-4xl font-bold tabular">{total === null ? "Let's talk" : `$${total.toLocaleString("en-US")}`}{total !== null && cur.p.period && <span className="text-sm ink-2 font-normal"> /mo{perSeat ? ` for ${seats}` : ""}</span>}</div>
+        <p className="text-sm ink-2">{cur.p.desc}</p>
+        <ul className="space-y-1.5 flex-1">{cur.p.features.map(f => <li key={f} className="flex gap-2 text-sm"><Check size={14} className="text-accent shrink-0 mt-0.5" /> {f}</li>)}</ul>
+        <button className="btn-primary justify-center">{cur.p.cta}</button>
+        <p className="text-[11px] ink-2">Estimates for {meta.name} in USD, billed monthly. Volume discounts apply above 50 seats.</p>
+      </Card>
+    </div>
+  );
+}
+
 export function PricingPage({ meta, extra }: { meta: DomainMeta; extra: DomainExtra }) {
   const [yearly, setYearly] = useState(false);
+  const { pricing } = useDesign();
+  if (pricing === "table" || pricing === "slider") {
+    return (
+      <div className="max-w-5xl mx-auto space-y-8">
+        <div className="text-center space-y-3 pt-4">
+          <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-tight">{pricing === "table" ? "Compare every plan" : "Pricing that scales with you"}</h1>
+          <p className="ink-2">{pricing === "table" ? `Every ${meta.name} feature, side by side.` : `Slide to your team size and we'll recommend the right ${meta.name} plan.`}</p>
+        </div>
+        {pricing === "table" ? <PricingTable extra={extra} /> : <PricingSlider meta={meta} extra={extra} />}
+      </div>
+    );
+  }
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       <div className="text-center space-y-3 pt-4">

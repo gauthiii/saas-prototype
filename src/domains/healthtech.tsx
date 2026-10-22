@@ -613,3 +613,6 @@ export function MedicalBillingScreen() {
     </div>
   );
 }
+
+// Exposed for shared Workspace/Utility pages and the export pipeline.
+export { healthMeta as meta, healthExtra as extra };

@@ -1,7 +1,7 @@
 // src/components/About.tsx
 import { Dispatch, SetStateAction } from "react";
 import {
-  Linkedin, Mail, ArrowRight, Paintbrush, Download,
+  Mail, ArrowRight, Paintbrush, Download,
   Landmark, HeartPulse, TerminalSquare, Users, GraduationCap,
   Search, Check, ChevronsUpDown, Sun, Moon, RotateCcw,
   Zap, Layers, Palette, Package, Code2, Sparkles,
@@ -9,10 +9,26 @@ import {
 } from "lucide-react";
 import { APP_VERSION } from "../version";
 import { THEME_PRESETS } from "../theme";
+import { CATALOG, PARENTS } from "../industries/catalog";
+import { STYLES } from "../design/styles";
+import { SCREEN_KINDS } from "../industries/types";
+
+const SUB_COUNT = CATALOG.length - PARENTS.length;
+const SCREEN_COUNT = CATALOG.reduce((n, e) => n + e.views.length, 0);
+
+// lucide-react 1.x dropped brand marks, so the LinkedIn glyph is inlined.
+function LinkedinIcon({ size = 14 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z" />
+    </svg>
+  );
+}
 
 interface AboutProps {
   onNavigateToDomain: () => void;
   onViewVersions: () => void;
+  onBrowseIndustries: () => void;
   dark: boolean;
   setDark: Dispatch<SetStateAction<boolean>>;
 }
@@ -134,7 +150,7 @@ function ThemeStudioMock() {
             <Paintbrush size={16} />
           </span>
           <div className="leading-tight">
-            <div className="font-display font-semibold text-sm">Theme studio</div>
+            <div className="font-display font-semibold text-sm">Design studio · Colour</div>
             <div className="text-[10px] text-[var(--ink-2)]">Changes apply to live preview and exported projects</div>
           </div>
         </div>
@@ -230,8 +246,10 @@ function TopbarMock({ dark, onToggle }: { dark: boolean; onToggle: () => void })
    Feature cards data
 ───────────────────────────────────────────── */
 const FEATURES = [
-  { icon: Layers,    title: "11 Domain Templates",    desc: "FinTech, Banking, HealthTech, DevOps, HRTech, EdTech, RetailTech, EnergyTech, and more — each fully designed with 10+ screens." },
-  { icon: Palette,   title: "Dynamic Theme Studio",  desc: "Pick any accent and gradient color with live Mac-window previews in both light and dark." },
+  { icon: Layers,    title: `${PARENTS.length} industries · ${SUB_COUNT} sub-categories`, desc: `From FinTech and Health to Logistics, Legal, Telecom and Crypto — ${SCREEN_COUNT.toLocaleString("en-US")} screens, each industry with 12+ app screens plus 21 shared pages.` },
+  { icon: Palette,   title: `${STYLES.length} design styles`, desc: "Glassmorphism, Liquid Glass, Neumorphism, Aurora, Neo-Brutalism, Bento, Clinical, Pro Dark and more — each industry opens in the style that suits it." },
+  { icon: GitBranch, title: "Shells & page variants", desc: "Sidebar, top-nav, icon-rail or mobile-app shell, plus 3 layouts each for the home hero, sign-in and pricing pages." },
+  { icon: Code2,     title: `${SCREEN_KINDS.length} screen archetypes`, desc: "Dashboards, kanban, maps, calendars, trackers, heatmaps, scorecards, booking flows… typed, accessible and data-driven." },
   { icon: Zap,       title: "Light & Dark Mode",     desc: "Every screen adapts with smooth CSS transitions. Both modes are production-ready." },
   { icon: Package,   title: "One-Click Export",      desc: "Download your selected domain as a complete, ready-to-run Vite + TypeScript project zip." },
   { icon: Code2,     title: "Production-Ready Code", desc: "TypeScript, Tailwind CSS, React hooks, responsive layouts — no cleanup required." },
@@ -241,7 +259,7 @@ const FEATURES = [
 /* ─────────────────────────────────────────────
    Main About component
 ───────────────────────────────────────────── */
-export function About({ onNavigateToDomain, onViewVersions, dark, setDark }: AboutProps) {
+export function About({ onNavigateToDomain, onViewVersions, onBrowseIndustries, dark, setDark }: AboutProps) {
   return (
     <div className="max-w-4xl mx-auto space-y-24 pb-24">
 
@@ -264,14 +282,17 @@ export function About({ onNavigateToDomain, onViewVersions, dark, setDark }: Abo
           <br />in seconds.
         </h1>
         <p className="text-lg text-[var(--ink-2)] max-w-xl mx-auto leading-relaxed">
-          ForgeUI generates high-fidelity, production-ready UI templates across five enterprise domains — with theme customization and one-click export.
+          ForgeUI generates high-fidelity, production-ready UI prototypes for {PARENTS.length} industries and {SUB_COUNT} sub-categories, in {STYLES.length} design styles — with one-click Vite export.
         </p>
         <div className="flex items-center justify-center gap-3 pt-2">
           <button
             onClick={onNavigateToDomain}
             className="btn-primary px-6 py-2.5 gap-2 inline-flex items-center text-sm font-semibold"
           >
-            Browse Templates <ArrowRight size={15} />
+            Open the builder <ArrowRight size={15} />
+          </button>
+          <button onClick={onBrowseIndustries} className="btn-ghost px-5 py-2.5 gap-2 inline-flex items-center text-sm">
+            <Layers size={15} /> Industry library
           </button>
           <a href="https://github.com/gauthiii" target="_blank" rel="noreferrer"
             className="btn-ghost px-5 py-2.5 gap-2 inline-flex items-center text-sm">
@@ -309,6 +330,27 @@ export function About({ onNavigateToDomain, onViewVersions, dark, setDark }: Abo
         </div>
       </section>
 
+      {/* ── Design styles ────────────────────── */}
+      <section className="space-y-6">
+        <div className="text-center space-y-2">
+          <div className="eyebrow">Design languages</div>
+          <h2 className="text-3xl font-display font-bold tracking-tight">{STYLES.length} styles, one click apart</h2>
+          <p className="text-sm text-[var(--ink-2)] max-w-xl mx-auto">Every style restyles every screen — surfaces, radii, type, depth and backdrop — and meets WCAG AA text contrast in light and dark.</p>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {STYLES.map(st => (
+            <div key={st.id} className="rounded-xl border border-[var(--line)] p-2.5 bg-[var(--surface)]">
+              <div className="relative h-14 rounded-lg overflow-hidden" style={{ background: st.swatch[0] }} aria-hidden="true">
+                <div className="absolute left-2 top-2 right-6 h-4 rounded" style={{ background: st.swatch[1], boxShadow: "0 1px 4px rgba(0,0,0,.12)" }} />
+                <div className="absolute left-2 bottom-2 h-3 w-10 rounded" style={{ background: st.swatch[2] }} />
+              </div>
+              <div className="mt-2 text-xs font-semibold">{st.name}</div>
+              <div className="text-[10px] text-[var(--ink-2)]">{st.set === "Industry" ? "Industry-specialist" : st.set}{st.mode ? ` · ${st.mode} only` : ""}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* ── How to Use ───────────────────────── */}
       <section className="space-y-10">
         <div className="text-center space-y-2">
@@ -323,10 +365,10 @@ export function About({ onNavigateToDomain, onViewVersions, dark, setDark }: Abo
               <div className="grid place-items-center h-9 w-9 rounded-xl bg-accent text-white font-display font-bold text-sm shrink-0">
                 1
               </div>
-              <h3 className="text-xl font-display font-semibold">Select a domain template</h3>
+              <h3 className="text-xl font-display font-semibold">Pick an industry</h3>
             </div>
             <p className="text-[var(--ink-2)] text-sm leading-relaxed">
-              Click the <strong className="text-[var(--ink)]">domain picker</strong> in the top-left corner of the app. A searchable dropdown opens showing all five enterprise templates. Click any domain to instantly load its full screen set.
+              Press <strong className="text-[var(--ink)]">⌘K</strong> (or click the industry picker) to open the command palette and fuzzy-search all {CATALOG.length} industries and sub-categories, any screen, or any style. The <strong className="text-[var(--ink)]">Industry library</strong> shows them all as cards. The original hand-crafted templates include:
             </p>
             <ul className="space-y-2 text-sm text-[var(--ink-2)]">
               {DOMAIN_ITEMS.map(({ icon: Icon, label, sub }) => (
@@ -359,7 +401,7 @@ export function About({ onNavigateToDomain, onViewVersions, dark, setDark }: Abo
               <h3 className="text-xl font-display font-semibold">Customize your theme</h3>
             </div>
             <p className="text-[var(--ink-2)] text-sm leading-relaxed">
-              Click the <strong className="text-[var(--ink)]"><Paintbrush size={13} className="inline -mt-0.5" /> paintbrush icon</strong> in the top-right to open the Theme Studio. Choose custom accent and gradient colors, or pick from 8 curated presets. All changes apply live.
+              Click the <strong className="text-[var(--ink)]"><Paintbrush size={13} className="inline -mt-0.5" /> paintbrush icon</strong> in the top-right to open the Design Studio. The Style tab switches between {STYLES.length} design languages (with picks recommended for the current industry), the Colour tab sets accent and gradient from 8 presets or any hex, and the Layout tab swaps the app shell and page variants. Everything applies live and is saved in the URL.
             </p>
             <div className="space-y-2 text-sm">
               {[
@@ -500,7 +542,7 @@ export function About({ onNavigateToDomain, onViewVersions, dark, setDark }: Abo
               </a>
               <a href="https://linkedin.com/in/gauthiii" target="_blank" rel="noreferrer"
                 className="flex items-center gap-1.5 text-xs font-medium text-[var(--ink-2)] hover:text-accent transition-colors">
-                <Linkedin size={14} /> LinkedIn
+                <LinkedinIcon size={14} /> LinkedIn
               </a>
               <a href="mailto:gauvij.99@gmail.com"
                 className="flex items-center gap-1.5 text-xs font-medium text-[var(--ink-2)] hover:text-accent transition-colors">

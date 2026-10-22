@@ -4,6 +4,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import "./index.css";
+import "./design/styles.css";
 
 class ErrorBoundary extends React.Component<
   { children: React.ReactNode },
@@ -36,7 +37,8 @@ class ErrorBoundary extends React.Component<
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <BrowserRouter>
+    {/* BASE_URL is "/" locally and "/<repo>/" on GitHub Pages. */}
+    <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, "")}>
       <ErrorBoundary>
         <App />
       </ErrorBoundary>

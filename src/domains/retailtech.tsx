@@ -1000,3 +1000,6 @@ export function ProductCatalogScreen() {
     </div>
   );
 }
+
+// Exposed for shared Workspace/Utility pages and the export pipeline.
+export { retailMeta as meta, retailExtra as extra };

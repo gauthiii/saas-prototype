@@ -823,3 +823,6 @@ export function WealthOptimizerScreen() {
     </div>
   );
 }
+
+// Exposed for shared Workspace/Utility pages and the export pipeline.
+export { fintechMeta as meta, fintechExtra as extra };

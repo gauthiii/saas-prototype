@@ -672,3 +672,6 @@ export function ReservesScreen() {
     </div>
   );
 }
+
+// Exposed for shared Workspace/Utility pages and the export pipeline.
+export { fossilMeta as meta, fossilExtra as extra };

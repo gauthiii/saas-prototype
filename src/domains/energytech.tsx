@@ -773,3 +773,6 @@ export function EnergyAnalyticsScreen() {
     </div>
   );
 }
+
+// Exposed for shared Workspace/Utility pages and the export pipeline.
+export { energyMeta as meta, energyExtra as extra };

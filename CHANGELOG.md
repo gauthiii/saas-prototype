@@ -5,6 +5,42 @@ Format: `[version] YYYY-MM-DD — description`
 
 ---
 
+## [2.0.0] — 2026-10-21
+
+### Added
+- **16 design styles** in four sets — Core (Minimal, Modern, Glassmorphism, Neumorphism), Expressive (Liquid Glass, Aurora, Colorful, Claymorphism), Bold (Neo-Brutalism, Bento, Retro/Y2K, Cyber/Terminal) and Industry-specialist (Enterprise, Clinical, Editorial/Swiss, Pro Dark). Pure CSS + SVG token layers (`src/design/styles.css`) that restyle every screen; recipes and sources in `docs/DESIGN-STYLES.md`.
+- **Per-industry styles** — every industry has a default style plus three recommended alternatives; "Auto" follows the industry as you navigate.
+- **Design Studio** (replaces Theme Studio) — Style / Colour / Layout tabs with live preview; choices persist to localStorage and sync to the URL (`?style=glass&shell=rail…`) so a design can be shared.
+- **App shells** — sidebar, top nav, icon rail and a mobile-app phone frame.
+- **Page variants** — home hero (centered / split with mockup / bento), sign-in (card / split screen / full-bleed) and pricing (plan cards / comparison table / usage slider).
+- **16 new industries** — Real Estate, Logistics, Insurance, Legal, Travel & Hospitality, Manufacturing, Media & Streaming, Automotive & Mobility, AgriTech, GovTech, Telecom, Cybersecurity, Food & Restaurant, Fitness & Wellness, Crypto & Web3, Marketing & CRM — each with 3 sub-categories.
+- **17 new sub-categories for existing industries** (FinTech, HealthTech, DevOps, HRTech, EdTech, RetailTech), for exactly 3 per industry: 23 industries and 69 sub-categories.
+- **Archetype kit** (`src/kit/`) — 25 data-driven screen archetypes; every new industry has 12 app screens using 9+ archetypes, defined by a typed `manifest.ts` + `data.ts` pair (`src/industries/<id>/`).
+- **Extension screens for the 11 original domains** so each reaches 12+ app screens, keeping their hand-coded screens untouched.
+- **8 shared pages for every industry** — Onboarding, Team & roles, Billing & invoices, Inbox (Workspace) and Search results, Calendar, Reports, Empty & error states (Utilities).
+- **⌘K command palette** (industries, screens, styles) and an **Industry library** page (`/industries`).
+- **Checks** — `npm run check:contrast` (WCAG AA for every style × mode), `npm run validate` (industry structure), `npm run smoke` (server-renders all 3,000+ screens), `npm run verify:export` (headless export for build testing), `npm run check` (all of the above + tsc).
+
+### Changed
+- Upgraded React 18 → 19, Vite 5 → 8, @vitejs/plugin-react 4 → 6, lucide-react 0.383 → 1.61, plus patch/minor bumps (react-router-dom, jszip, autoprefixer, postcss). Tailwind 4 and TypeScript 7 are deferred to a separate pass.
+- Industries are discovered from `src/industries/*/` and lazy-loaded (one chunk each) instead of being bundled eagerly; the old `src/export/registry.ts` is replaced by manifests.
+- Radius, typography and shadow scales are CSS tokens (`--r-*`, `--font-*`, `--shadow-*`), so styles reach hand-coded screens too.
+- Exported projects carry the chosen style, shell and page variants, load only that style's fonts, pin the builder's dependency versions, and include a Workspace & Utility slide in the walkthrough deck.
+- Charts accept theme CSS variables (`rgb(var(--accent-rgb))`) and gained a comparison series.
+- `dist/` is no longer tracked (CI builds it); `.DS_Store` is ignored.
+
+### Fixed
+- GitHub Pages deep links: router `basename` from `BASE_URL` and a `404.html` SPA fallback in the Pages workflow.
+- Renewable Energy's "Home battery & EV" screen was unreachable because its id collided with the Home page (`home` → `homeenergy`).
+- Style is applied before first paint (no flash of the previous style).
+- `version.ts` 1.9.0 now references the commit that shipped it (`e67c5e3`).
+- About page brand icon: lucide 1.x removed brand marks, so the LinkedIn glyph is inlined.
+
+### Known
+- `npm audit` still reports advisories in `tailwindcss@3` (braces, postcss-selector-parser — resolved by the deferred Tailwind 4 upgrade) and `pptxgenjs@4.0.1` (image-size; the only offered fix downgrades pptxgenjs).
+
+---
+
 ## [Unreleased] — 2026-06-29
 
 ### Fixed
