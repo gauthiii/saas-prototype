@@ -1,32 +1,27 @@
-// src/export/exportProject.ts — assembles a runnable single-domain Vite project zip,
-// entirely client-side. Source files are embedded as raw strings at build time.
+// src/export/exportProject.ts — assembles a runnable single-industry Vite project zip,
+// entirely client-side. Source files are embedded as raw strings at build time and only
+// fetched (as separate chunks) when an export starts.
 import JSZip from "jszip";
-import { DomainDef } from "./registry";
-import { Theme } from "../theme";
-import { injectTheme, genAppTsx, genPackageJson, genReadme, genIndexHtml, VITE_CONFIG } from "./generate";
-import { generateDeck } from "./generateDeck";
+import type { Theme } from "../theme";
+import type { Manifest } from "../industries/types";
+import { loadDomain } from "../industries/catalog";
+import { buildViews } from "../industries/views";
+import { injectTheme, genAppTsx, genPackageJson, genReadme, genIndexHtml, VITE_CONFIG, MAIN_TSX, type ResolvedDesign } from "./generate";
+import { resolveStory } from "./story";
 
 // Raw source embeds. Keys are root-relative paths.
 const RAW_FILES = import.meta.glob(
   [
-    "/src/components/ui.tsx",
-    "/src/components/charts.tsx",
-    "/src/components/AIPanel.tsx",
-    "/src/domains/pages.tsx",
-    "/src/domains/pages-extra.tsx",
-    "/src/domains/fintech.tsx",
-    "/src/domains/banking.tsx",
-    "/src/domains/healthtech.tsx",
-    "/src/domains/devops.tsx",
-    "/src/domains/hrtech.tsx",
-    "/src/domains/edtech.tsx",
-    "/src/domains/retailtech.tsx",
-    "/src/domains/energytech.tsx",
-    "/src/domains/energy-fossil.tsx",
-    "/src/domains/energy-renewable.tsx",
-    "/src/domains/energy-nuclear.tsx",
-    "/src/main.tsx",
+    "/src/components/{ui,charts,AIPanel}.tsx",
+    "/src/kit/*.tsx",
+    "/src/design/{design.tsx,styles.ts,styles.css,StyleBackdrop.tsx}",
+    "/src/shell/AppFrame.tsx",
+    "/src/lib/iconMap.ts",
+    "/src/industries/{types.ts,views.tsx}",
+    "/src/industries/*/{manifest,data}.ts",
+    "/src/domains/*.tsx",
     "/src/index.css",
+    "/src/vite-env.d.ts",
     "/tailwind.config.js",
     "/postcss.config.js",
     "/tsconfig.json",
@@ -41,37 +36,52 @@ async function raw(path: string): Promise<string> {
   return loader();
 }
 
-export async function exportProject(domain: DomainDef, theme: Theme): Promise<void> {
+/** Files shared by every export, copied verbatim (path in project = path in this repo). */
+const COMMON = [
+  "src/components/ui.tsx", "src/components/charts.tsx", "src/components/AIPanel.tsx",
+  "src/kit/index.tsx", "src/kit/primitives.tsx", "src/kit/workspace.tsx",
+  "src/kit/archetypes-data.tsx", "src/kit/archetypes-ops.tsx", "src/kit/archetypes-flow.tsx", "src/kit/archetypes-content.tsx",
+  "src/design/design.tsx", "src/design/styles.ts", "src/design/styles.css", "src/design/StyleBackdrop.tsx",
+  "src/shell/AppFrame.tsx", "src/lib/iconMap.ts",
+  "src/industries/types.ts", "src/industries/views.tsx",
+  "src/domains/pages.tsx", "src/domains/pages-extra.tsx",
+  "src/vite-env.d.ts", "tailwind.config.js", "postcss.config.js", "tsconfig.json", "tsconfig.node.json",
+];
+
+export type ExportOptions = { includeDeck?: boolean; onStage?: (stage: string) => void };
+
+/** Builds the project zip. Separated from the download so it can be verified headlessly. */
+export async function buildProjectZip(manifest: Manifest, theme: Theme, design: ResolvedDesign, opts: ExportOptions = {}): Promise<{ zip: JSZip; rootName: string }> {
+  const domain = await loadDomain(manifest.id);
   const zip = new JSZip();
-  const rootName = `${domain.productName.toLowerCase()}-prototype`;
+  const rootName = `${manifest.productName.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-prototype`;
   const root = zip.folder(rootName)!;
 
-  root.file("package.json", genPackageJson(domain));
+  root.file("package.json", genPackageJson(manifest));
   root.file("vite.config.ts", VITE_CONFIG);
-  root.file("index.html", genIndexHtml(domain));
-  root.file("README.md", genReadme(domain, theme));
-  root.file("tailwind.config.js", await raw("/tailwind.config.js"));
-  root.file("postcss.config.js", await raw("/postcss.config.js"));
-  root.file("tsconfig.json", await raw("/tsconfig.json"));
-  root.file("tsconfig.node.json", await raw("/tsconfig.node.json"));
+  root.file("index.html", genIndexHtml(manifest, design));
+  root.file("README.md", genReadme(manifest, theme, design));
   root.file(".gitignore", "node_modules\ndist\n*.local\n.DS_Store\n");
-  root.file(`${domain.productName}-walkthrough.pptx`, await generateDeck(domain, theme));
+  for (const f of COMMON) root.file(f, await raw(`/${f}`));
+  root.file("src/main.tsx", MAIN_TSX);
+  root.file("src/index.css", injectTheme(await raw("/src/index.css"), theme));
+  root.file("src/App.tsx", genAppTsx(manifest, design));
+  root.file(`src/industries/${manifest.id}/manifest.ts`, await raw(`/src/industries/${manifest.id}/manifest.ts`));
+  root.file(`src/industries/${manifest.id}/data.ts`, await raw(`/src/industries/${manifest.id}/data.ts`));
+  if (manifest.bespoke) root.file(`src/domains/${manifest.bespoke.module}.tsx`, await raw(`/src/domains/${manifest.bespoke.module}.tsx`));
 
-  const src = root.folder("src")!;
-  src.file("main.tsx", await raw("/src/main.tsx"));
-  src.file("index.css", injectTheme(await raw("/src/index.css"), theme));
-  src.file("App.tsx", genAppTsx(domain));
-
-  const components = src.folder("components")!;
-  for (const f of ["ui.tsx", "charts.tsx", "AIPanel.tsx"]) {
-    components.file(f, await raw(`/src/components/${f}`));
+  if (opts.includeDeck !== false) {
+    opts.onStage?.("Generating slides…");
+    const { generateDeck } = await import("./generateDeck");
+    const deckDomain = { id: manifest.id, label: manifest.label, sub: manifest.sub, icon: manifest.icon, productName: manifest.productName, views: buildViews(manifest) };
+    root.file(`${manifest.productName}-walkthrough.pptx`, await generateDeck(deckDomain, theme, resolveStory(domain)));
   }
+  return { zip, rootName };
+}
 
-  const domains = src.folder("domains")!;
-  domains.file("pages.tsx", await raw("/src/domains/pages.tsx"));
-  domains.file("pages-extra.tsx", await raw("/src/domains/pages-extra.tsx"));
-  domains.file(`${domain.file}.tsx`, await raw(`/src/domains/${domain.file}.tsx`));
-
+export async function exportProject(manifest: Manifest, theme: Theme, design: ResolvedDesign, onStage?: (stage: string) => void): Promise<void> {
+  const { zip, rootName } = await buildProjectZip(manifest, theme, design, { onStage });
+  onStage?.("Compressing files…");
   const blob = await zip.generateAsync({ type: "blob", compression: "DEFLATE" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");

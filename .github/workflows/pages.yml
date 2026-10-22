@@ -40,6 +40,10 @@ jobs:
       - name: Build
         run: npm run build -- --base=/${{ github.event.repository.name }}/
 
+      # GitHub Pages has no SPA rewrites: serve the app for deep links like /fintech/dash.
+      - name: SPA fallback
+        run: cp dist/index.html dist/404.html
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

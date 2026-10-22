@@ -1,0 +1,268 @@
+/* src/design/styles.css — the 16 design styles as token + treatment layers.
+   Activated by <html data-style="…"> (and .dark for dark mode). Pure CSS + SVG, no runtime deps.
+   Sources for each recipe are listed in docs/DESIGN-STYLES.md. Text tokens are checked for
+   WCAG AA (4.5:1) against their surfaces by scripts/check-contrast.mjs. */
+
+/* ─── Backdrop layer (rendered once by <StyleBackdrop/>) ─────────────────── */
+.style-backdrop { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; display: none; }
+.style-backdrop > i { position: absolute; border-radius: 9999px; display: block; }
+
+/* ─── Minimal ─────────────────────────────────────────────────────────────── */
+[data-style="minimal"] {
+  --bg: #ffffff; --surface: #ffffff; --surface-2: #f4f4f5; --line: #e4e4e7; --ink: #09090b; --ink-2: #52525b;
+  --font-display: Geist, Inter, system-ui, sans-serif; --font-body: Geist, Inter, system-ui, sans-serif; --font-mono: "Geist Mono", ui-monospace, monospace;
+  --display-weight: 600; --display-tracking: -0.025em;
+  --r-sm: .25rem; --r-md: .375rem; --r-lg: .5rem; --r-xl: .625rem; --r-2xl: .75rem; --r-3xl: 1rem;
+  --shadow-card: none; --shadow-lift: 0 0 0 1px #d4d4d8; --btn-shadow: none;
+}
+[data-style="minimal"].dark { --bg: #09090b; --surface: #09090b; --surface-2: #18181b; --line: #27272a; --ink: #fafafa; --ink-2: #a1a1aa; --shadow-lift: 0 0 0 1px #3f3f46; }
+
+/* ─── Modern (default tokens live in index.css) ───────────────────────────── */
+[data-style="modern"] .style-backdrop { display: block; }
+[data-style="modern"] .style-backdrop > i:nth-child(1) { width: 60vw; height: 40vw; left: 20vw; top: -28vw; background: radial-gradient(closest-side, rgb(var(--accent-rgb) / .12), transparent); }
+
+/* ─── Glassmorphism ───────────────────────────────────────────────────────── */
+[data-style="glass"] {
+  --bg: #e9edfb; --surface: rgba(255,255,255,.66); --surface-2: rgba(255,255,255,.45); --line: rgba(255,255,255,.7); --ink: #0b1020; --ink-2: #3c4458;
+  --font-display: "Plus Jakarta Sans", system-ui, sans-serif; --font-body: "Plus Jakarta Sans", system-ui, sans-serif;
+  --r-lg: .75rem; --r-xl: 1rem; --r-2xl: 1.25rem; --r-3xl: 1.75rem;
+  --surface-filter: blur(16px) saturate(160%);
+  --shadow-card: 0 8px 32px rgba(31,38,135,.10); --shadow-lift: 0 16px 40px rgba(31,38,135,.18);
+  --field-bg: rgba(255,255,255,.55);
+}
+[data-style="glass"].dark { --bg: #0b1020; --surface: rgba(17,24,39,.58); --surface-2: rgba(30,41,59,.45); --line: rgba(255,255,255,.12); --ink: #f1f5f9; --ink-2: #a9b4c8; --shadow-card: 0 8px 32px rgba(0,0,0,.35); --field-bg: rgba(15,23,42,.5); }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  [data-style="glass"] { --surface: rgba(255,255,255,.94); }
+  [data-style="glass"].dark { --surface: rgba(17,24,39,.94); }
+}
+[data-style="glass"] .style-backdrop { display: block; }
+[data-style="glass"] .style-backdrop > i { filter: blur(60px); opacity: .75; }
+[data-style="glass"] .style-backdrop > i:nth-child(1) { width: 42vw; height: 42vw; left: -8vw; top: -6vw; background: rgb(var(--accent-rgb)); }
+[data-style="glass"] .style-backdrop > i:nth-child(2) { width: 38vw; height: 38vw; right: -6vw; top: 18vh; background: rgb(var(--grad-rgb)); }
+[data-style="glass"] .style-backdrop > i:nth-child(3) { width: 34vw; height: 34vw; left: 30vw; bottom: -12vw; background: #22d3ee; }
+[data-style="glass"].dark .style-backdrop > i { opacity: .45; }
+
+/* ─── Neumorphism ─────────────────────────────────────────────────────────── */
+/* Shadows alone fail WCAG 1.4.11, so fields and ghost buttons keep a real 3:1 border. */
+[data-style="neumorphism"] {
+  --bg: #e6e9ef; --surface: #e6e9ef; --surface-2: #dde1e8; --line: #c3c9d4; --ink: #1f2937; --ink-2: #4b5563;
+  --font-display: Nunito, system-ui, sans-serif; --font-body: Nunito, system-ui, sans-serif; --display-weight: 800;
+  --r-lg: .875rem; --r-xl: 1.25rem; --r-2xl: 1.5rem; --r-3xl: 2rem;
+  --neu-dark: #c5cad3; --neu-light: #ffffff;
+  --shadow-card: 8px 8px 16px var(--neu-dark), -8px -8px 16px var(--neu-light);
+  --shadow-lift: 12px 12px 24px var(--neu-dark), -12px -12px 24px var(--neu-light);
+  --btn-shadow: 5px 5px 10px var(--neu-dark), -5px -5px 10px var(--neu-light);
+}
+[data-style="neumorphism"].dark { --bg: #252830; --surface: #252830; --surface-2: #2b2f38; --line: #4a505d; --ink: #e5e7eb; --ink-2: #a8afbd; --neu-dark: #1a1c22; --neu-light: #30343e; }
+[data-style="neumorphism"] .card { border-color: transparent; }
+[data-style="neumorphism"] .field { border-color: #8a93a3; box-shadow: inset 3px 3px 6px var(--neu-dark), inset -3px -3px 6px var(--neu-light); }
+[data-style="neumorphism"].dark .field { border-color: #6b7383; }
+[data-style="neumorphism"] .btn-ghost { box-shadow: var(--btn-shadow); border-color: #9aa2b1; }
+[data-style="neumorphism"].dark .btn-ghost { border-color: #5d6474; }
+[data-style="neumorphism"] .btn:active, [data-style="neumorphism"] .btn[aria-pressed="true"] { box-shadow: inset 4px 4px 8px var(--neu-dark), inset -4px -4px 8px var(--neu-light); }
+
+/* ─── Liquid Glass ────────────────────────────────────────────────────────── */
+/* Apple's guidance: glass is for the navigation layer, never glass-on-glass, tint keeps text legible.
+   Background blobs are refracted through an SVG displacement filter (works cross-browser on normal
+   elements); surfaces add frost + specular rims. */
+[data-style="liquid-glass"] {
+  --bg: #dff1fb; --surface: rgba(255,255,255,.6); --surface-2: rgba(255,255,255,.42); --line: rgba(255,255,255,.8); --ink: #0a0f1c; --ink-2: #334155;
+  --font-display: Geist, Inter, system-ui, sans-serif; --font-body: Inter, system-ui, sans-serif; --display-weight: 650;
+  --r-lg: 1rem; --r-xl: 1.375rem; --r-2xl: 1.75rem; --r-3xl: 2.25rem;
+  --surface-filter: blur(22px) saturate(190%) brightness(1.05);
+  --shadow-card: inset 0 1px 0 rgba(255,255,255,.9), inset 0 -1px 0 rgba(255,255,255,.3), inset 0 0 0 1px rgba(255,255,255,.35), 0 10px 30px -10px rgba(2,6,23,.22);
+  --shadow-lift: inset 0 1px 0 rgba(255,255,255,.95), inset 0 0 0 1px rgba(255,255,255,.45), 0 22px 44px -14px rgba(2,6,23,.3);
+  --field-bg: rgba(255,255,255,.5);
+}
+[data-style="liquid-glass"].dark {
+  --bg: #050a14; --surface: rgba(30,41,59,.5); --surface-2: rgba(51,65,85,.35); --line: rgba(255,255,255,.16); --ink: #f8fafc; --ink-2: #c4cedd;
+  --shadow-card: inset 0 1px 0 rgba(255,255,255,.22), inset 0 0 0 1px rgba(255,255,255,.08), 0 12px 32px -10px rgba(0,0,0,.6);
+  --field-bg: rgba(15,23,42,.45);
+}
+[data-style="liquid-glass"] .card, [data-style="liquid-glass"] header.surface, [data-style="liquid-glass"] aside.surface {
+  background-image: linear-gradient(140deg, rgba(255,255,255,.55), rgba(255,255,255,.08) 45%, rgba(255,255,255,.22));
+}
+[data-style="liquid-glass"].dark .card, [data-style="liquid-glass"].dark header.surface, [data-style="liquid-glass"].dark aside.surface {
+  background-image: linear-gradient(140deg, rgba(255,255,255,.12), rgba(255,255,255,0) 45%, rgba(255,255,255,.05));
+}
+[data-style="liquid-glass"] .btn { border-radius: 9999px; }
+[data-style="liquid-glass"] .btn-primary { box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 8px 20px -6px rgb(var(--accent-rgb) / .55); }
+[data-style="liquid-glass"] .style-backdrop { display: block; filter: url(#forge-liquid); }
+[data-style="liquid-glass"] .style-backdrop > i { filter: blur(40px); opacity: .85; animation: drift 22s ease-in-out infinite alternate; }
+[data-style="liquid-glass"] .style-backdrop > i:nth-child(1) { width: 46vw; height: 46vw; left: -10vw; top: -10vw; background: #38bdf8; }
+[data-style="liquid-glass"] .style-backdrop > i:nth-child(2) { width: 40vw; height: 40vw; right: -8vw; top: 12vh; background: rgb(var(--grad-rgb)); animation-delay: -6s; }
+[data-style="liquid-glass"] .style-backdrop > i:nth-child(3) { width: 36vw; height: 36vw; left: 28vw; bottom: -14vw; background: #34d399; animation-delay: -12s; }
+[data-style="liquid-glass"].dark .style-backdrop > i { opacity: .5; }
+@media (prefers-reduced-transparency: reduce) {
+  [data-style="liquid-glass"], [data-style="glass"] { --surface: rgba(255,255,255,.95); }
+  [data-style="liquid-glass"].dark, [data-style="glass"].dark { --surface: rgba(15,23,42,.95); }
+}
+
+/* ─── Aurora ──────────────────────────────────────────────────────────────── */
+[data-style="aurora"] {
+  --bg: #f6f4ff; --surface: rgba(255,255,255,.82); --surface-2: rgba(245,243,255,.8); --line: rgba(99,102,241,.18); --ink: #14112b; --ink-2: #4a4568;
+  --font-display: Outfit, system-ui, sans-serif; --font-body: Inter, system-ui, sans-serif; --display-weight: 600;
+  --r-xl: 1rem; --r-2xl: 1.25rem; --r-3xl: 1.75rem;
+  --surface-filter: blur(14px) saturate(140%);
+  --shadow-card: 0 10px 30px -12px rgba(76,29,149,.25); --shadow-lift: 0 20px 44px -14px rgba(76,29,149,.35);
+}
+[data-style="aurora"].dark { --bg: #05010f; --surface: rgba(10,8,20,.62); --surface-2: rgba(24,20,44,.55); --line: rgba(167,139,250,.18); --ink: #f5f3ff; --ink-2: #bbb4da; --shadow-card: 0 10px 30px -12px rgba(0,0,0,.7); }
+[data-style="aurora"] .style-backdrop { display: block; }
+[data-style="aurora"] .style-backdrop > i { inset: -20%; border-radius: 0; filter: blur(70px) saturate(1.3); animation: drift 18s ease-in-out infinite alternate;
+  background:
+    radial-gradient(40% 50% at 20% 30%, rgb(var(--accent-rgb) / .45) 0%, transparent 70%),
+    radial-gradient(35% 45% at 80% 20%, rgba(34,211,238,.38) 0%, transparent 70%),
+    radial-gradient(45% 40% at 60% 85%, rgb(var(--grad-rgb) / .40) 0%, transparent 70%); }
+[data-style="aurora"].dark .style-backdrop > i { opacity: .9; }
+[data-style="aurora"] .style-backdrop > i:nth-child(n+2) { display: none; }
+
+/* ─── Colorful ────────────────────────────────────────────────────────────── */
+[data-style="colorful"] {
+  --bg: #fff8f1; --surface: #ffffff; --surface-2: #fff1e6; --line: #f6dcc8; --ink: #1c1917; --ink-2: #57534e;
+  --font-display: Outfit, system-ui, sans-serif; --font-body: "Plus Jakarta Sans", system-ui, sans-serif; --display-weight: 800;
+  --r-lg: .75rem; --r-xl: 1.125rem; --r-2xl: 1.5rem; --r-3xl: 2rem;
+  --shadow-card: 0 6px 20px -8px rgb(var(--accent-rgb) / .25); --shadow-lift: 0 18px 36px -12px rgb(var(--grad-rgb) / .35);
+}
+[data-style="colorful"].dark { --bg: #170d22; --surface: #22142f; --surface-2: #2c1a3d; --line: #43285a; --ink: #fdf4ff; --ink-2: #cdb9de; }
+[data-style="colorful"] .card {
+  border-color: transparent;
+  background: linear-gradient(var(--surface), var(--surface)) padding-box,
+    linear-gradient(135deg, rgb(var(--accent-rgb) / .55), rgb(var(--grad-rgb) / .55), #f59e0b80) border-box;
+}
+[data-style="colorful"] .btn-primary { background-image: linear-gradient(100deg, rgb(var(--accent-rgb)), rgb(var(--grad-rgb))); }
+[data-style="colorful"] .style-backdrop { display: block; }
+[data-style="colorful"] .style-backdrop > i { filter: blur(50px); opacity: .35; }
+[data-style="colorful"] .style-backdrop > i:nth-child(1) { width: 30vw; height: 30vw; left: -6vw; top: 10vh; background: #f43f5e; }
+[data-style="colorful"] .style-backdrop > i:nth-child(2) { width: 26vw; height: 26vw; right: 4vw; top: -6vw; background: #f59e0b; }
+[data-style="colorful"] .style-backdrop > i:nth-child(3) { width: 28vw; height: 28vw; right: 20vw; bottom: -10vw; background: #8b5cf6; }
+
+/* ─── Claymorphism ────────────────────────────────────────────────────────── */
+[data-style="clay"] {
+  --bg: #f4eefb; --surface: #ffffff; --surface-2: #f7f2fd; --line: #ebe2f7; --ink: #241b35; --ink-2: #554b6b;
+  --font-display: Nunito, system-ui, sans-serif; --font-body: Nunito, system-ui, sans-serif; --display-weight: 900;
+  --r-md: .625rem; --r-lg: 1rem; --r-xl: 1.75rem; --r-2xl: 2rem; --r-3xl: 2.5rem;
+  --shadow-card: 10px 10px 22px rgba(91,60,140,.16), inset -6px -6px 12px rgba(91,60,140,.08), inset 6px 6px 12px rgba(255,255,255,.95);
+  --shadow-lift: 14px 14px 30px rgba(91,60,140,.22), inset -6px -6px 12px rgba(91,60,140,.08), inset 6px 6px 12px rgba(255,255,255,.95);
+  --btn-shadow: 6px 6px 14px rgb(var(--accent-rgb) / .35), inset -4px -4px 8px rgba(0,0,0,.18), inset 4px 4px 8px rgba(255,255,255,.35);
+}
+[data-style="clay"].dark {
+  --bg: #1d1a2c; --surface: #2a2640; --surface-2: #322d4b; --line: #3b3557; --ink: #f3eefe; --ink-2: #c0b6d8;
+  --shadow-card: 10px 10px 22px rgba(0,0,0,.45), inset -6px -6px 12px rgba(0,0,0,.25), inset 6px 6px 12px rgba(255,255,255,.06);
+  --shadow-lift: 14px 14px 30px rgba(0,0,0,.55), inset -6px -6px 12px rgba(0,0,0,.25), inset 6px 6px 12px rgba(255,255,255,.08);
+}
+[data-style="clay"] .card { border-color: transparent; }
+
+/* ─── Neo-Brutalism ───────────────────────────────────────────────────────── */
+[data-style="brutalism"] {
+  --bg: #fff4d6; --surface: #ffffff; --surface-2: #fff9e8; --line: #000000; --ink: #000000; --ink-2: #2e2e2e;
+  --font-display: "DM Sans", system-ui, sans-serif; --font-body: "DM Sans", system-ui, sans-serif; --display-weight: 800; --display-tracking: -0.03em;
+  --r-sm: 3px; --r-md: 4px; --r-lg: 5px; --r-xl: 5px; --r-2xl: 6px; --r-3xl: 8px;
+  --border-w: 2px; --shadow-card: 4px 4px 0 0 #000; --shadow-lift: 7px 7px 0 0 #000; --btn-shadow: 4px 4px 0 0 #000;
+}
+[data-style="brutalism"].dark { --bg: #141414; --surface: #1f1f1f; --surface-2: #2a2a2a; --line: #f5f5f5; --ink: #ffffff; --ink-2: #d6d6d6; --shadow-card: 4px 4px 0 0 #f5f5f5; --shadow-lift: 7px 7px 0 0 #f5f5f5; --btn-shadow: 4px 4px 0 0 #f5f5f5; }
+[data-style="brutalism"] .btn { border: 2px solid var(--line); font-weight: 700; }
+[data-style="brutalism"] .btn-ghost { box-shadow: var(--btn-shadow); }
+[data-style="brutalism"] .btn-primary:hover, [data-style="brutalism"] .btn-ghost:hover { transform: translate(4px, 4px); box-shadow: none; }
+[data-style="brutalism"] .style-backdrop { display: block; background-image: radial-gradient(#00000022 1.2px, transparent 1.2px); background-size: 22px 22px; }
+[data-style="brutalism"].dark .style-backdrop { background-image: radial-gradient(#ffffff1f 1.2px, transparent 1.2px); }
+
+/* ─── Bento ───────────────────────────────────────────────────────────────── */
+[data-style="bento"] {
+  --bg: #f1f1f3; --surface: #ffffff; --surface-2: #f6f6f7; --line: #e4e4e7; --ink: #18181b; --ink-2: #52525b;
+  --font-display: Geist, Inter, system-ui, sans-serif; --font-body: Geist, Inter, system-ui, sans-serif; --display-weight: 650; --display-tracking: -0.03em;
+  --r-md: .5rem; --r-lg: .875rem; --r-xl: 1.5rem; --r-2xl: 1.75rem; --r-3xl: 2.25rem;
+  --shadow-card: 0 0 0 1px rgba(0,0,0,.03), 0 2px 4px rgba(0,0,0,.05), 0 12px 24px rgba(0,0,0,.05);
+  --shadow-lift: 0 0 0 1px rgba(0,0,0,.04), 0 4px 8px rgba(0,0,0,.06), 0 24px 40px rgba(0,0,0,.09);
+}
+[data-style="bento"].dark { --bg: #000000; --surface: #0c0c0e; --surface-2: #151518; --line: rgba(255,255,255,.1); --ink: #fafafa; --ink-2: #a1a1aa; --shadow-card: inset 0 -20px 80px -20px #ffffff1f; --shadow-lift: inset 0 -20px 80px -20px #ffffff2e; }
+[data-style="bento"] .card { border-color: transparent; }
+[data-style="bento"].dark .card { border-color: var(--line); }
+
+/* ─── Retro / Y2K ─────────────────────────────────────────────────────────── */
+/* Chrome gradients are decoration only (mid-grey fails contrast); body copy stays solid ink. */
+[data-style="retro"] {
+  --bg: #d9d4f2; --surface: #efefef; --surface-2: #e2e2e2; --line: #808080; --ink: #000000; --ink-2: #3a3a3a;
+  --font-display: Silkscreen, "Space Grotesk", system-ui, sans-serif; --font-body: "Space Grotesk", system-ui, sans-serif; --display-weight: 400; --display-tracking: 0;
+  --r-sm: 0; --r-md: 2px; --r-lg: 3px; --r-xl: 4px; --r-2xl: 6px; --r-3xl: 8px;
+  --border-w: 2px; --shadow-card: 2px 2px 0 #000; --shadow-lift: 4px 4px 0 #000; --btn-shadow: 1px 1px 0 #000;
+}
+[data-style="retro"].dark { --bg: #160c2e; --surface: #2a1f4a; --surface-2: #33275a; --line: #5b4b91; --ink: #f6f0ff; --ink-2: #cdc2ec; --shadow-card: 2px 2px 0 #ff2bd6; --shadow-lift: 4px 4px 0 #ff2bd6; }
+[data-style="retro"] .card, [data-style="retro"] .btn-ghost { border-color: #ffffff #7a7a7a #7a7a7a #ffffff; }
+[data-style="retro"].dark .card, [data-style="retro"].dark .btn-ghost { border-color: #6f5fb0 #120a26 #120a26 #6f5fb0; }
+[data-style="retro"] .btn:active { border-color: #7a7a7a #ffffff #ffffff #7a7a7a; }
+[data-style="retro"] h1 { background: linear-gradient(180deg, #5a1a8c 0%, #c026d3 48%, #2563eb 52%, #312e81 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+[data-style="retro"].dark h1 { background: linear-gradient(180deg, #ffffff 0%, #f0abfc 48%, #67e8f9 52%, #e0e7ff 100%); -webkit-background-clip: text; background-clip: text; }
+[data-style="retro"] .style-backdrop { display: block; perspective: 220px; }
+[data-style="retro"] .style-backdrop > i:nth-child(1) { left: -50%; right: -50%; bottom: -10%; height: 60%; border-radius: 0; transform: rotateX(65deg); transform-origin: bottom;
+  background-image: linear-gradient(to right, rgba(255,0,170,.35) 1px, transparent 0), linear-gradient(to bottom, rgba(255,0,170,.35) 1px, transparent 0);
+  background-size: 60px 60px; -webkit-mask-image: linear-gradient(to top, #000 30%, transparent); mask-image: linear-gradient(to top, #000 30%, transparent); }
+
+/* ─── Cyber / Terminal (dark only) ────────────────────────────────────────── */
+/* Static scanlines only — flicker is avoided because it causes eye strain. */
+[data-style="cyber"] {
+  --bg: #030712; --surface: rgba(6,16,26,.9); --surface-2: rgba(10,26,40,.9); --line: rgba(34,255,136,.28); --ink: #d1fae5; --ink-2: #86d9b0;
+  --font-display: VT323, "JetBrains Mono", monospace; --font-body: "JetBrains Mono", ui-monospace, monospace; --display-weight: 400; --display-tracking: .02em;
+  --r-sm: 0; --r-md: 2px; --r-lg: 2px; --r-xl: 3px; --r-2xl: 4px; --r-3xl: 6px;
+  --shadow-card: 0 0 0 1px rgba(34,255,136,.08), 0 0 24px -8px rgba(34,255,136,.25); --shadow-lift: 0 0 32px -6px rgba(34,255,136,.4);
+  --btn-shadow: 0 0 14px -2px rgb(var(--accent-rgb) / .7);
+}
+[data-style="cyber"] h1, [data-style="cyber"] h2, [data-style="cyber"] h3 { text-transform: uppercase; font-size: 1.15em; text-shadow: .44px 0 1px rgba(0,30,255,.5), -.44px 0 1px rgba(255,0,80,.3), 0 0 6px rgba(34,255,136,.35); }
+[data-style="cyber"] .style-backdrop { display: block; background: linear-gradient(to bottom, rgba(18,16,16,0) 50%, rgba(0,0,0,.28) 50%); background-size: 100% 6px; }
+[data-style="cyber"] .style-backdrop > i:nth-child(1) { inset: 0; border-radius: 0; background: radial-gradient(60% 50% at 50% 0%, rgba(34,255,136,.10), transparent 70%); }
+
+/* ─── Enterprise ──────────────────────────────────────────────────────────── */
+[data-style="enterprise"] {
+  --bg: #f4f4f4; --surface: #ffffff; --surface-2: #f4f4f4; --line: #e0e0e0; --ink: #161616; --ink-2: #525252;
+  --font-display: "IBM Plex Sans", system-ui, sans-serif; --font-body: "IBM Plex Sans", system-ui, sans-serif; --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --display-weight: 600; --display-tracking: 0;
+  --r-sm: 0; --r-md: 0; --r-lg: 2px; --r-xl: 2px; --r-2xl: 4px; --r-3xl: 4px;
+  --shadow-card: none; --shadow-lift: 0 2px 6px rgba(0,0,0,.2); --btn-shadow: none;
+}
+[data-style="enterprise"].dark { --bg: #161616; --surface: #262626; --surface-2: #393939; --line: #393939; --ink: #f4f4f4; --ink-2: #c6c6c6; }
+
+/* ─── Clinical ────────────────────────────────────────────────────────────── */
+[data-style="clinical"] {
+  --bg: #f0f4f5; --surface: #ffffff; --surface-2: #f5f8f9; --line: #d8dde0; --ink: #212b32; --ink-2: #4c6272;
+  --font-display: Lexend, system-ui, sans-serif; --font-body: "Atkinson Hyperlegible", system-ui, sans-serif; --display-weight: 600; --display-tracking: -0.01em;
+  --r-lg: .5rem; --r-xl: .75rem; --r-2xl: 1rem;
+  --shadow-card: 0 1px 0 #d8dde0; --shadow-lift: 0 6px 16px -6px rgba(33,43,50,.2);
+}
+[data-style="clinical"].dark { --bg: #0e181d; --surface: #14232a; --surface-2: #1a2d36; --line: #29444f; --ink: #eef6f8; --ink-2: #a9c1cb; --shadow-card: none; }
+[data-style="clinical"] body { font-size: 15.5px; }
+[data-style="clinical"] .btn:focus-visible, [data-style="clinical"] .field:focus { box-shadow: 0 0 0 3px #ffeb3b, 0 0 0 5px #212b32; }
+
+/* ─── Editorial / Swiss ───────────────────────────────────────────────────── */
+[data-style="editorial"] {
+  --bg: #faf7f2; --surface: #fffdf9; --surface-2: #f3eee5; --line: #d9d2c5; --ink: #111111; --ink-2: #4a4740;
+  --font-display: "Instrument Serif", Georgia, serif; --font-body: Inter, system-ui, sans-serif; --display-weight: 400; --display-tracking: -0.01em;
+  --r-sm: 0; --r-md: 0; --r-lg: 0; --r-xl: 0; --r-2xl: 0; --r-3xl: 0;
+  --shadow-card: none; --shadow-lift: none; --btn-shadow: none;
+}
+[data-style="editorial"].dark { --bg: #12110f; --surface: #181714; --surface-2: #211f1b; --line: #3b372f; --ink: #f3efe7; --ink-2: #b7af9f; }
+[data-style="editorial"] .card { border-width: 2px 0 0 0; border-color: var(--ink); }
+[data-style="editorial"] h1 { font-size: 1.25em; line-height: 1.05; }
+[data-style="editorial"] h2 { font-size: 1.2em; }
+[data-style="editorial"] a { text-decoration: underline; text-underline-offset: 3px; }
+
+/* ─── Pro Dark (dark only, dense) ─────────────────────────────────────────── */
+[data-style="pro-dark"] {
+  --bg: #0b0e14; --surface: #11151d; --surface-2: #161b25; --line: #222937; --ink: #e6e9ef; --ink-2: #939db0;
+  --font-display: Inter, system-ui, sans-serif; --font-body: Inter, system-ui, sans-serif; --display-weight: 600; --display-tracking: -0.01em;
+  --r-sm: 2px; --r-md: 3px; --r-lg: 4px; --r-xl: 6px; --r-2xl: 8px; --r-3xl: 10px;
+  --shadow-card: none; --shadow-lift: 0 0 0 1px #2f3a4d; --btn-shadow: none;
+}
+[data-style="pro-dark"] body { font-variant-numeric: tabular-nums; font-size: 13.5px; }
+[data-style="pro-dark"] main .p-5 { padding: .875rem; }
+[data-style="pro-dark"] main .p-6 { padding: 1rem; }
+[data-style="pro-dark"] main .space-y-6 > * + * { margin-top: 1rem; }
+[data-style="pro-dark"] main .gap-6 { gap: 1rem; }
+
+/* ─── Mobile shell canvas ─────────────────────────────────────────────────── */
+/* Tailwind breakpoints follow the window, not the phone frame, so multi-column
+   responsive layouts are collapsed to a single column inside it. */
+.phone-canvas [class*="sm:grid-cols-"], .phone-canvas [class*="md:grid-cols-"],
+.phone-canvas [class*="lg:grid-cols-"], .phone-canvas [class*="xl:grid-cols-"] { grid-template-columns: minmax(0, 1fr) !important; }
+.phone-canvas [class*="lg:col-span-"], .phone-canvas [class*="md:col-span-"], .phone-canvas [class*="sm:col-span-"] { grid-column: auto !important; }
+.phone-canvas [class*="sm:flex-row"] { flex-direction: column !important; }
+.phone-canvas h1 { font-size: 1.35rem !important; }
+.phone-canvas .max-w-4xl, .phone-canvas .max-w-3xl { max-width: 100% !important; }

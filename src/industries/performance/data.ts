@@ -1,0 +1,493 @@
+// src/industries/performance/data.ts — Uplift content. Fictional company, people and figures.
+import { defineData } from "../types";
+import { manifest } from "./manifest";
+
+export default defineData(manifest, {
+  meta: {
+    id: "performance",
+    name: "Uplift",
+    tagline: "Reviews, goals, feedback and engagement surveys that help managers grow people, not chase forms.",
+    description: "Uplift runs fair review cycles, keeps goals visible and turns pulse surveys into actions managers actually take.",
+    accentLabel: "Performance · Goals · Engagement",
+    features: [
+      { icon: "🧭", title: "Fair review cycles", body: "Self, peer and manager reviews with calibration tools that surface rating drift and bias before results are shared." },
+      { icon: "🎯", title: "Goals people see", body: "Company, team and personal OKRs linked in one tree, with weekly check-ins that take two minutes." },
+      { icon: "💬", title: "Surveys to action", body: "Pulse and engagement surveys with anonymity thresholds, benchmarks and suggested actions for every manager." },
+    ],
+    faqs: [
+      { q: "Can we run reviews our own way?", a: "Yes. Build cycles with any mix of self, peer, upward and manager reviews, custom questions and rating scales, and different templates per level or department." },
+      { q: "How does calibration work?", a: "Calibration sessions show proposed ratings on a weighted scorecard and distribution chart. Facilitators can adjust ratings live, and every change is logged with a reason." },
+      { q: "Are engagement survey answers anonymous?", a: "Results are only shown for groups of 5 or more respondents, comments are scrubbed of names, and admins cannot see individual responses." },
+      { q: "Does Uplift help with bias in reviews?", a: "Uplift flags rating gaps by demographic group, recency bias in written feedback and managers whose ratings drift from their peers, before calibration starts." },
+      { q: "Can managers get coaching inside the product?", a: "The Manager academy offers short lessons and conversation guides that are suggested at the right moment, such as before a first review or after a low survey score." },
+      { q: "Which HR systems do you integrate with?", a: "Uplift syncs employees, managers and departments from any HRIS through SCIM or a nightly file, and pushes ratings and promotion decisions back for compensation planning." },
+    ],
+    supportEmail: "hello@uplift-hr.app",
+  },
+  extra: {
+    founded: "2020",
+    mission: "Uplift exists to make every review a conversation worth having and every survey a promise managers keep.",
+    story: [
+      "Uplift was started by an engineering manager and an organizational psychologist who were tired of annual reviews that took six weeks, surprised everyone and changed nothing. They began with a simple weekly check-in tool for their own teams.",
+      "Today more than 1,900 companies run their review cycles, goals and engagement surveys in Uplift, covering 520,000 employees, and managers complete reviews 40% faster than they did in their previous tools.",
+    ],
+    team: [
+      { name: "Nadia Petrova", role: "Co-founder & CEO", emoji: "👩‍💼", bio: "Former engineering director who led 120 people through four review redesigns." },
+      { name: "Kofi Boateng", role: "Co-founder & Chief Science Officer", emoji: "🧠", bio: "Organizational psychologist who designs Uplift's survey science and bias checks." },
+      { name: "Elena Szabo", role: "VP Product", emoji: "🎯", bio: "Built goal-setting tools for distributed teams across 30 time zones." },
+      { name: "Marcus Delacroix", role: "Head of Customer Success", emoji: "🤝", bio: "Has facilitated over 400 calibration sessions for customers of every size." },
+    ],
+    compliance: [
+      { name: "GDPR", desc: "Data processing agreements, EU data residency and employee access and erasure requests.", status: "Compliant" },
+      { name: "SOC 2 Type II", desc: "Annual independent audit of security, availability and confidentiality controls.", status: "Certified" },
+      { name: "ISO 27001", desc: "Certified information security management system for all production systems.", status: "Certified" },
+      { name: "CCPA / CPRA", desc: "California employee privacy notices and rights to access, correct and delete data.", status: "Compliant" },
+      { name: "EEOC record-keeping", desc: "Performance and promotion records retained to support Title VII adverse-impact review.", status: "Compliant" },
+      { name: "ISO 30414", desc: "Human capital reporting metrics for engagement, performance and leadership.", status: "In progress" },
+    ],
+    dataRetention: "Review, goal and promotion records are retained for 5 years after an employee leaves to support employment record-keeping. Raw survey responses are stored separately from identity data and aggregated results are kept indefinitely. Customers can export or delete their workspace at any time.",
+    plans: [
+      { name: "Team", price: "$4", period: "employee/mo", desc: "Goals, 1:1s and feedback for growing teams.", features: ["OKRs and check-ins", "1:1 agendas", "Continuous feedback", "Pulse surveys"], cta: "Start free trial" },
+      { name: "Business", price: "$8", period: "employee/mo", desc: "Full review cycles and engagement for scaling companies.", features: ["Everything in Team", "Review cycles & calibration", "Engagement surveys with benchmarks", "Promotion workflows", "Manager academy"], highlight: true, cta: "Book a demo" },
+      { name: "Enterprise", price: "Custom", desc: "Global organisations with complex structures.", features: ["Everything in Business", "Bias and rating-drift analytics", "Multiple review templates by region", "SSO, SCIM & audit logs", "Dedicated people-science advisor"], cta: "Contact sales" },
+    ],
+    notifications: [
+      { title: "Self-reviews due in 9 days", body: "212 of 638 employees have submitted their H2 self-review. Reminders go out tomorrow at 9:00 AM.", time: "12 min ago", tone: "amber", unread: true },
+      { title: "Low score in Customer Success", body: "Workload scored 48 in the October pulse for the Support team — 21 points below company average.", time: "1 h ago", tone: "red", unread: true },
+      { title: "Promotion nomination submitted", body: "Daniel Kim nominated Amara Osei for Staff Software Engineer.", time: "3 h ago", tone: "blue", unread: true },
+      { title: "Q4 OKRs published", body: "All 34 team OKRs are now linked to the 4 company objectives.", time: "Yesterday", tone: "green" },
+      { title: "Calibration sessions scheduled", body: "7 calibration sessions booked for Nov 16 – 20 with facilitators assigned.", time: "2 days ago", tone: "violet" },
+    ],
+    changelog: [
+      { version: "v5.6", date: "Oct 7, 2026", tag: "New", items: ["Rating-drift alerts for calibration facilitators", "AI summaries of peer feedback with source quotes", "Promotion nomination workflow"] },
+      { version: "v5.5", date: "Sep 2, 2026", tag: "Improved", items: ["Survey heatmap now benchmarks against industry", "Faster goal tree for 1,000+ OKRs", "1:1 agendas pull in recent feedback"] },
+      { version: "v5.4", date: "Jul 22, 2026", tag: "Fixed", items: ["Anonymity threshold on small sub-teams", "Duplicate peer review requests after manager change", "Time zones on calibration invites"] },
+    ],
+    stats: [
+      { value: "520K", label: "Employees reviewed" },
+      { value: "40%", label: "Faster review cycles" },
+      { value: "1,900", label: "Companies" },
+      { value: "+11 pts", label: "Average eNPS lift in year one" },
+    ],
+    testimonial: { quote: "Our review cycle went from six painful weeks to three, calibration takes half the time, and people tell us their reviews finally had no surprises.", author: "Joanna Whitfield", role: "Chief People Officer, Fernhill Analytics" },
+  },
+  story: {
+    tagline: "Clear goals, fair reviews and surveys that lead to action",
+    audience: "People teams, managers and leadership at growing companies",
+    narrative: "Uplift connects the year's people rhythm: the engagement overview and survey heatmap show how teams feel, OKRs and 1:1s keep work and growth on track, the review cycle tracker, self-review form and calibration scorecard make ratings fair, promotion nominations close the loop, and the growth profile, manager academy and analytics turn insight into development.",
+    stats: [["12", "core app screens"], ["5", "review cycle stages"], ["7", "engagement themes tracked"]],
+  },
+  shared: {
+    onboarding: {
+      steps: [
+        { title: "Your organisation", description: "Sync people and reporting lines so reviews route to the right managers.", fields: [
+          { label: "Company name", type: "text", placeholder: "Fernhill Analytics", half: true },
+          { label: "Employees", type: "number", placeholder: "638", half: true },
+          { label: "Sync people from", type: "select", options: ["HRIS via SCIM", "Nightly CSV", "Manual import"] },
+        ] },
+        { title: "Review rhythm", description: "Choose how often you run formal reviews.", fields: [
+          { label: "Review frequency", type: "radio", options: ["Annual", "Twice a year", "Quarterly"] },
+          { label: "Rating scale", type: "select", options: ["3-point", "4-point", "5-point", "No ratings"], half: true },
+          { label: "Include peer feedback", type: "toggle", value: "true" },
+        ] },
+        { title: "Goals", description: "Set up the goal framework your teams will use.", fields: [
+          { label: "Goal framework", type: "radio", options: ["OKRs", "SMART goals", "Both"] },
+          { label: "Check-in cadence", type: "select", options: ["Weekly", "Every two weeks", "Monthly"], half: true },
+        ] },
+        { title: "First pulse survey", description: "We'll send a 5-question pulse to set your baseline.", fields: [
+          { label: "Send baseline pulse", type: "toggle", value: "true" },
+          { label: "Anonymity threshold", type: "select", options: ["3 responses", "5 responses", "10 responses"], value: "5 responses" },
+        ] },
+      ],
+    },
+    team: {
+      roles: [
+        { name: "People admin", description: "Owns cycles, surveys and company settings.", permissions: ["Create review cycles", "Launch surveys", "Manage integrations and users"] },
+        { name: "HR business partner", description: "Supports a group of departments.", permissions: ["Facilitate calibration", "View department results", "Approve promotion nominations"] },
+        { name: "Manager", description: "Reviews and develops direct reports.", permissions: ["Write manager reviews", "Set team OKRs", "View team survey results"] },
+        { name: "Executive viewer", description: "Read-only leadership dashboards.", permissions: ["View company analytics", "View calibration outcomes", "Export reports"] },
+      ],
+      members: [
+        { name: "Joanna Whitfield", email: "joanna.whitfield@fernhill.io", role: "People admin", status: "Active", lastActive: "Just now" },
+        { name: "Tariq Hassan", email: "tariq.hassan@fernhill.io", role: "HR business partner", status: "Active", lastActive: "15 min ago" },
+        { name: "Mei-Ling Chou", email: "meiling.chou@fernhill.io", role: "HR business partner", status: "Active", lastActive: "1 h ago" },
+        { name: "Daniel Kim", email: "daniel.kim@fernhill.io", role: "Manager", status: "Active", lastActive: "5 min ago" },
+        { name: "Beatriz Santos", email: "beatriz.santos@fernhill.io", role: "Manager", status: "Active", lastActive: "Yesterday" },
+        { name: "Graham Ellery", email: "graham.ellery@fernhill.io", role: "Executive viewer", status: "Invited", lastActive: "—" },
+      ],
+    },
+    billing: {
+      plan: "Business", price: "$8 per employee / month", renews: "Dec 1, 2026", paymentMethod: "Card ending 2096",
+      usage: [
+        { label: "Active employees", used: 638, limit: 700, unit: "employees" },
+        { label: "Surveys this year", used: 9, limit: 12, unit: "surveys" },
+        { label: "Review cycles", used: 2, limit: 4, unit: "cycles" },
+        { label: "Academy seats", used: 84, limit: 100, unit: "managers" },
+      ],
+      invoices: [
+        { id: "UPL-2026-1101", date: "Nov 1, 2026", amount: "$5,104.00", status: "Due" },
+        { id: "UPL-2026-1001", date: "Oct 1, 2026", amount: "$5,048.00", status: "Paid" },
+        { id: "UPL-2026-0901", date: "Sep 1, 2026", amount: "$4,992.00", status: "Paid" },
+        { id: "UPL-2026-0801", date: "Aug 1, 2026", amount: "$4,936.00", status: "Paid" },
+      ],
+    },
+    inbox: {
+      threads: [
+        { name: "Tariq Hassan", preview: "Engineering calibration pre-read is ready.", time: "9:36", avatar: "Tariq Hassan", unread: 1, tag: "Calibration" },
+        { name: "Daniel Kim", preview: "Can I add a second peer reviewer for Amara?", time: "9:05", avatar: "Daniel Kim", unread: 1, tag: "Review cycle" },
+        { name: "Beatriz Santos", preview: "Support workload action plan draft attached.", time: "Yesterday", avatar: "Beatriz Santos", tag: "Survey action" },
+        { name: "Uplift People Science", preview: "Your October pulse benchmark report is in.", time: "Mon", avatar: "🧠", tag: "Benchmark" },
+      ],
+      messages: [
+        { from: "them", text: "Hi Joanna — Engineering's pre-read is ready. Proposed ratings skew high: 38% Exceeds vs. 24% company-wide.", time: "9:30" },
+        { from: "them", text: "Two managers account for most of it. I'd like to give them a heads-up before Monday's session.", time: "9:32" },
+        { from: "me", text: "Agreed. Share the rating-drift view with both and ask for one specific example per Exceeds rating.", time: "9:34" },
+        { from: "them", text: "Will do. I'll also add the promotion nominations to the end of the agenda.", time: "9:36" },
+      ],
+    },
+    search: {
+      query: "amara",
+      facets: ["Person", "Review", "Goal", "Feedback"],
+      results: [
+        { type: "Person", title: "Amara Osei — Senior Software Engineer", snippet: "Platform team · reports to Daniel Kim · 3.4 years tenure", meta: "Promotion nominee" },
+        { type: "Review", title: "H2 2026 self-review — Amara Osei", snippet: "Submitted Oct 19 · 4 of 4 sections complete", meta: "Manager review due Nov 13" },
+        { type: "Goal", title: "Cut p95 query latency to under 300 ms", snippet: "Key result · 82% complete · on track", meta: "Q4 Platform OKR" },
+        { type: "Feedback", title: "Kudos from Rahul Menon", snippet: "Led the incident review with calm and clear follow-ups", meta: "Oct 14" },
+      ],
+    },
+    calendar: {
+      month: "November 2026", firstWeekday: 0, days: 30,
+      events: [
+        { date: 2, title: "Peer feedback opens", tone: "blue" },
+        { date: 3, title: "November pulse launches", tone: "violet", time: "9:00 AM" },
+        { date: 6, title: "Peer feedback closes", tone: "amber", time: "5:00 PM" },
+        { date: 13, title: "Manager reviews due", tone: "red", time: "5:00 PM" },
+        { date: 16, title: "Engineering calibration", tone: "green", time: "10:00 AM" },
+        { date: 17, title: "Go-to-market calibration", tone: "green", time: "1:00 PM" },
+        { date: 19, title: "Leadership calibration", tone: "green", time: "2:00 PM" },
+        { date: 24, title: "Promotion committee", tone: "violet", time: "11:00 AM" },
+        { date: 30, title: "Q4 OKR mid-quarter check-in", tone: "gray" },
+      ],
+    },
+    reports: {
+      reports: [
+        { name: "Review cycle completion", description: "Self, peer and manager review status by department.", category: "Reviews", updated: "Today", format: "XLSX", owner: "Joanna Whitfield", schedule: "Daily" },
+        { name: "Rating distribution", description: "Proposed and final ratings by level, department and demographic group.", category: "Reviews", updated: "Today", format: "PDF", owner: "Tariq Hassan" },
+        { name: "Engagement heatmap", description: "Theme scores by team with benchmark comparison.", category: "Engagement", updated: "Oct 15", format: "PDF", owner: "Joanna Whitfield", schedule: "Monthly" },
+        { name: "Survey comments export", description: "Anonymised comments tagged by theme and sentiment.", category: "Engagement", updated: "Oct 15", format: "CSV", owner: "Mei-Ling Chou" },
+        { name: "OKR progress", description: "Objective and key result progress by team.", category: "Goals", updated: "Yesterday", format: "XLSX", owner: "Daniel Kim", schedule: "Weekly" },
+        { name: "Promotion pipeline", description: "Nominations, decisions and time-in-level.", category: "Talent", updated: "Oct 20", format: "PDF", owner: "Tariq Hassan" },
+      ],
+    },
+    states: { noun: "reviews", emptyTitle: "No review cycle running", emptyBody: "Create a review cycle to collect self, peer and manager feedback on a clear timeline.", emptyAction: "Create review cycle" },
+  },
+  screens: {
+    pulse: {
+      blurb: "How the company feels and performs right now — engagement, review progress and goals at a glance.",
+      bullets: ["eNPS, participation, review and goal KPIs", "Engagement trend from monthly pulses", "Teams that need attention this month"],
+      subtitle: "Fernhill Analytics · 638 employees · October pulse",
+      kpis: [
+        { label: "eNPS", value: "+24", delta: "+5 vs. September", tone: "green", icon: "Smile" },
+        { label: "Pulse participation", value: "87%", delta: "555 of 638", icon: "Users" },
+        { label: "Self-reviews submitted", value: "33%", delta: "212 · due Oct 30", tone: "amber", icon: "NotebookPen" },
+        { label: "Goals on track", value: "72%", delta: "Q4 key results", icon: "Target" },
+      ],
+      trend: { title: "Engagement score by month", series: [68, 69, 67, 70, 71, 70, 72, 73, 72, 74], labels: ["Jan", "Mar", "May", "Jul", "Sep", "Oct"], summary: "Highest score since tracking began" },
+      bars: { title: "Engagement by department", data: [{ label: "Engineering", value: 77 }, { label: "Product & Design", value: 79 }, { label: "Sales", value: 72 }, { label: "Customer Success", value: 63 }, { label: "Marketing", value: 75 }, { label: "G&A", value: 74 }] },
+      table: {
+        title: "Teams needing attention",
+        columns: [{ key: "team", label: "Team" }, { key: "manager", label: "Manager", type: "avatar" }, { key: "score", label: "Engagement", type: "number", align: "right" }, { key: "signal", label: "Signal", type: "badge" }],
+        rows: [
+          { team: "Support · Tier 2", manager: "Beatriz Santos", score: 58, signal: "Workload" },
+          { team: "Enterprise Sales West", manager: "Liam O'Connor", score: 64, signal: "Manager change" },
+          { team: "Data Platform", manager: "Daniel Kim", score: 69, signal: "Growth" },
+          { team: "Billing Operations", manager: "Farah Siddiqui", score: 66, signal: "Recognition" },
+          { team: "Brand Design", manager: "Theo Lindgren", score: 81, signal: "Improving" },
+        ],
+        tones: { Workload: "red", "Manager change": "amber", Growth: "amber", Recognition: "violet", Improving: "green" },
+      },
+      insights: [
+        { title: "Support workload is the top driver", body: "Tier 2 Support scored workload 48 and intent-to-stay dropped 14 points. Ticket volume rose 31% since the September release.", tone: "red", tag: "Engagement", confidence: 89 },
+        { title: "Self-reviews pacing behind", body: "At this pace 78% of self-reviews will be in by Oct 30. Manager nudges last cycle lifted completion by 15 points in 3 days.", tone: "amber", tag: "Review cycle", confidence: 82 },
+      ],
+    },
+    cycle: {
+      blurb: "Track the H2 review cycle department by department, from self-review to results shared.",
+      bullets: ["Stage stepper for each department", "Completion and deadline per stage", "Event log of nudges and escalations"],
+      subtitle: "H2 2026 performance review · results shared Dec 4",
+      items: [
+        { id: "ENG", title: "Engineering", subtitle: "214 employees · HRBP Tariq Hassan", steps: ["Self-review", "Peer feedback", "Manager review", "Calibration", "Results shared"], current: 0, eta: "Self-reviews due Oct 30", status: "41% self-reviews", tone: "amber", events: [
+          { time: "Today 9:00", text: "Reminder sent to 126 employees with drafts in progress" },
+          { time: "Oct 16", text: "Peer reviewers auto-suggested for all 214 employees" },
+          { time: "Oct 12", text: "Cycle launched" },
+        ] },
+        { id: "PRD", title: "Product & Design", subtitle: "68 employees · HRBP Tariq Hassan", steps: ["Self-review", "Peer feedback", "Manager review", "Calibration", "Results shared"], current: 0, eta: "Self-reviews due Oct 30", status: "52% self-reviews", tone: "blue", events: [
+          { time: "Oct 20", text: "Design managers held self-review office hours" },
+          { time: "Oct 12", text: "Cycle launched" },
+        ] },
+        { id: "GTM", title: "Sales & Marketing", subtitle: "176 employees · HRBP Mei-Ling Chou", steps: ["Self-review", "Peer feedback", "Manager review", "Calibration", "Results shared"], current: 0, eta: "Self-reviews due Oct 30", status: "22% self-reviews", tone: "red", events: [
+          { time: "Oct 20", text: "Escalated to CRO — completion 18 points behind last cycle" },
+          { time: "Oct 15", text: "Quarter-end close delayed start for quota teams" },
+        ] },
+        { id: "CS", title: "Customer Success", subtitle: "112 employees · HRBP Mei-Ling Chou", steps: ["Self-review", "Peer feedback", "Manager review", "Calibration", "Results shared"], current: 0, eta: "Self-reviews due Oct 30", status: "29% self-reviews", tone: "amber", events: [
+          { time: "Oct 19", text: "2 hours of protected review time added to Support rotas" },
+          { time: "Oct 12", text: "Cycle launched" },
+        ] },
+        { id: "EXEC", title: "Leadership team", subtitle: "12 executives · reviewed by CEO", steps: ["Self-review", "Peer feedback", "Manager review", "Calibration", "Results shared"], current: 1, eta: "Peer feedback due Nov 6", status: "Peer feedback", tone: "green", events: [
+          { time: "Oct 18", text: "All 12 self-reviews submitted" },
+          { time: "Oct 18", text: "360 feedback requests sent to 84 reviewers" },
+        ] },
+      ],
+    },
+    selfreview: {
+      blurb: "The employee's H2 self-review — impact, values, growth and next-half goals in one form.",
+      bullets: ["Guided prompts for each review section", "Self-rating on the company scale", "Goals for the next half drafted alongside"],
+      subtitle: "Amara Osei · Senior Software Engineer · due Oct 30",
+      submitLabel: "Submit self-review",
+      sections: [
+        { title: "Results & impact", description: "What did you deliver this half, and what difference did it make?", fields: [
+          { label: "Top accomplishments", type: "textarea", placeholder: "Led the query engine rewrite that cut p95 latency from 820 ms to 340 ms for the largest 40 customers…" },
+          { label: "Goals met this half", type: "select", options: ["All", "Most", "Some", "Few"], half: true, value: "Most" },
+          { label: "Self-rating", type: "select", options: ["Exceeds expectations", "Meets expectations", "Partially meets", "Does not meet"], half: true, value: "Exceeds expectations" },
+        ] },
+        { title: "How you work", description: "Reflect on our values: Own it, Make it simple, Lift others.", fields: [
+          { label: "An example of lifting others", type: "textarea", placeholder: "Mentored two new engineers through their first on-call rotations…" },
+          { label: "Value you lived most", type: "radio", options: ["Own it", "Make it simple", "Lift others"] },
+        ] },
+        { title: "Growth", description: "Where do you want to grow next?", fields: [
+          { label: "Strength to build on", type: "text", placeholder: "System design for multi-tenant services", half: true },
+          { label: "Area to develop", type: "text", placeholder: "Influencing roadmap decisions", half: true },
+          { label: "Interested in a promotion conversation", type: "toggle", value: "true" },
+        ] },
+        { title: "Next half", description: "Draft two or three goals to discuss with your manager.", fields: [
+          { label: "Goal 1", type: "text", placeholder: "Ship tenant-level query isolation to GA" },
+          { label: "Goal 2", type: "text", placeholder: "Run the platform guild and publish 4 design reviews" },
+          { label: "Share draft with manager before submitting", type: "toggle" },
+        ] },
+      ],
+      aside: {
+        title: "Cycle context",
+        items: [
+          { label: "Manager", value: "Daniel Kim" },
+          { label: "Peer reviewers", value: "Rahul Menon, Ines Duarte, Wen Zhao" },
+          { label: "Feedback received this half", value: "11 notes · 7 kudos" },
+          { label: "Q3 goals", value: "3 of 4 key results achieved" },
+        ],
+        note: "Your self-review is shared with your manager and calibration facilitators only.",
+      },
+    },
+    calibration: {
+      blurb: "Calibrate proposed ratings on a weighted scorecard so the same bar applies across teams.",
+      bullets: ["Weighted criteria from the level guide", "Proposed rating badge per person", "Trend vs. last cycle to spot drift"],
+      subtitle: "Engineering · Senior Software Engineer (L4) · session Nov 16",
+      criteria: ["Impact", "Technical craft", "Collaboration", "Ownership", "Leadership"],
+      weights: [30, 25, 15, 15, 15],
+      entities: [
+        { name: "Amara Osei", subtitle: "Data Platform · Daniel Kim", scores: [94, 91, 88, 92, 86], trend: "+6", badge: "Proposed: Exceeds" },
+        { name: "Rahul Menon", subtitle: "Data Platform · Daniel Kim", scores: [86, 88, 90, 84, 78], trend: "+2", badge: "Proposed: Exceeds" },
+        { name: "Ines Duarte", subtitle: "Core API · Sven Halvorsen", scores: [82, 85, 79, 80, 70], trend: "0", badge: "Proposed: Meets" },
+        { name: "Wen Zhao", subtitle: "Core API · Sven Halvorsen", scores: [88, 84, 92, 86, 82], trend: "+4", badge: "Proposed: Exceeds" },
+        { name: "Jonah Feldman", subtitle: "Integrations · Priyanka Rao", scores: [74, 80, 76, 72, 64], trend: "−3", badge: "Proposed: Meets" },
+        { name: "Chloé Martin", subtitle: "Integrations · Priyanka Rao", scores: [79, 76, 85, 81, 75], trend: "+1", badge: "Proposed: Meets" },
+        { name: "Samuel Okoro", subtitle: "Reliability · Hana Kobayashi", scores: [62, 70, 68, 58, 55], trend: "−8", badge: "Proposed: Partially meets" },
+        { name: "Valentina Russo", subtitle: "Reliability · Hana Kobayashi", scores: [84, 87, 80, 89, 73], trend: "+3", badge: "Proposed: Meets" },
+      ],
+    },
+    promotions: {
+      blurb: "Promotion nominations waiting for HR business partner review before the promotion committee.",
+      bullets: ["Nominee, target level and manager case", "Time in level and calibration rating", "Advance or return with feedback"],
+      subtitle: "H2 2026 nominations · committee meets Nov 24",
+      approveLabel: "Advance to committee", rejectLabel: "Return to manager",
+      stats: [
+        { label: "Nominations", value: "27", delta: "4.2% of employees" },
+        { label: "Awaiting review", value: "6", delta: "Due Nov 20", tone: "amber" },
+        { label: "Promotion budget", value: "$412K", delta: "61% allocated", tone: "blue" },
+      ],
+      items: [
+        { title: "Amara Osei → Staff Software Engineer", subtitle: "Data Platform · nominated by Daniel Kim", amount: "L4 → L5", priority: "High", age: "3 h", tags: ["Proposed: Exceeds", "3.4 yrs in level"], detail: "Led the query engine rewrite across 3 teams and owns the platform guild. Case cites cross-team technical direction and mentoring of 4 engineers, both L5 expectations." },
+        { title: "Wen Zhao → Staff Software Engineer", subtitle: "Core API · nominated by Sven Halvorsen", amount: "L4 → L5", priority: "Medium", age: "1 day", tags: ["Proposed: Exceeds", "2.1 yrs in level"], detail: "Designed the public API versioning strategy. Peer feedback is strong; case needs one more example of org-wide influence beyond Core API." },
+        { title: "Liam O'Connor → Senior Sales Manager", subtitle: "Enterprise Sales West · nominated by CRO", amount: "M2 → M3", priority: "Medium", age: "2 days", tags: ["Manager change", "128% of quota"], detail: "Took over a second region in August. Team engagement dropped 9 points during the transition; HRBP recommends pairing promotion with a coaching plan." },
+        { title: "Farah Siddiqui → Director, Billing Operations", subtitle: "Finance · nominated by CFO", amount: "M3 → D1", priority: "High", age: "2 days", tags: ["Proposed: Exceeds"], detail: "Cut month-end billing close from 9 days to 4. Leads 3 managers and 22 people. Director band budget available." },
+        { title: "Theo Lindgren → Principal Designer", subtitle: "Brand Design · nominated by Head of Design", amount: "IC4 → IC5", priority: "Low", age: "4 days", tags: ["2.8 yrs in level"], detail: "Rebuilt the design system adopted by all product teams. Team engagement rose 12 points under his informal leadership." },
+      ],
+    },
+    okrs: {
+      blurb: "Q4 objectives and key results as cards grouped by confidence.",
+      bullets: ["Every key result with owner and progress", "Grouped by on track, at risk and off track", "Linked to the company objective it supports"],
+      subtitle: "Q4 2026 · 4 company objectives · 34 team OKRs",
+      columns: [
+        { title: "On track", tone: "green", cards: [
+          { title: "Cut p95 query latency below 300 ms", meta: "Data Platform · 82% · company obj. 2", tag: "Reliability", tone: "blue", avatar: "Amara Osei", value: "82%" },
+          { title: "Launch usage-based billing to 100% of accounts", meta: "Billing Ops · 74%", tag: "Revenue", tone: "violet", avatar: "Farah Siddiqui", value: "74%" },
+          { title: "Ship design system v3 to all product teams", meta: "Brand Design · 90%", tag: "Craft", tone: "blue", avatar: "Theo Lindgren", value: "90%" },
+        ] },
+        { title: "At risk", tone: "amber", cards: [
+          { title: "Raise H2 self-review completion to 95%", meta: "People · 33% with 9 days left", tag: "People", tone: "amber", avatar: "Joanna Whitfield", value: "33%" },
+          { title: "Reduce Tier 2 backlog below 150 tickets", meta: "Support · 412 open today", tag: "Customer", tone: "amber", avatar: "Beatriz Santos", value: "38%" },
+        ] },
+        { title: "Off track", tone: "red", cards: [
+          { title: "Close $4.2M new enterprise ARR", meta: "Enterprise Sales West · $1.6M closed", tag: "Revenue", tone: "red", avatar: "Liam O'Connor", value: "38%" },
+        ] },
+        { title: "Done", tone: "gray", cards: [
+          { title: "SOC 2 Type II renewal with zero exceptions", meta: "Security · completed Oct 9", tag: "Trust", tone: "green", avatar: "Hana Kobayashi", value: "100%" },
+          { title: "Hire 6 senior data engineers", meta: "Data Platform · 6 of 6 accepted", tag: "Hiring", tone: "green", avatar: "Daniel Kim", value: "100%" },
+        ] },
+      ],
+    },
+    oneonones: {
+      blurb: "A manager's week of 1:1s, skip-levels and calibration prep, with agendas attached.",
+      bullets: ["Recurring 1:1s and skip-levels on one grid", "Calibration and review sessions blocked", "Agendas pull in goals and recent feedback"],
+      subtitle: "Daniel Kim · Data Platform · 9 direct reports",
+      weekLabel: "Nov 16 – 20, 2026",
+      days: ["Mon 16", "Tue 17", "Wed 18", "Thu 19", "Fri 20"],
+      startHour: 8, endHour: 18,
+      legend: [{ label: "1:1", tone: "blue" }, { label: "Skip-level", tone: "violet" }, { label: "Calibration", tone: "green" }, { label: "Review conversation", tone: "amber" }],
+      events: [
+        { day: 0, start: 10, end: 13, title: "Engineering calibration — L4", meta: "Facilitator: Tariq Hassan", tone: "green" },
+        { day: 0, start: 14, end: 14.5, title: "1:1 — Amara Osei", meta: "Promotion case prep", tone: "blue" },
+        { day: 1, start: 9, end: 9.5, title: "1:1 — Rahul Menon", meta: "Q4 latency OKR", tone: "blue" },
+        { day: 1, start: 11, end: 12, title: "Skip-level — new hires", meta: "4 engineers · 60-day check-in", tone: "violet" },
+        { day: 1, start: 15, end: 15.5, title: "1:1 — Leah Abrams", meta: "On-call load", tone: "blue" },
+        { day: 2, start: 10, end: 10.5, title: "1:1 — Kenji Morales", meta: "Career goals", tone: "blue" },
+        { day: 2, start: 13, end: 14.5, title: "Engineering calibration — L5+", meta: "Facilitator: Tariq Hassan", tone: "green" },
+        { day: 3, start: 9.5, end: 10, title: "1:1 — Sara Lindholm", meta: "Feedback follow-up", tone: "blue" },
+        { day: 3, start: 14, end: 15, title: "Skip-level — Daniel ↔ VP Eng", meta: "Team health", tone: "violet" },
+        { day: 4, start: 11, end: 11.5, title: "1:1 — Tom Achterberg", meta: "Performance plan check-in", tone: "amber" },
+      ],
+    },
+    survey: {
+      blurb: "October engagement pulse scores by department and theme, with gaps against the company average.",
+      bullets: ["Theme scores per department on a 0–100 scale", "Cold spots highlighted for action planning", "Groups under 5 responses hidden for anonymity"],
+      subtitle: "October pulse · 555 responses · 87% participation",
+      rowLabel: "Department",
+      rows: ["Engineering", "Product & Design", "Sales", "Customer Success", "Marketing", "G&A"],
+      cols: ["Belonging", "Manager support", "Growth", "Workload", "Recognition", "Pay fairness", "Intent to stay"],
+      values: [
+        [82, 80, 71, 69, 74, 66, 79],
+        [85, 83, 78, 72, 77, 70, 81],
+        [76, 70, 68, 64, 79, 72, 70],
+        [71, 74, 62, 48, 58, 61, 60],
+        [80, 78, 73, 70, 72, 68, 77],
+        [79, 81, 66, 74, 69, 67, 76],
+      ],
+      unit: "score",
+      legend: ["Needs action", "Strength"],
+      summary: [
+        { label: "Company average", value: "72", delta: "+2 vs. September", tone: "green" },
+        { label: "Lowest cell", value: "48", delta: "Customer Success · Workload", tone: "red" },
+        { label: "Action plans open", value: "14", delta: "9 managers", tone: "blue" },
+      ],
+    },
+    launch: {
+      blurb: "Launch a pulse survey in a few steps — audience, questions, schedule and anonymity.",
+      bullets: ["Target the whole company or specific groups", "Validated questions from the theme library", "Anonymity threshold and reminders set up front"],
+      subtitle: "November pulse · draft",
+      finishLabel: "Schedule survey",
+      successTitle: "November pulse is scheduled",
+      successBody: "The survey goes to 638 employees on Nov 3 at 9:00 AM and closes Nov 10. Managers will see results for teams with 5 or more responses on Nov 11.",
+      steps: [
+        { title: "Audience", description: "Who should receive this survey?", fields: [
+          { label: "Send to", type: "radio", options: ["Everyone", "Selected departments", "New hires (under 90 days)"] },
+          { label: "Exclude employees on leave", type: "toggle", value: "true" },
+        ] },
+        { title: "Questions", description: "Pick up to 8 questions from the validated library.", fields: [
+          { label: "Core eNPS question", type: "toggle", value: "true" },
+          { label: "Themes", type: "select", options: ["Workload + Recognition", "Growth + Manager support", "Belonging + Intent to stay", "Custom mix"] },
+          { label: "Open comment prompt", type: "textarea", placeholder: "What is one thing that would make your work week better?" },
+        ] },
+        { title: "Schedule", description: "Choose when the survey opens and closes.", fields: [
+          { label: "Opens", type: "date", half: true },
+          { label: "Closes", type: "date", half: true },
+          { label: "Reminders", type: "select", options: ["None", "Once", "Twice"], value: "Twice" },
+        ] },
+        { title: "Privacy", description: "Protect respondents and set who sees results.", fields: [
+          { label: "Anonymity threshold", type: "select", options: ["3 responses", "5 responses", "10 responses"], value: "5 responses", half: true },
+          { label: "Managers see team results", type: "toggle", value: "true" },
+          { label: "Scrub names from comments", type: "toggle", value: "true" },
+        ] },
+      ],
+    },
+    growth: {
+      blurb: "One employee's growth record — goals, feedback, reviews and development plan together.",
+      bullets: ["Role, level and tenure at a glance", "Feedback and review history on one timeline", "Development plan and review documents"],
+      subtitle: "Growth profile",
+      name: "Amara Osei", headline: "Senior Software Engineer (L4) · Data Platform · Fernhill Analytics", avatar: "Amara Osei",
+      status: "Promotion nominee", tone: "violet",
+      actions: ["Give feedback", "Schedule 1:1"],
+      fields: [
+        { label: "Manager", value: "Daniel Kim" }, { label: "Tenure", value: "3 yrs 5 mos" }, { label: "Time in level", value: "3 yrs 4 mos" },
+        { label: "Last rating", value: "Exceeds (H1 2026)" }, { label: "Q4 goals", value: "2 of 3 on track" }, { label: "Location", value: "Toronto · remote" },
+      ],
+      overview: [
+        { title: "Strengths", body: "Peers consistently describe Amara as the person who makes hard technical problems feel tractable. She led the query engine rewrite across three teams and writes design docs others use as templates." },
+        { title: "Development focus", body: "Building influence on roadmap decisions earlier, before designs are set. Next step: co-own the 2027 platform strategy with the product lead." },
+        { title: "Career aspiration", body: "Staff engineer track with a focus on multi-tenant data systems. Not interested in people management in the next two years." },
+      ],
+      activity: [
+        { time: "3 h ago", text: "Nominated for Staff Software Engineer by Daniel Kim" },
+        { time: "Oct 19", text: "Submitted H2 self-review — self-rating Exceeds" },
+        { time: "Oct 14", text: "Kudos from Rahul Menon for leading the incident review" },
+        { time: "Oct 2", text: "Completed academy course: Influence without authority" },
+        { time: "Jul 8", text: "H1 review shared — Exceeds expectations" },
+      ],
+      documents: [
+        { name: "H2 2026 self-review.pdf", meta: "Submitted Oct 19" },
+        { name: "Promotion case — Staff SWE.pdf", meta: "Daniel Kim · 4 pages" },
+        { name: "Development plan 2026.pdf", meta: "Updated Sep 12" },
+        { name: "H1 2026 review.pdf", meta: "Shared Jul 8" },
+      ],
+    },
+    academy: {
+      blurb: "Short lessons and conversation guides that help managers run better reviews, 1:1s and feedback.",
+      bullets: ["Featured lesson matched to the current review stage", "Rails for new managers, feedback and calibration", "Progress saved across devices"],
+      subtitle: "Recommended for review season · 84 managers enrolled",
+      featured: { title: "Delivering a review with no surprises", subtitle: "Structure the conversation, lead with evidence and agree next steps", duration: "18 min", emoji: "🎙️", progress: 40 },
+      rails: [
+        { title: "Review season essentials", items: [
+          { title: "Writing evidence-based reviews", meta: "Lesson · 12 min", emoji: "✍️", duration: "12 min", badge: "Popular" },
+          { title: "Spotting recency bias", meta: "Lesson · 8 min", emoji: "🔍", duration: "8 min" },
+          { title: "Preparing for calibration", meta: "Guide · 10 min", emoji: "⚖️", duration: "10 min", badge: "New" },
+          { title: "Talking about pay and ratings", meta: "Role play · 15 min", emoji: "💬", duration: "15 min" },
+        ] },
+        { title: "Feedback & coaching", items: [
+          { title: "The two-minute feedback model", meta: "Lesson · 6 min", emoji: "⏱️", duration: "6 min" },
+          { title: "Coaching questions that work", meta: "Card deck · 20 prompts", emoji: "🃏", duration: "5 min" },
+          { title: "Recognizing quiet contributors", meta: "Lesson · 9 min", emoji: "🌱", duration: "9 min" },
+          { title: "Handling defensive reactions", meta: "Role play · 14 min", emoji: "🛡️", duration: "14 min", badge: "Advanced" },
+        ] },
+        { title: "New manager path", items: [
+          { title: "Your first 90 days as a manager", meta: "Course · 5 lessons", emoji: "🧭", duration: "45 min" },
+          { title: "Running a great 1:1", meta: "Lesson · 11 min", emoji: "🤝", duration: "11 min" },
+          { title: "Setting team OKRs", meta: "Workshop · 25 min", emoji: "🎯", duration: "25 min" },
+          { title: "Acting on survey results", meta: "Guide · 12 min", emoji: "📊", duration: "12 min" },
+        ] },
+      ],
+    },
+    insights: {
+      blurb: "Engagement, performance and retention analytics for leadership and the people team.",
+      bullets: ["Engagement trend vs. industry benchmark", "Rating distribution and attrition by tenure", "Engagement driver radar"],
+      subtitle: "Fernhill Analytics · trailing 10 months",
+      kpis: [
+        { label: "Engagement score", value: "74", delta: "+6 vs. Jan", tone: "green" },
+        { label: "Regretted attrition", value: "6.8%", delta: "Annualized · −1.4 pts" },
+        { label: "Manager effectiveness", value: "78", delta: "Upward feedback", tone: "blue" },
+        { label: "Internal mobility", value: "11%", delta: "Roles filled internally" },
+      ],
+      trend: { title: "Engagement score vs. industry benchmark", series: [68, 69, 67, 70, 71, 70, 72, 73, 72, 74], compare: [70, 70, 70, 70, 71, 71, 71, 71, 71, 71], labels: ["Jan", "Mar", "May", "Jul", "Sep", "Oct"] },
+      bars: { title: "Regretted exits by tenure (last 12 months)", data: [{ label: "< 1 yr", value: 9 }, { label: "1–2 yrs", value: 14 }, { label: "2–4 yrs", value: 11 }, { label: "4+ yrs", value: 5 }] },
+      donut: { title: "H1 2026 final ratings", centerLabel: "602", centerSub: "employees rated", segments: [{ name: "Exceeds", value: 24 }, { name: "Meets", value: 63 }, { name: "Partially meets", value: 10 }, { name: "Does not meet", value: 3 }] },
+      radar: { title: "Engagement drivers", axes: ["Belonging", "Manager support", "Growth", "Workload", "Recognition", "Pay fairness"], values: [79, 78, 70, 66, 72, 67] },
+      table: {
+        title: "Attrition risk by department",
+        columns: [{ key: "dept", label: "Department" }, { key: "headcount", label: "Headcount", type: "number", align: "right" }, { key: "atRisk", label: "Flight risk", type: "number", align: "right" }, { key: "intent", label: "Intent to stay", type: "progress" }],
+        rows: [
+          { dept: "Engineering", headcount: 214, atRisk: 17, intent: 79 },
+          { dept: "Customer Success", headcount: 112, atRisk: 19, intent: 60 },
+          { dept: "Sales", headcount: 118, atRisk: 14, intent: 70 },
+          { dept: "Product & Design", headcount: 68, atRisk: 4, intent: 81 },
+          { dept: "Marketing", headcount: 58, atRisk: 5, intent: 77 },
+        ],
+      },
+    },
+  },
+});

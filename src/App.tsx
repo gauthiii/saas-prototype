@@ -1,179 +1,133 @@
-// src/App.tsx
-import React, { ComponentType, useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate, useParams, Routes, Route, Navigate } from "react-router-dom";
-import {
-  Sun, Moon, ChevronsUpDown, Check, Search,
-  Paintbrush, Download, Loader2, Eye, CornerDownRight,
-} from "lucide-react";
-import { ICONS, IconType } from "./lib/iconMap";
-import * as fintech from "./domains/fintech";
-import * as banking from "./domains/banking";
-import * as healthtech from "./domains/healthtech";
-import * as devops from "./domains/devops";
-import * as hrtech from "./domains/hrtech";
-import * as edtech from "./domains/edtech";
-import * as retailtech from "./domains/retailtech";
-import * as energytech from "./domains/energytech";
-import * as energyFossil from "./domains/energy-fossil";
-import * as energyRenewable from "./domains/energy-renewable";
-import * as energyNuclear from "./domains/energy-nuclear";
-import { DOMAIN_DEFS, DomainDef } from "./export/registry";
+// src/App.tsx — builder shell: routing, design state (style + layout, URL-synced), lazy
+// industry loading, command palette, Design Studio, preview and export.
+import React, { Component, ReactNode, Suspense, use, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useNavigate, useParams, useLocation, Routes, Route, Navigate } from "react-router-dom";
+import { Sun, Moon, Paintbrush, Download, Loader2, Eye, LayoutGrid, AlertTriangle } from "lucide-react";
+import { icon } from "./lib/iconMap";
+import { CATALOG, findDomain, loadDomain, type CatalogEntry } from "./industries/catalog";
+import { ViewContent } from "./industries/views";
 import { exportProject } from "./export/exportProject";
-import { ThemeStudio } from "./components/ThemeStudio";
+import { DesignStudio } from "./components/DesignStudio";
+import { CommandPalette, DomainButton } from "./components/CommandPalette";
+import { IndustriesGallery } from "./components/IndustriesGallery";
 import { About } from "./components/About";
 import { VersionHistory } from "./components/VersionHistory";
 import { AppPreview } from "./components/AppPreview";
+import { Skeleton } from "./components/ui";
+import { AppFrame } from "./shell/AppFrame";
+import { StyleBackdrop } from "./design/StyleBackdrop";
+import { DesignContext, Design, applyStyle, designToSearch, loadDesign, resolveStyle, saveDesign } from "./design/design";
+import { styleById, type StyleId } from "./design/styles";
 import { Theme, loadTheme, applyTheme, saveTheme } from "./theme";
 
+function useDarkPreference() {
+  const [dark, setDark] = useState(() => {
+    try {
+      const saved = localStorage.getItem("forgeui-dark");
+      if (saved !== null) return saved === "true";
+    } catch { /* storage unavailable */ }
+    return window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false;
+  });
+  useEffect(() => { try { localStorage.setItem("forgeui-dark", String(dark)); } catch { /* ignore */ } }, [dark]);
+  return [dark, setDark] as const;
+}
 
-const MODULES: Record<string, Record<string, ComponentType>> = {
-  fintech, banking, healthtech, devops, hrtech, edtech, retailtech, energytech,
-  "energy-fossil": energyFossil, "energy-renewable": energyRenewable, "energy-nuclear": energyNuclear,
-};
+/** Applies colour mode + style to <html> before paint (no flash of the previous style).
+ *  Dark-only styles force dark mode while active. */
+function useAppliedLook(style: StyleId, darkPref: boolean) {
+  const mode = styleById(style)?.mode;
+  const dark = mode === "dark" ? true : mode === "light" ? false : darkPref;
+  useLayoutEffect(() => {
+    document.documentElement.classList.toggle("dark", dark);
+    applyStyle(style);
+  }, [dark, style]);
+  return { dark, locked: !!mode };
+}
 
-type View = { id: string; label: string; icon: IconType; el: React.ReactElement; group?: string };
-type Domain = { id: string; label: string; sub: string; icon: IconType; def: DomainDef; views: View[] };
+/** Keeps one broken screen from taking down the whole builder. */
+class ViewBoundary extends Component<{ children: ReactNode; resetKey: string }, { error: Error | null }> {
+  state = { error: null as Error | null };
+  static getDerivedStateFromError(error: Error) { return { error }; }
+  componentDidUpdate(prev: { resetKey: string }) { if (prev.resetKey !== this.props.resetKey && this.state.error) this.setState({ error: null }); }
+  render() {
+    if (!this.state.error) return this.props.children;
+    return (
+      <div className="card p-8 text-center space-y-3 max-w-lg mx-auto">
+        <AlertTriangle className="mx-auto text-amber-500" />
+        <div className="font-display text-lg">This screen failed to render</div>
+        <p className="text-sm ink-2 font-mono break-words">{this.state.error.message}</p>
+        <button className="btn-ghost" onClick={() => this.setState({ error: null })}>Try again</button>
+      </div>
+    );
+  }
+}
 
-const DOMAINS: Domain[] = DOMAIN_DEFS.map(def => ({
-  id: def.id,
-  label: def.label,
-  sub: def.sub,
-  icon: ICONS[def.icon],
-  def,
-  views: def.views.map(v => {
-    const C = MODULES[def.file][v.comp];
-    if (!C) throw new Error(`Registry error: ${v.comp} not exported from domains/${def.file}`);
-    const el = v.wrap ? <div className={v.wrap}><C /></div> : <C />;
-    return { id: v.id, label: v.label, icon: ICONS[v.icon], el, group: v.group };
-  }),
-}));
-
-function DomainPicker({ domain, onPick }: { domain: Domain; onPick: (d: Domain) => void }) {
-  const [open, setOpen] = useState(false);
-  const [q, setQ] = useState("");
-  const [cursor, setCursor] = useState(-1);
-  const listRef = useRef<HTMLUListElement>(null);
-
-  const filtered = useMemo(
-    () => DOMAINS.filter(d => (d.label + d.sub).toLowerCase().includes(q.toLowerCase())),
-    [q]
-  );
-
-  const close = () => { setOpen(false); setQ(""); setCursor(-1); };
-
-  const onKeyDown = (e: React.KeyboardEvent) => {
-    if (!open) return;
-    if (e.key === "Escape") { close(); return; }
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
-      setCursor(c => Math.min(c + 1, filtered.length - 1));
-    } else if (e.key === "ArrowUp") {
-      e.preventDefault();
-      setCursor(c => Math.max(c - 1, 0));
-    } else if (e.key === "Enter" && cursor >= 0 && filtered[cursor]) {
-      e.preventDefault();
-      onPick(filtered[cursor]);
-      close();
-    }
-  };
-
-  useEffect(() => {
-    if (cursor >= 0 && listRef.current) {
-      const el = listRef.current.children[cursor] as HTMLElement | undefined;
-      el?.scrollIntoView({ block: "nearest" });
-    }
-  }, [cursor]);
-
+function ScreenSkeleton() {
   return (
-    <div className="relative" onKeyDown={onKeyDown}>
-      <button onClick={() => setOpen(o => !o)}
-        className="btn-ghost !pl-2.5 min-w-56 justify-between" aria-haspopup="listbox" aria-expanded={open}>
-        <span className="flex items-center gap-2.5">
-          <span className="grid place-items-center h-7 w-7 rounded-lg bg-accent/12 text-accent"><domain.icon size={15} /></span>
-          <span className="text-left leading-tight">
-            <span className="block text-sm font-semibold">{domain.label}</span>
-            <span className="block text-[10px] ink-2">{domain.sub}</span>
-          </span>
-        </span>
-        <ChevronsUpDown size={14} className="ink-2" />
-      </button>
-      {open && (
-        <>
-          <div className="fixed inset-0 z-30" onClick={close} />
-          <div className="absolute z-40 mt-2 w-72 card !p-0 overflow-hidden shadow-lift animate-fadeUp">
-            <div className="flex items-center gap-2 border-b border-[var(--line)] px-3 py-2.5">
-              <Search size={14} className="ink-2" />
-              <input autoFocus value={q}
-                onChange={e => { setQ(e.target.value); setCursor(-1); }}
-                placeholder="Search domain templates..."
-                className="w-full bg-transparent text-sm outline-none placeholder:text-[var(--ink-2)]" />
-            </div>
-            <ul ref={listRef} role="listbox" className="max-h-72 overflow-y-auto p-1.5">
-              {filtered.map((d, i) => (
-                <li key={d.id} role="option" aria-selected={d.id === domain.id}>
-                  <button onClick={() => { onPick(d); close(); }}
-                    className={`w-full flex items-center gap-3 rounded-lg py-2 pr-2.5 text-left transition-colors hover:bg-accent/8 ${d.def.parent ? "pl-5" : "pl-2.5"} ${d.id === domain.id ? "bg-accent/8" : ""} ${i === cursor ? "ring-2 ring-accent/50 ring-inset" : ""}`}>
-                    {d.def.parent && <CornerDownRight size={13} className="ink-2 shrink-0 -mr-1" />}
-                    <span className="grid place-items-center h-8 w-8 rounded-lg bg-accent/12 text-accent"><d.icon size={16} /></span>
-                    <span className="flex-1 leading-tight">
-                      <span className="block text-sm font-medium">{d.label}</span>
-                      <span className="block text-[11px] ink-2">{d.sub}</span>
-                    </span>
-                    {d.id === domain.id && <Check size={15} className="text-accent" />}
-                  </button>
-                </li>
-              ))}
-              {filtered.length === 0 && <li className="px-3 py-4 text-sm ink-2">No template matches "{q}". Clear the search to see all domains.</li>}
-            </ul>
-          </div>
-        </>
-      )}
+    <div className="space-y-6" aria-busy="true" aria-label="Loading screen">
+      <Skeleton className="h-8 w-64" />
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">{[0, 1, 2, 3].map(i => <Skeleton key={i} className="h-24" />)}</div>
+      <Skeleton className="h-64" />
     </div>
   );
 }
 
+function DomainView({ entry, viewId }: { entry: CatalogEntry; viewId: string }) {
+  const domain = use(loadDomain(entry.id));
+  const view = entry.views.find(v => v.id === viewId) ?? entry.views[0];
+  return <ViewContent domain={domain} view={view} />;
+}
+
 function AppShell() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { domainId, viewId } = useParams<{ domainId: string; viewId: string }>();
+  const entry = findDomain(domainId) ?? CATALOG[0];
+  const view = entry.views.find(v => v.id === viewId) ?? entry.views[0];
 
-  const [dark, setDark] = useState(() => {
-    const saved = localStorage.getItem("forgeui-dark");
-    if (saved !== null) return saved === "true";
-    return window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false;
-  });
-  const [theme, setTheme] = useState<Theme>(loadTheme);
-  const [themeOpen, setThemeOpen] = useState(false);
+  const [darkPref, setDarkPref] = useDarkPreference();
+  const [design, setDesignState] = useState<Design>(() => loadDesign(new URLSearchParams(location.search)));
+  const [theme, setThemeState] = useState<Theme>(loadTheme);
+  const [studioOpen, setStudioOpen] = useState(false);
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
   const [exportStage, setExportStage] = useState<string | null>(null);
   const exportCancelled = useRef(false);
-  const [previewOpen, setPreviewOpen] = useState(false);
 
-  const domain = DOMAINS.find(d => d.id === domainId) ?? DOMAINS[0];
-  const view = domain.views.find(v => v.id === viewId) ?? domain.views[0];
+  const style = resolveStyle(design, entry.styles.default);
+  const { dark, locked } = useAppliedLook(style, darkPref);
+  const search = designToSearch(design);
+
+  useLayoutEffect(() => { applyTheme(theme); }, [theme]);
+  useEffect(() => { saveDesign(design); }, [design]);
+  // Keep the URL in sync with the design so links are shareable.
+  useEffect(() => {
+    if (location.search !== search) navigate({ pathname: location.pathname, search }, { replace: true });
+  }, [search, location.pathname, location.search, navigate]);
+  // Warm the next industry's chunk as soon as it's known.
+  useEffect(() => { loadDomain(entry.id).catch(() => { /* surfaced by the view boundary */ }); }, [entry.id]);
 
   useEffect(() => {
-    document.documentElement.classList.toggle("dark", dark);
-    localStorage.setItem("forgeui-dark", String(dark));
-  }, [dark]);
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); setPaletteOpen(o => !o); }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
-  useEffect(() => { applyTheme(theme); }, [theme]);
+  const go = useCallback((domain: string, v?: string) => {
+    const target = findDomain(domain) ?? CATALOG[0];
+    navigate(`/${target.id}/${v && target.views.some(x => x.id === v) ? v : target.views[0].id}${search}`);
+  }, [navigate, search]);
 
-  const pick = (d: Domain) => navigate(`/${d.id}/${d.views[0].id}`);
-  const setViewNav = (id: string) => navigate(`/${domain.id}/${id}`);
-
-  const applySelectedTheme = (nextTheme: Theme) => {
-    setTheme(nextTheme);
-    saveTheme(nextTheme);
-    applyTheme(nextTheme);
-  };
+  const setTheme = (t: Theme) => { setThemeState(t); saveTheme(t); };
 
   const doExport = async () => {
     if (exportStage) return;
     exportCancelled.current = false;
     setExportStage("Generating slides…");
     try {
-      if (exportCancelled.current) return;
-      setExportStage("Compressing files…");
-      await exportProject(domain.def, theme);
+      await exportProject(entry, theme, { ...design, style }, stage => { if (!exportCancelled.current) setExportStage(stage); });
       if (!exportCancelled.current) setExportStage("Done ✓");
       setTimeout(() => setExportStage(null), 1200);
     } catch (err) {
@@ -185,104 +139,58 @@ function AppShell() {
     }
   };
 
-  const groups = useMemo(() => {
-    const map: Record<string, View[]> = {};
-    for (const v of domain.views) {
-      const g = v.group ?? "App";
-      (map[g] ??= []).push(v);
-    }
-    return map;
-  }, [domain]);
+  const previewViews = useMemo(() => entry.views.map(v => ({
+    id: v.id, label: v.label, icon: icon(v.icon), group: v.group,
+    el: <ViewBoundary resetKey={v.id}><Suspense fallback={<ScreenSkeleton />}><DomainView entry={entry} viewId={v.id} /></Suspense></ViewBoundary>,
+  })), [entry]);
+
+  const actions = (
+    <>
+      <button onClick={() => navigate(`/industries${search}`)} className="btn-ghost !p-2" aria-label="Browse all industries" title="Industry library"><LayoutGrid size={16} /></button>
+      <button onClick={() => setPreviewOpen(true)} className="btn-ghost !p-2" aria-label={`Preview ${entry.label} app flow`} title="Preview the exported app flow"><Eye size={16} /></button>
+      <button onClick={() => setStudioOpen(true)} className="btn-ghost !px-3 !py-2 gap-1.5" aria-label="Open design studio" title="Style, colour and layout">
+        <Paintbrush size={15} /><span className="hidden lg:inline text-xs font-semibold">{styleById(style)?.name}</span>
+      </button>
+      <button onClick={doExport} disabled={!!exportStage} className="btn-ghost !px-3 !py-2 gap-1.5 disabled:opacity-60" aria-label={`Export ${entry.label} as Vite project`} title="Export this industry as a Vite project zip">
+        {exportStage ? <Loader2 size={15} className="animate-spin" /> : <Download size={15} />}
+        <span className="hidden xl:inline text-xs font-semibold">{exportStage ?? "Export"}</span>
+      </button>
+      <button onClick={() => setDarkPref(d => !d)} disabled={locked} className="btn-ghost !p-2 disabled:opacity-50"
+        aria-label={locked ? `${styleById(style)?.name} is dark-only` : dark ? "Switch to light mode" : "Switch to dark mode"} title={locked ? "This style is dark-only" : undefined}>
+        {dark ? <Sun size={16} /> : <Moon size={16} />}
+      </button>
+    </>
+  );
 
   return (
-    <div className="min-h-full flex">
-      <aside className="hidden md:flex w-60 shrink-0 flex-col surface border-r min-h-screen sticky top-0">
-        <div className="px-5 py-5 border-b border-[var(--line)] space-y-2">
-          <button onClick={() => navigate("/")} className="flex items-center gap-2.5 w-full hover:opacity-75 transition-opacity">
-            <span className="grid place-items-center h-8 w-8 rounded-xl bg-gradient-to-br from-accent to-grad text-white font-display font-bold text-sm">F</span>
-            <div className="leading-tight text-left">
-              <div className="font-display font-bold tracking-tight">ForgeUI</div>
-              <div className="text-[10px] ink-2 font-mono">template builder</div>
-            </div>
-          </button>
-        </div>
-        <nav className="p-3 space-y-3 flex-1 overflow-y-auto" aria-label="Screens">
-          {Object.entries(groups).map(([group, views]) => (
-            <div key={group}>
-              <div className="flex items-center justify-between px-2.5 pt-1 pb-1.5">
-                <span className="eyebrow">{group}</span>
-              </div>
-              <div className="space-y-0.5">
-                {views.map(v => (
-                  <button key={v.id} onClick={() => setViewNav(v.id)}
-                    className={`w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-medium transition-all duration-150
-                      ${v.id === view.id ? "bg-accent text-white shadow-card" : "ink-2 hover:bg-accent/8 hover:text-[var(--ink)]"}`}>
-                    <v.icon size={15} /> {v.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          ))}
-        </nav>
-        <div className="p-4 border-t border-[var(--line)] text-[11px] ink-2 leading-relaxed">
-          Interactive UI prototype. Wire your own APIs behind every action.
-        </div>
-      </aside>
+    <DesignContext.Provider value={design}>
+      <StyleBackdrop />
+      <AppFrame
+        shell={design.shell}
+        brand={{ name: entry.productName, sub: `forgeui · ${entry.label.toLowerCase()}`, onClick: () => navigate(`/${search}`) }}
+        views={entry.views}
+        currentId={view.id}
+        onSelect={id => go(entry.id, id)}
+        headerLeft={<DomainButton entry={entry} onOpen={() => setPaletteOpen(true)} />}
+        headerRight={actions}
+        footerNote="Interactive UI prototype. Wire your own APIs behind every action."
+      >
+        <ViewBoundary resetKey={`${entry.id}/${view.id}`}>
+          <Suspense fallback={<ScreenSkeleton />}>
+            <DomainView entry={entry} viewId={view.id} />
+          </Suspense>
+        </ViewBoundary>
+      </AppFrame>
 
-      <div className="flex-1 min-w-0">
-        <header className="sticky top-0 z-20 surface border-b backdrop-blur px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
-          <DomainPicker domain={domain} onPick={pick} />
-          <div className="flex items-center gap-2">
-            <button onClick={() => setPreviewOpen(true)}
-              className="btn-ghost !p-2"
-              aria-label={`Preview ${domain.label} app flow`}
-              title="Preview how the exported app looks and flows">
-              <Eye size={16} />
-            </button>
-            <span className="hidden sm:block text-xs ink-2">Generated template · <span className="font-mono">{domain.id}/{view.id}</span></span>
-            <button onClick={() => setThemeOpen(true)} className="btn-ghost !p-2" aria-label="Open theme studio" title="Change theme colours">
-              <Paintbrush size={16} />
-            </button>
-            <button onClick={doExport} disabled={!!exportStage} className="btn-ghost !px-3 !py-2 gap-1.5 disabled:opacity-60"
-              aria-label={`Export ${domain.label} as Vite project`} title="Export this domain as a Vite project zip">
-              {exportStage ? <Loader2 size={15} className="animate-spin" /> : <Download size={15} />}
-              <span className="hidden sm:inline text-xs font-semibold">{exportStage ?? "Export project"}</span>
-            </button>
-            <button onClick={() => setDark(d => !d)} className="btn-ghost !p-2" aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}>
-              {dark ? <Sun size={16} /> : <Moon size={16} />}
-            </button>
-          </div>
-        </header>
+      {paletteOpen && (
+        <CommandPalette current={entry} onClose={() => setPaletteOpen(false)}
+          onIndustry={id => go(id)} onScreen={id => go(entry.id, id)} onStyle={id => setDesignState({ ...design, style: id })} />
+      )}
 
-        {/* Mobile screen tabs — grouped (U3) */}
-        <div className="md:hidden">
-          <div className="flex gap-1.5 overflow-x-auto px-4 pt-2 pb-0 border-b border-[var(--line)]">
-            {Object.keys(groups).map(group => (
-              <button key={group}
-                onClick={() => setViewNav(groups[group][0].id)}
-                className={`shrink-0 rounded-t-lg px-3 py-1.5 text-xs font-semibold border-b-2 transition-colors ${
-                  groups[group].some(v => v.id === view.id)
-                    ? "border-accent text-accent"
-                    : "border-transparent ink-2"
-                }`}>
-                {group}
-              </button>
-            ))}
-          </div>
-          <div className="flex gap-2 overflow-x-auto px-4 pt-2 pb-2">
-            {(groups[view.group ?? "App"] ?? domain.views).map(v => (
-              <button key={v.id} onClick={() => setViewNav(v.id)}
-                className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium border transition-colors ${v.id === view.id ? "bg-accent text-white border-accent" : "surface ink-2"}`}>
-                {v.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <main key={`${domain.id}-${view.id}`} className="p-4 sm:p-6 animate-fadeUp">
-          {view.el}
-        </main>
-      </div>
+      {studioOpen && (
+        <DesignStudio onClose={() => setStudioOpen(false)} design={design} setDesign={setDesignState} theme={theme} setTheme={setTheme}
+          industry={{ label: entry.label, default: entry.styles.default, recommended: entry.styles.recommended }} goTo={id => go(entry.id, id)} />
+      )}
 
       {exportStage && exportStage !== "Done ✓" && !exportStage.startsWith("Export failed") && (
         <div className="fixed inset-0 z-50 grid place-items-center p-4">
@@ -290,81 +198,50 @@ function AppShell() {
           <div className="relative card !p-6 w-full max-w-sm shadow-lift animate-fadeUp flex flex-col items-center gap-4">
             <Loader2 size={28} className="animate-spin text-accent" />
             <div className="text-sm font-semibold">{exportStage}</div>
-            <button
-              className="btn-ghost text-xs px-4 py-1.5"
-              onClick={() => { exportCancelled.current = true; setExportStage(null); }}>
-              Cancel
-            </button>
+            <button className="btn-ghost text-xs px-4 py-1.5" onClick={() => { exportCancelled.current = true; setExportStage(null); }}>Cancel</button>
           </div>
         </div>
       )}
 
-      {themeOpen && (
-        <ThemeStudio open={themeOpen} onClose={() => setThemeOpen(false)} theme={theme} onApply={applySelectedTheme} />
-      )}
-
       {previewOpen && (
-        <AppPreview
-          productName={domain.def.productName}
-          sub={domain.sub}
-          domainId={domain.id}
-          views={domain.views}
-          dark={dark}
-          setDark={setDark}
-          onClose={() => setPreviewOpen(false)}
-        />
+        <AppPreview productName={entry.productName} sub={entry.sub} domainId={entry.id} views={previewViews}
+          dark={dark} setDark={setDarkPref} onClose={() => setPreviewOpen(false)} />
       )}
-    </div>
+    </DesignContext.Provider>
   );
 }
 
 function DomainRedirect() {
   const { domainId } = useParams<{ domainId: string }>();
-  const d = DOMAINS.find(x => x.id === domainId) ?? DOMAINS[0];
-  return <Navigate to={`/${d.id}/${d.views[0].id}`} replace />;
+  const { search } = useLocation();
+  const d = findDomain(domainId) ?? CATALOG[0];
+  return <Navigate to={`/${d.id}/${d.views[0].id}${search}`} replace />;
+}
+
+/** Marketing-style routes (About, Versions, Industries) use the Modern style + saved colours. */
+function PlainRoute({ children }: { children: (dark: boolean, setDark: React.Dispatch<React.SetStateAction<boolean>>) => ReactNode }) {
+  const [darkPref, setDarkPref] = useDarkPreference();
+  const { dark } = useAppliedLook("modern", darkPref);
+  useEffect(() => { applyTheme(loadTheme()); }, []);
+  return <><StyleBackdrop /><main className="p-4 sm:p-6 animate-fadeUp">{children(dark, setDarkPref)}</main></>;
 }
 
 export default function App() {
+  const navigate = useNavigate();
+  const first = CATALOG[0];
   return (
     <Routes>
-      <Route path="/" element={<AboutRoute />} />
-      <Route path="/versions" element={<VersionsRoute />} />
+      <Route path="/" element={
+        <PlainRoute>{(dark, setDark) => (
+          <About onNavigateToDomain={() => navigate(`/${first.id}/${first.views[0].id}`)} onViewVersions={() => navigate("/versions")}
+            onBrowseIndustries={() => navigate("/industries")} dark={dark} setDark={setDark} />
+        )}</PlainRoute>
+      } />
+      <Route path="/versions" element={<PlainRoute>{() => <VersionHistory onBack={() => navigate(-1)} />}</PlainRoute>} />
+      <Route path="/industries" element={<PlainRoute>{() => <IndustriesGallery onOpen={id => navigate(`/${id}`)} onBack={() => navigate(-1)} />}</PlainRoute>} />
       <Route path="/:domainId/:viewId" element={<AppShell />} />
       <Route path="/:domainId" element={<DomainRedirect />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
-  );
-}
-
-function AboutRoute() {
-  const navigate = useNavigate();
-  const [dark, setDark] = useState(() => {
-    const saved = localStorage.getItem("forgeui-dark");
-    if (saved !== null) return saved === "true";
-    return window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false;
-  });
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", dark);
-    localStorage.setItem("forgeui-dark", String(dark));
-  }, [dark]);
-  const defaultDomain = DOMAINS[0];
-  return (
-    <main className="p-4 sm:p-6 animate-fadeUp">
-      <About
-        onNavigateToDomain={() => navigate(`/${defaultDomain.id}/${defaultDomain.views[0].id}`)}
-        onViewVersions={() => navigate("/versions")}
-        dark={dark}
-        setDark={setDark}
-      />
-    </main>
-  );
-}
-
-function VersionsRoute() {
-  const navigate = useNavigate();
-  return (
-    <main className="p-4 sm:p-6 animate-fadeUp">
-      <VersionHistory onBack={() => navigate(-1)} />
-    </main>
   );
 }

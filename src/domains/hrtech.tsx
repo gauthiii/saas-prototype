@@ -480,3 +480,6 @@ export function TalentMarketplaceScreen() {
     </div>
   );
 }
+
+// Exposed for shared Workspace/Utility pages and the export pipeline.
+export { hrtechMeta as meta, hrtechExtra as extra };

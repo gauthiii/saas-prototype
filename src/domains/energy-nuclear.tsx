@@ -632,3 +632,6 @@ export function GridOutputScreen() {
     </div>
   );
 }
+
+// Exposed for shared Workspace/Utility pages and the export pipeline.
+export { nukeMeta as meta, nukeExtra as extra };

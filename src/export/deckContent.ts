@@ -181,7 +181,7 @@ export const DECK_CONTENT: Record<string, DomainStory> = {
       dash: { blurb: "The aggregate home — live production across the whole fleet.", bullets: ["Fleet production, battery, and VPP tiles", "Today's solar curve and energy-flow donut", "AI peak-positioning and O&M insights"] },
       pipeline: { blurb: "Move installs from survey to permission-to-operate.", bullets: ["Pipeline funnel by stage", "Per-project system, value, and cycle time", "Filterable job list"] },
       vpp: { blurb: "Dispatch thousands of home batteries as one plant.", bullets: ["Aggregate dispatch curve and event status", "Interactive fleet-discharge planner", "Grid-services market participation"] },
-      home: { blurb: "Give each household control of its own energy.", bullets: ["Battery state-of-charge and consumption", "Self / VPP / time-of-use / backup modes", "EV charge scheduling and V2G"] },
+      homeenergy: { blurb: "Give each household control of its own energy.", bullets: ["Battery state-of-charge and consumption", "Self / VPP / time-of-use / backup modes", "EV charge scheduling and V2G"] },
       billing: { blurb: "Show net-metering credits and real bill savings.", bullets: ["Monthly net-bill trend with credits", "Bill breakdown including VPP earnings", "Downloadable energy statements"] },
       subscribers: { blurb: "Manage community-solar and rooftop subscribers.", bullets: ["Subscriber and garden program metrics", "Per-program subscription fill", "Open / full / pre-launch status"] },
       service: { blurb: "Route truck rolls and keep sites producing.", bullets: ["Service ticket queue with priority", "Resolve / reopen interactions", "Field-crew status by region"] },

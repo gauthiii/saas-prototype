@@ -70,7 +70,7 @@ export function VersionHistory({ onBack, backLabel = "Back" }: VersionHistoryPro
                       <Icon size={11} /> {v.tag}
                     </span>
                   </div>
-                  <span className="text-xs text-[var(--ink-2)] font-mono">{v.date} · {v.commit}</span>
+                  <span className="text-xs text-[var(--ink-2)] font-mono">{v.date}{v.commit ? ` · ${v.commit}` : ""}</span>
                 </div>
 
                 <div className="text-sm font-semibold">{v.title}</div>

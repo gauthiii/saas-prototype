@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { User, Mail, Lock, Phone, MapPin, Bell, Palette, Shield, ChevronDown, ChevronRight, Send, CheckCircle2, Eye, EyeOff, Star, Activity, Search } from "lucide-react";
 import { Card, SectionTitle, Badge, Toggle } from "../components/ui";
+import { useDesign } from "../design/design";
 
 export type DomainStat = { value: string; label: string };
 export type DomainTestimonial = { quote: string; author: string; role: string };
@@ -20,7 +21,99 @@ export type DomainMeta = {
 // ─── Home / Landing ──────────────────────────────────────────────────────────
 // `stats` / `testimonial` are domain-specific (passed from each domain's `extra`).
 // Falls back to honest, non-fabricated copy when a domain hasn't supplied them.
+/** Mini product mockup for the split hero — built from the domain's own features and stats. */
+function HeroMockup({ meta, stats }: { meta: DomainMeta; stats?: DomainStat[] }) {
+  const bars = [42, 58, 49, 71, 63, 84, 76, 92];
+  return (
+    <div className="relative">
+      <div className="absolute -inset-6 rounded-[2rem] bg-gradient-to-br from-accent/25 to-grad/25 blur-2xl" aria-hidden="true" />
+      <Card className="relative !p-0 overflow-hidden shadow-lift">
+        <div className="flex items-center gap-1.5 px-4 py-2.5 border-b border-[var(--line)]">
+          <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" /><span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" /><span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
+          <span className="ml-2 text-[10px] font-mono ink-2">app.{meta.name.toLowerCase().replace(/\s+/g, "")}.com</span>
+        </div>
+        <div className="p-4 space-y-3">
+          <div className="grid grid-cols-3 gap-2">
+            {(stats ?? []).slice(0, 3).map(st => (
+              <div key={st.label} className="rounded-lg border border-[var(--line)] p-2">
+                <div className="text-[9px] ink-2 truncate">{st.label}</div>
+                <div className="font-display text-sm font-bold">{st.value}</div>
+              </div>
+            ))}
+          </div>
+          <div className="flex items-end gap-1.5 h-24 rounded-lg border border-[var(--line)] p-2" aria-hidden="true">
+            {bars.map((h, i) => <div key={i} className={`flex-1 rounded-sm ${i === bars.length - 1 ? "bg-accent" : "bg-accent/30"}`} style={{ height: `${h}%` }} />)}
+          </div>
+          {meta.features.slice(0, 2).map(f => (
+            <div key={f.title} className="flex items-center gap-2.5 rounded-lg border border-[var(--line)] p-2">
+              <span className="text-lg" role="img" aria-label={f.title}>{f.icon}</span>
+              <span className="text-xs font-medium truncate">{f.title}</span>
+              <span className="ml-auto h-1.5 w-10 rounded-full bg-emerald-500/60" />
+            </div>
+          ))}
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+function HeroCtas({ center }: { center?: boolean }) {
+  return (
+    <div className={`flex flex-wrap gap-3 pt-2 ${center ? "justify-center" : ""}`}>
+      <button className="btn-primary px-6 py-2.5 text-sm">Get started free</button>
+      <button className="btn-ghost px-6 py-2.5 text-sm">Watch demo →</button>
+    </div>
+  );
+}
+
 export function HomePage({ meta, stats, testimonial }: { meta: DomainMeta; stats?: DomainStat[]; testimonial?: DomainTestimonial }) {
+  const { hero } = useDesign();
+  if (hero === "split") {
+    return (
+      <div className="max-w-6xl mx-auto space-y-14">
+        <div className="grid lg:grid-cols-2 gap-10 items-center py-6">
+          <div className="space-y-5">
+            <Badge tone="blue">{meta.accentLabel}</Badge>
+            <h1 className="font-display text-4xl sm:text-5xl font-bold tracking-tight leading-[1.05]">{meta.tagline}</h1>
+            <p className="text-base ink-2 max-w-lg leading-relaxed">{meta.description}</p>
+            <HeroCtas />
+            <ul className="flex flex-wrap gap-x-5 gap-y-1.5 pt-1 text-xs ink-2">
+              {meta.features.map(f => <li key={f.title} className="flex items-center gap-1.5"><CheckCircle2 size={13} className="text-accent" /> {f.title}</li>)}
+            </ul>
+          </div>
+          <HeroMockup meta={meta} stats={stats} />
+        </div>
+        {testimonial && <HomeTestimonial testimonial={testimonial} />}
+      </div>
+    );
+  }
+  if (hero === "bento") {
+    return (
+      <div className="max-w-6xl mx-auto space-y-10">
+        <div className="grid md:grid-cols-4 md:auto-rows-[11rem] gap-4">
+          <Card className="md:col-span-2 md:row-span-2 flex flex-col justify-end gap-4 bg-gradient-to-br from-accent to-grad text-white border-0">
+            <span className="text-xs uppercase tracking-widest opacity-80">{meta.accentLabel}</span>
+            <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-tight leading-tight">{meta.name}</h1>
+            <p className="text-sm opacity-90 max-w-md">{meta.tagline}</p>
+            <div className="flex gap-2"><button className="bg-white text-accent font-semibold text-sm px-5 py-2.5 rounded-xl">Get started free</button><button className="border border-white/50 text-sm px-5 py-2.5 rounded-xl">Watch demo →</button></div>
+          </Card>
+          {meta.features.map((f, i) => (
+            <Card key={f.title} className={`flex flex-col justify-between card-hover ${i === 0 ? "md:col-span-2" : ""}`}>
+              <span className="text-3xl" role="img" aria-label={f.title}>{f.icon}</span>
+              <div><div className="font-semibold text-sm">{f.title}</div><div className="text-xs ink-2 leading-relaxed mt-1">{f.body}</div></div>
+            </Card>
+          ))}
+          {(stats ?? []).slice(0, 3).map(st => (
+            <Card key={st.label} className="flex flex-col justify-end">
+              <div className="font-display text-3xl font-bold text-accent">{st.value}</div>
+              <div className="text-xs ink-2 mt-1">{st.label}</div>
+            </Card>
+          ))}
+        </div>
+        {testimonial && <HomeTestimonial testimonial={testimonial} />}
+      </div>
+    );
+  }
   return (
     <div className="max-w-4xl mx-auto space-y-12">
       {/* Hero */}
@@ -68,16 +161,7 @@ export function HomePage({ meta, stats, testimonial }: { meta: DomainMeta; stats
       )}
 
       {/* Testimonial — domain-specific */}
-      {testimonial && (
-        <figure className="max-w-2xl mx-auto text-center space-y-4">
-          <blockquote className="font-display text-xl sm:text-2xl font-medium leading-snug tracking-tight">
-            “{testimonial.quote}”
-          </blockquote>
-          <figcaption className="text-sm ink-2">
-            <span className="font-semibold text-[var(--ink)]">{testimonial.author}</span> · {testimonial.role}
-          </figcaption>
-        </figure>
-      )}
+      {testimonial && <HomeTestimonial testimonial={testimonial} />}
 
       {/* CTA */}
       <Card className="bg-gradient-to-br from-accent to-grad text-white border-0 text-center space-y-3 py-8">
@@ -86,6 +170,19 @@ export function HomePage({ meta, stats, testimonial }: { meta: DomainMeta; stats
         <button className="mt-2 bg-white text-accent font-semibold text-sm px-6 py-2.5 rounded-xl hover:opacity-90 transition-opacity">Create free account</button>
       </Card>
     </div>
+  );
+}
+
+function HomeTestimonial({ testimonial }: { testimonial: DomainTestimonial }) {
+  return (
+    <figure className="max-w-2xl mx-auto text-center space-y-4">
+      <blockquote className="font-display text-xl sm:text-2xl font-medium leading-snug tracking-tight">
+        “{testimonial.quote}”
+      </blockquote>
+      <figcaption className="text-sm ink-2">
+        <span className="font-semibold text-[var(--ink)]">{testimonial.author}</span> · {testimonial.role}
+      </figcaption>
+    </figure>
   );
 }
 
@@ -103,8 +200,9 @@ export function LoginPage({ meta }: { meta: DomainMeta }) {
     setTimeout(() => { setLoading(false); setDone(true); }, 1200);
   };
 
-  return (
-    <div className="max-w-sm mx-auto pt-8 space-y-6">
+  const { signin } = useDesign();
+  const body = (
+    <div className="max-w-sm w-full mx-auto space-y-6">
       <div className="text-center space-y-1">
         <div className="inline-grid place-items-center h-12 w-12 rounded-2xl bg-gradient-to-br from-accent to-grad text-white font-display font-bold text-xl mb-2">
           {meta.name[0]}
@@ -178,6 +276,35 @@ export function LoginPage({ meta }: { meta: DomainMeta }) {
       </div>
     </div>
   );
+
+  if (signin === "split") {
+    return (
+      <div className="grid lg:grid-cols-2 min-h-[38rem] rounded-3xl overflow-hidden border border-[var(--line)] max-w-6xl mx-auto">
+        <aside className="relative hidden lg:flex flex-col justify-between p-10 bg-gradient-to-br from-accent to-grad text-white">
+          <div className="flex items-center gap-2.5 font-display font-bold text-lg"><span className="grid place-items-center h-9 w-9 rounded-xl bg-white/20">{meta.name[0]}</span>{meta.name}</div>
+          <div className="space-y-5">
+            <h2 className="font-display text-3xl font-bold leading-tight">{meta.tagline}</h2>
+            <ul className="space-y-3">
+              {meta.features.map(f => <li key={f.title} className="flex gap-3 text-sm"><span className="text-xl" role="img" aria-label={f.title}>{f.icon}</span><span><b>{f.title}.</b> <span className="opacity-85">{f.body}</span></span></li>)}
+            </ul>
+          </div>
+          <div className="text-xs opacity-75">{meta.accentLabel}</div>
+        </aside>
+        <div className="grid place-items-center p-6 sm:p-10 bg-[var(--surface)]">{body}</div>
+      </div>
+    );
+  }
+  if (signin === "fullbleed") {
+    return (
+      <div className="relative min-h-[40rem] rounded-3xl overflow-hidden grid place-items-center p-6 max-w-6xl mx-auto">
+        <div className="absolute inset-0 bg-gradient-to-br from-accent via-grad to-accent-dark" aria-hidden="true" />
+        <div className="absolute inset-0 opacity-30" aria-hidden="true" style={{ backgroundImage: "radial-gradient(circle at 20% 20%, #fff 0, transparent 35%), radial-gradient(circle at 80% 70%, #fff 0, transparent 30%)" }} />
+        <div className="absolute inset-0 opacity-20" aria-hidden="true" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,.4) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.4) 1px, transparent 1px)", backgroundSize: "48px 48px" }} />
+        <div className="relative w-full max-w-md rounded-3xl bg-[var(--surface)] p-8 shadow-2xl">{body}</div>
+      </div>
+    );
+  }
+  return <div className="pt-8">{body}</div>;
 }
 
 // ─── Register ────────────────────────────────────────────────────────────────
